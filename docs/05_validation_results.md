@@ -18,6 +18,27 @@
 
 Tüm deneyler `npm run cli -- evaluate …` komutlarıyla yeniden üretilebilmektedir. Her çalıştırma ham veriyi (`.json`) ve tablo özetini (`.md`) `evaluation/results/` altında saklar.
 
+## 5.1a. Veri Setleri
+
+Sistem dört açık veri seti üzerinde çalıştırılmıştır. Kaynak, lisans ve SHA-256 değerleri `data/catalog.json` dosyasında, atıflar `tools/datasets/README.md` dosyasında yer almaktadır.
+
+| Veri seti | Bina | Disiplinler | Şema | Fiziksel/toplam eleman | Kesişim* |
+|---|---|---|---|---|---|
+| buildingSMART örnek sahne | Küçük tek katlı ev | ARCH, MEP | IFC4X3 | 32 | 7 |
+| Duplex Apartment | İki katlı ikiz konut | ARCH, MEP | IFC2X3 | 1 218 | 1 324 |
+| Medical-Dental Clinic | Gerçek klinik binası (anonimleştirilmiş) | ARCH, STR, HVAC, PLU | IFC2X3 | 14 553 | 14 414 |
+| Schependomlaan | Konut projesi, Nijmegen | ARCH | IFC2X3 | 3 729 | 7 156 |
+
+\* Ölçüm $\varepsilon = 0{,}01$ m toleransla yapılmıştır.
+
+**Veri setlerinin kaynağı.** Duplex ve Clinic modelleri ABD Ulusal Yapı Bilimleri Enstitüsü (NIBS) tarafından 2009–2020 yılları arasında yayımlanmıştır. Model yazarı tarafından 2020'de buildingSMART örnek dosya deposuna CC BY 4.0 lisansıyla aktarılmıştır. Söz konusu depo daha sonra yeniden yapılandırılmış ve bu dosyalar depodan çıkarılmıştır. Bu nedenle dosyalar, yayımlanmış durumu koruyan bir çatal (fork) üzerinden sabit bir commit'ten alınmış ve SHA-256 ile doğrulanmıştır.
+
+**Veri setlerinden çıkan gözlemler:**
+1. **IFC2X3'te tesisat sınıfları.** IFC2X3 modellerinde tesisat elemanları genel `IfcFlowSegment` olarak tanımlanmıştır; türleri tip nesnesinde (`IfcDuctSegmentType`) yer alır. Ayrıştırıcı, IFC4 kalıtımıyla tutarlı olduğu durumlarda karşılık gelen IFC4 sınıfını türetmektedir (Bölüm 2.1.2). Bu türetme yapılmasaydı kanal kuralları IFC2X3 modellerinde hiçbir elemanla eşleşmezdi.
+2. **Yer tutucu ve boş değerler.** Revit dışa aktarımlarında kapı ve pencerelerin `FireRating` değeri çoğunlukla doldurulmamış yer tutucu metinlerden oluşmaktadır ("Fire Rating", "FireRating"). Archicad dışa aktarımında ise bu değer boş metindir. Boş metinler değersiz sayılmaktadır. Yer tutucuların ayırt edilmesi ise genel olarak mümkün değildir ve bir veri kalitesi sınırlılığı olarak kaydedilmiştir.
+3. **Clinic'te yangın dayanımlı duvarlar.** Clinic modelinde 1 ve 2 saat yangın dayanımlı duvarlar bulunmaktadır (`Pset_WallCommon.FireRating`). Modelde yangın damperi yoktur. FS-DUCT-WALL-01 kuralı bu modelde gerçek bir kanal–yangın duvarı geçişini kritik ihlal olarak saptamıştır.
+4. **Duplex'te ayırıcı duvarlar.** Duplex modelinde bağımsız birimleri ayıran duvarlar ("Party Wall") bulunmaktadır. Madde 24/3'e göre bu duvarlar yangın duvarıdır. İlgili kurallar 4 bilgi eksikliği ve 50 tesisat geçişi raporlamıştır.
+
 ## 5.2. Kural Motorunun Hata Enjeksiyonu ile Doğrulanması
 
 ### 5.2.1. Yöntem
