@@ -40,8 +40,8 @@ export function Viewer({ models, highlight }: ViewerProps) {
     setStatus(models.length ? 'Modeller yükleniyor…' : null);
     scene
       .setModels(models)
-      .then(() => {
-        if (!cancelled) {
+      .then((current) => {
+        if (current && !cancelled) {
           setStatus(null);
           scene.highlight(highlight);
         }

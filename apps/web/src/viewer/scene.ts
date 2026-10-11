@@ -29,6 +29,15 @@ interface MaterialState {
   readonly transparent: boolean;
 }
 
+function disposeGroup(group: THREE.Group): void {
+  group.traverse((node) => {
+    if (node instanceof THREE.Mesh) {
+      node.geometry.dispose();
+      (node.material as THREE.Material).dispose();
+    }
+  });
+}
+
 /** Imperative three.js scene; React owns only its lifecycle (see Viewer.tsx). */
 export class IfcScene {
   private readonly renderer: THREE.WebGLRenderer;
@@ -41,6 +50,8 @@ export class IfcScene {
   private readonly resizeObserver: ResizeObserver;
   private readonly container: HTMLElement;
   private pickListener: ((element: PickedElement | null) => void) | undefined;
+  /** Incremented per setModels call; a load that is no longer the latest stops adding elements. */
+  private loadVersion = 0;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -65,12 +76,24 @@ export class IfcScene {
     this.pickListener = listener;
   }
 
-  /** Replaces the displayed models. An element present in several models is shown once. */
-  async setModels(models: readonly ModelInput[]): Promise<void> {
+  /**
+   * Replaces the displayed models. An element present in several models is shown once.
+   * Resolves to false when a newer call superseded this one before it finished.
+   */
+  async setModels(models: readonly ModelInput[]): Promise<boolean> {
+    const version = ++this.loadVersion;
     this.clearModels();
     for (const model of models) {
-      for (const element of await buildElementObjects(model.bytes)) {
-        if (this.elements.has(element.globalId)) continue;
+      const objects = await buildElementObjects(model.bytes);
+      if (version !== this.loadVersion) {
+        for (const element of objects) disposeGroup(element.group);
+        return false;
+      }
+      for (const element of objects) {
+        if (this.elements.has(element.globalId)) {
+          disposeGroup(element.group);
+          continue;
+        }
         this.elements.set(element.globalId, element);
         this.root.add(element.group);
         element.group.traverse((node) => {
@@ -82,6 +105,7 @@ export class IfcScene {
       }
     }
     this.fit(this.coreElementIds());
+    return true;
   }
 
   /** Colours the involved elements by role, dims everything else and frames the selection. */
@@ -136,12 +160,7 @@ export class IfcScene {
 
   private clearModels(): void {
     for (const element of this.elements.values()) {
-      element.group.traverse((node) => {
-        if (node instanceof THREE.Mesh) {
-          node.geometry.dispose();
-          (node.material as THREE.Material).dispose();
-        }
-      });
+      disposeGroup(element.group);
       this.root.remove(element.group);
     }
     this.elements.clear();
