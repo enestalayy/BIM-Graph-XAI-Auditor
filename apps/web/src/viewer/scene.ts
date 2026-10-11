@@ -21,9 +21,17 @@ export interface ModelInput {
 }
 
 const ROLE_COLOURS = { subject: 0xd93025, object: 0x1a56db, mitigation: 0x188038 } as const;
-const DIMMED_OPACITY = 0.07;
-/** The crossed element is drawn see-through so that a subject running inside it stays visible. */
-const OBJECT_OPACITY = 0.35;
+/** Everything not involved is drawn as a faint, uniform grey ghost so only the involved elements carry colour. */
+const GHOST_COLOUR = 0xc4c9cf;
+const GHOST_OPACITY = 0.06;
+/**
+ * Draw order: ghosts first (they write no depth), then the involved elements over them, the
+ * subject last and without depth test (x-ray) so it stays visible inside an opaque wall.
+ * Involved elements are flagged transparent (at full opacity) only so they join the sorted
+ * transparent pass after the ghosts; otherwise the ghosts in front would wash them out.
+ */
+const INVOLVED_RENDER_ORDER = 500;
+const SUBJECT_RENDER_ORDER = 1000;
 /** Smallest framing radius (m) around a focused element, so its surroundings stay in view. */
 const FOCUS_MIN_RADIUS = 1.2;
 /** Edge outlines of highlighted elements are drawn on top of everything so their shape stays readable. */
@@ -59,6 +67,9 @@ export class IfcScene {
   private pickListener: ((element: PickedElement | null) => void) | undefined;
   /** Incremented per setModels call; a load that is no longer the latest stops adding elements. */
   private loadVersion = 0;
+  private currentHighlight: Highlight | null = null;
+  /** When on, the subject is drawn through other geometry; when off, real depth shows where it enters a wall. */
+  private xray = true;
 
   constructor(container: HTMLElement) {
     this.container = container;
@@ -116,7 +127,17 @@ export class IfcScene {
   }
 
   /** Colours the involved elements by role, dims everything else and frames the selection. */
+  setXray(on: boolean): void {
+    this.xray = on;
+    this.applyHighlight(this.currentHighlight, false);
+  }
+
   highlight(highlight: Highlight | null): void {
+    this.currentHighlight = highlight;
+    this.applyHighlight(highlight, true);
+  }
+
+  private applyHighlight(highlight: Highlight | null, frame: boolean): void {
     this.restoreMaterials();
     if (!highlight) {
       this.render();
@@ -127,21 +148,26 @@ export class IfcScene {
     for (const [globalId, element] of this.elements) {
       const role = highlighted.get(globalId);
       if (role !== undefined) this.addOutline(element, ROLE_COLOURS[role]);
+      if (role !== undefined) this.setRenderOrder(element, role === 'subject' ? SUBJECT_RENDER_ORDER : INVOLVED_RENDER_ORDER);
       this.forEachMaterial(element, (m) => {
         if (role !== undefined) {
           m.color.setHex(ROLE_COLOURS[role]);
-          m.opacity = role === 'object' ? OBJECT_OPACITY : 1;
-          m.transparent = role === 'object';
-          m.depthWrite = role !== 'object';
-        } else {
-          m.opacity = DIMMED_OPACITY;
+          m.opacity = 1;
           m.transparent = true;
+          m.depthWrite = true;
+          m.depthTest = !(role === 'subject' && this.xray);
+        } else {
+          m.color.setHex(GHOST_COLOUR);
+          m.opacity = GHOST_OPACITY;
+          m.transparent = true;
+          m.depthWrite = false;
         }
         m.needsUpdate = true;
       });
     }
     // Frame the subject (usually the small pipe or duct) with some context; the user can zoom out.
-    this.fit(highlight.subject ? [highlight.subject] : [...highlighted.keys()], FOCUS_MIN_RADIUS);
+    if (frame) this.fit(highlight.subject ? [highlight.subject] : [...highlighted.keys()], FOCUS_MIN_RADIUS);
+    else this.render();
   }
 
   dispose(): void {
@@ -179,13 +205,21 @@ export class IfcScene {
     }
   }
 
+  private setRenderOrder(element: ElementObject, order: number): void {
+    element.group.traverse((node) => {
+      if (node instanceof THREE.Mesh) node.renderOrder = order;
+    });
+  }
+
   private restoreMaterials(): void {
     this.clearOutlines();
+    for (const element of this.elements.values()) this.setRenderOrder(element, 0);
     for (const [material, state] of this.original) {
       material.color.copy(state.color);
       material.opacity = state.opacity;
       material.transparent = state.transparent;
       material.depthWrite = true;
+      material.depthTest = true;
       material.needsUpdate = true;
     }
   }

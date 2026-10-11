@@ -12,6 +12,7 @@ export function Viewer({ models, highlight }: ViewerProps) {
   const [picked, setPicked] = useState<PickedElement | null>(null);
   const [status, setStatus] = useState<string | null>(null);
   const [ready, setReady] = useState(false);
+  const [xray, setXray] = useState(true);
 
   // three.js and web-ifc are large; load them only when the viewer mounts.
   useEffect(() => {
@@ -57,6 +58,10 @@ export function Viewer({ models, highlight }: ViewerProps) {
     if (ready) sceneRef.current?.highlight(highlight);
   }, [highlight, ready]);
 
+  useEffect(() => {
+    if (ready) sceneRef.current?.setXray(xray);
+  }, [xray, ready]);
+
   return (
     <div className="viewer">
       <div className="viewer-canvas" ref={containerRef} />
@@ -64,6 +69,9 @@ export function Viewer({ models, highlight }: ViewerProps) {
       {highlight && (
         <div className="viewer-legend">
           <span className="swatch subject" /> konu <span className="swatch object" /> nesne <span className="swatch mitigation" /> en yakın koruyucu
+          <label className="inline xray-toggle" title="Açıkken konu eleman diğer elemanların içinden görünür; kapalıyken duvara girdiği yerde kaybolur">
+            <input type="checkbox" checked={xray} onChange={(e) => setXray(e.target.checked)} /> Röntgen
+          </label>
         </div>
       )}
       {picked && (
