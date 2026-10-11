@@ -65,7 +65,7 @@ describe('LLM explainer', () => {
   it('sends the numbered facts and records the generator as the method', async () => {
     const fake = generator('Bu bir hatadır çünkü kanal duvarı kesiyor [F2][F3].');
     const explanation = await explainViolation(intersectionContext, createLlmExplainer(fake));
-    assert.equal(explanation.method, 'fake:model');
+    assert.equal(explanation.method, 'fake:model#p2');
     assert.match(fake.prompts[0]!, /\[F1\] Kural FS-DUCT-WALL-01/);
   });
 
@@ -74,6 +74,11 @@ describe('LLM explainer', () => {
     const explanation = await explainViolation(intersectionContext, createLlmExplainer(fake));
     assert.equal(explanation.grounding.hallucinated, true);
     assert.equal(explanation.grounding.unsupported.length, 3);
+  });
+
+  it('flags an answer that copies the identifiers of the prompt example', async () => {
+    const fake = generator('Bu bir hatadır çünkü 0aAaAaAaAaAaAaAaAaAaAa duvarı kesiyor [F2].');
+    assert.equal((await explainViolation(intersectionContext, createLlmExplainer(fake))).grounding.hallucinated, true);
   });
 
   it('rejects an empty answer', async () => {
