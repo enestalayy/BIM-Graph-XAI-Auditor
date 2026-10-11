@@ -1,0 +1,11 @@
+{
+  "dataset": "dataset-name",
+  "annotator": "Ad Soyad (uzman)",
+  "createdAt": "YYYY-MM-DD",
+  "models": ["Model-Architecture.ifc", "Model-MEP.ifc"],
+  "ruleSet": "rules/default.json",
+  "expected": [
+    { "ruleId": "FS-DUCT-WALL-01", "elements": ["<duct GlobalId>", "<wall GlobalId>"], "note": "Neden ihlal olduğu (kısa)" },
+    { "ruleId": "INFO-WALL-01", "elements": ["<wall GlobalId>"] }
+  ]
+}

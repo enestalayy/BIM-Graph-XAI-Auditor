@@ -1,0 +1,145 @@
+{
+  "name": "injection",
+  "createdAt": "2026-10-11T08:43:55.658Z",
+  "data": {
+    "ruleId": "FS-DUCT-WALL-01",
+    "tolerance": 0.01,
+    "runs": [
+      {
+        "seed": 1,
+        "cases": 60,
+        "casesByKind": {
+          "wrong-damper": 8,
+          "no-damper": 9,
+          "unrated-wall": 9,
+          "damper-near": 13,
+          "near-miss": 11,
+          "damper-far": 10
+        },
+        "metrics": {
+          "truePositives": 27,
+          "falsePositives": 0,
+          "falseNegatives": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "falsePositiveIds": [],
+          "falseNegativeIds": []
+        },
+        "ingestMs": 83.897875,
+        "intersectionMs": 46.974917000000005,
+        "auditMs": 95.32820899999996
+      },
+      {
+        "seed": 2,
+        "cases": 60,
+        "casesByKind": {
+          "near-miss": 9,
+          "damper-near": 6,
+          "wrong-damper": 8,
+          "unrated-wall": 15,
+          "damper-far": 8,
+          "no-damper": 14
+        },
+        "metrics": {
+          "truePositives": 30,
+          "falsePositives": 0,
+          "falseNegatives": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "falsePositiveIds": [],
+          "falseNegativeIds": []
+        },
+        "ingestMs": 37.65862500000003,
+        "intersectionMs": 12.19054200000005,
+        "auditMs": 8.233167000000094
+      },
+      {
+        "seed": 3,
+        "cases": 60,
+        "casesByKind": {
+          "near-miss": 16,
+          "no-damper": 9,
+          "damper-far": 13,
+          "damper-near": 5,
+          "wrong-damper": 9,
+          "unrated-wall": 8
+        },
+        "metrics": {
+          "truePositives": 31,
+          "falsePositives": 0,
+          "falseNegatives": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "falsePositiveIds": [],
+          "falseNegativeIds": []
+        },
+        "ingestMs": 20.971457999999984,
+        "intersectionMs": 8.318666000000007,
+        "auditMs": 6.877666999999974
+      },
+      {
+        "seed": 4,
+        "cases": 60,
+        "casesByKind": {
+          "unrated-wall": 11,
+          "damper-near": 8,
+          "no-damper": 8,
+          "wrong-damper": 10,
+          "near-miss": 11,
+          "damper-far": 12
+        },
+        "metrics": {
+          "truePositives": 30,
+          "falsePositives": 0,
+          "falseNegatives": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "falsePositiveIds": [],
+          "falseNegativeIds": []
+        },
+        "ingestMs": 17.157375000000002,
+        "intersectionMs": 11.008041999999932,
+        "auditMs": 7.436374999999998
+      },
+      {
+        "seed": 5,
+        "cases": 60,
+        "casesByKind": {
+          "near-miss": 11,
+          "damper-near": 15,
+          "wrong-damper": 8,
+          "no-damper": 8,
+          "damper-far": 7,
+          "unrated-wall": 11
+        },
+        "metrics": {
+          "truePositives": 23,
+          "falsePositives": 0,
+          "falseNegatives": 0,
+          "precision": 1,
+          "recall": 1,
+          "f1": 1,
+          "falsePositiveIds": [],
+          "falseNegativeIds": []
+        },
+        "ingestMs": 17.633625000000052,
+        "intersectionMs": 6.30437500000005,
+        "auditMs": 6.093000000000075
+      }
+    ],
+    "total": {
+      "truePositives": 141,
+      "falsePositives": 0,
+      "falseNegatives": 0,
+      "precision": 1,
+      "recall": 1,
+      "f1": 1,
+      "falsePositiveIds": [],
+      "falseNegativeIds": []
+    }
+  }
+}
