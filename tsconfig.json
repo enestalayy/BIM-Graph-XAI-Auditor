@@ -10,6 +10,7 @@
     "packages/*/test",
     "apps/server/src",
     "apps/server/test",
-    "tools/*/*.ts"
+    "tools/*/*.ts",
+    "apps/web/test"
   ]
 }

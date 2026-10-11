@@ -13,13 +13,15 @@
     "apps/*"
   ],
   "scripts": {
-    "test": "node --test \"packages/*/test/*.test.ts\" \"apps/server/test/*.test.ts\"",
+    "test": "node --test \"packages/*/test/*.test.ts\" \"apps/*/test/*.test.ts\"",
     "test:integration": "node --env-file-if-exists=.env --test --test-concurrency=1 \"packages/*/test/integration/*.test.ts\" \"apps/server/test/integration/*.test.ts\"",
-    "typecheck": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json && tsc -p apps/web/tsconfig.node.json",
     "parity": "node tools/parity/compare.ts data/sample/Building-Architecture.ifc data/sample/Building-Hvac.ifc",
     "cli": "node --env-file-if-exists=.env apps/server/src/cli.ts",
     "start": "node --env-file-if-exists=.env apps/server/src/main.ts",
-    "dev:server": "node --env-file-if-exists=.env --watch apps/server/src/main.ts"
+    "dev:server": "node --env-file-if-exists=.env --watch apps/server/src/main.ts",
+    "build": "npm run build -w @bim/web",
+    "dev": "node tools/dev/run.ts"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",
