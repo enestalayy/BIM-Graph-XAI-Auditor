@@ -26,6 +26,13 @@ export interface Element {
   readonly ifcClass: string;
   /** Every ancestor class of ifcClass, e.g. ["IfcWall", "IfcBuiltElement", "IfcElement", ...]. */
   readonly ifcSuperClasses: readonly string[];
+  /**
+   * IFC4 classes implied by the type object of a generically typed IFC2x3
+   * occurrence, e.g. ["IfcDuctSegment"] for an IfcFlowSegment of IfcDuctSegmentType.
+   */
+  readonly ifcDerivedClasses?: readonly string[];
+  /** Class of the element's type object, e.g. "IfcDuctSegmentType". */
+  readonly typeClass?: string | null;
   readonly category: ElementCategory;
   readonly name: string | null;
   readonly predefinedType: string | null;

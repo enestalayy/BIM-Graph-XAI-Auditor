@@ -25,7 +25,7 @@ function toPropertyType(valueTypes: readonly string[]): PropertyType {
 export async function loadVocabulary(runner: CypherRunner): Promise<Vocabulary> {
   const [classes] = await runner.run(
     `MATCH (e:Element)
-     WITH collect(DISTINCT e.ifcClass) + reduce(acc = [], s IN collect(DISTINCT e.ifcSuperClasses) | acc + s) AS all
+     WITH collect(DISTINCT e.ifcClass) + reduce(acc = [], s IN collect(DISTINCT e.ifcSuperClasses) + collect(DISTINCT coalesce(e.ifcDerivedClasses, [])) | acc + s) AS all
      UNWIND all AS c
      WITH DISTINCT c ORDER BY c
      RETURN collect(c) AS classes`,

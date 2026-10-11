@@ -14,6 +14,8 @@ export function toNodeProperties(element: Element): NodeProperties {
     globalId: element.globalId,
     ifcClass: element.ifcClass,
     ifcSuperClasses: element.ifcSuperClasses,
+    ifcDerivedClasses: element.ifcDerivedClasses ?? [],
+    typeClass: element.typeClass ?? null,
     category: element.category,
     name: element.name,
     predefinedType: element.predefinedType,
@@ -27,7 +29,7 @@ export function toNodeProperties(element: Element): NodeProperties {
   };
 }
 
-/** Node labels: the generic :Element plus the IFC class and all its ancestors. */
+/** Node labels: the generic :Element plus the IFC class, its ancestors and classes derived from its type. */
 export function elementLabels(element: Element): string[] {
-  return ['Element', element.ifcClass, ...element.ifcSuperClasses];
+  return ['Element', ...new Set([element.ifcClass, ...element.ifcSuperClasses, ...(element.ifcDerivedClasses ?? [])])];
 }

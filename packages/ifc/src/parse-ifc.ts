@@ -2,6 +2,7 @@ import type { Element, IfcModel } from '@bim/core';
 import { getIfcApi } from './api.ts';
 import { InvalidIfcError } from './errors.ts';
 import { createClassResolver } from './classes.ts';
+import { deriveOccurrenceClasses } from './derived-classes.ts';
 import { computeAabbs } from './geometry.ts';
 import { plain } from './lines.ts';
 import { collectMaterials } from './materials.ts';
@@ -68,10 +69,14 @@ export async function parseIfc(data: Uint8Array, options: ParseOptions): Promise
       guidOf.set(product.expressID, globalId);
       const name = plain(line.Name);
       const predefinedType = plain(line.PredefinedType);
+      const typeId = typeOf.get(product.expressID);
+      const typeCode = typeId === undefined ? undefined : api.GetLineType(modelID, typeId);
       elements.push({
         globalId,
         ifcClass: classes.nameOf(product.typeCode),
         ifcSuperClasses: classes.superClassesOf(product.typeCode),
+        ifcDerivedClasses: typeCode === undefined ? [] : deriveOccurrenceClasses(api, product.typeCode, typeCode),
+        typeClass: typeCode === undefined ? null : classes.nameOf(typeCode),
         category: product.category,
         name: name === null ? null : String(name),
         predefinedType: predefinedType === null ? null : String(predefinedType),
