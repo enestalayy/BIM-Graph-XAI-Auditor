@@ -25,6 +25,14 @@ describe('buildEvidence', () => {
   });
 });
 
+describe('buildEvidence for a property violation', () => {
+  it('states the unmet requirement and the actual value in plain words', () => {
+    const { facts } = buildEvidence(propertyContext);
+    assert.ok(facts.some((f) => f.statement ===
+      'Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil.'));
+  });
+});
+
 describe('template explainer', () => {
   for (const [name, context] of [['intersection', intersectionContext], ['property', propertyContext]] as const) {
     it(`is fully grounded and cited for a ${name} violation`, async () => {

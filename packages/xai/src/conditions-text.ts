@@ -17,7 +17,7 @@ const OPERATOR_TEXT: Readonly<Record<Condition['op'], string>> = {
 /** Human-readable form of a condition, e.g. "Pset_WallCommon.FireRating tanımlı olmalı". */
 export function conditionText(condition: Condition): string {
   const operator = OPERATOR_TEXT[condition.op];
-  if (!('value' in condition)) return `${condition.property} ${operator}`;
+  if (condition.op === 'exists' || condition.op === 'notExists' || !('value' in condition)) return `${condition.property} ${operator}`;
   const value = Array.isArray(condition.value) ? condition.value.map(formatValue).join(', ') : formatValue(condition.value);
   return `${condition.property} ${operator} ${value}`;
 }
