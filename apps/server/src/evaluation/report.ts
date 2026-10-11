@@ -12,5 +12,5 @@ export async function writeReport(directory: string, name: string, data: unknown
   return paths;
 }
 
-export const pct = (x: number): string => `${(x * 100).toFixed(1)} %`;
+export const pct = (x: number | null): string => (x === null ? '—' : `${(x * 100).toFixed(1)} %`);
 export const ms = (x: number): string => `${x.toFixed(1)} ms`;

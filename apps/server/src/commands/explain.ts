@@ -12,7 +12,9 @@ export const explain: Command = async ({ graph, config, args }) => {
   const ids = values.id ? [values.id] : (await loadViolations(graph)).map((v) => v.id);
   for (const id of ids) {
     const x = await explainAndStore(graph, id, explainer);
-    console.log(`\n[${id}] ${x.method}, ${x.latencyMs.toFixed(0)} ms, faithfulness ${x.grounding.faithfulness.toFixed(2)}, ` +
+    const ratio = (v: number | null | undefined) => (v == null ? 'n/a' : v.toFixed(2));
+    console.log(`\n[${id}] ${x.method}, ${x.latencyMs.toFixed(0)} ms, faithfulness ${ratio(x.grounding.faithfulness)}, ` +
+      `completeness ${ratio(x.grounding.completeness)}, ` +
       `citations ${x.grounding.citationCoverage.toFixed(2)}${x.grounding.hallucinated ? ', HALLUCINATED' : ''}`);
     console.log(x.text);
   }

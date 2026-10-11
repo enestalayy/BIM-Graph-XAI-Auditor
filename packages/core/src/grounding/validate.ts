@@ -21,8 +21,13 @@ export interface GroundingReport {
   readonly sentences: readonly SentenceCheck[];
   readonly entityCount: number;
   readonly unsupported: readonly Entity[];
-  /** Supported entities / all entities (1 when the text contains no entity). */
-  readonly faithfulness: number;
+  /** Supported entities / all entities; null when the text contains no checkable entity. */
+  readonly faithfulness: number | null;
+  /**
+   * Key evidence entities (GlobalIds, labels, measured quantities of the required
+   * facts) that the text mentions / all key entities; null when no facts are required.
+   */
+  readonly completeness: number | null;
   /** Sentences with valid citations / all sentences. */
   readonly citationCoverage: number;
   /** True when at least one entity is not supported by the evidence. */
@@ -31,6 +36,20 @@ export interface GroundingReport {
 }
 
 export const REQUIRED_OPENING = 'Bu bir hatadır çünkü';
+
+export interface GroundingOptions {
+  /** Facts whose key entities a complete explanation should mention. */
+  readonly requiredFactIds?: readonly string[];
+}
+
+/** Entities that identify or measure something: ids, labels and numbers with a unit. */
+function isKeyEntity(entity: Entity): boolean {
+  if (entity.kind === 'globalId' || entity.kind === 'label') return true;
+  return entity.kind === 'number' && toQuantity(entity.value).dimension !== 'none';
+}
+
+/** Leading Markdown emphasis, headings or quotes do not change what the text starts with. */
+const stripLeadingDecoration = (text: string): string => text.trimStart().replace(/^[*_#>"'“\s]+/, '');
 
 /**
  * A written number is supported when an evidence number of the same dimension
@@ -47,7 +66,7 @@ function numberSupported(written: string, evidence: readonly Quantity[]): boolea
  * facts it was given: every identifier, rule id, article, label and number in the
  * text must occur in the evidence.
  */
-export function validateGrounding(text: string, facts: readonly EvidenceFact[]): GroundingReport {
+export function validateGrounding(text: string, facts: readonly EvidenceFact[], options: GroundingOptions = {}): GroundingReport {
   const evidence = extractEntities(facts.map((f) => f.statement).join('\n'));
   const allowed = new Map<EntityKind, Set<string>>();
   for (const e of evidence) allowed.set(e.kind, (allowed.get(e.kind) ?? new Set()).add(e.value));
@@ -69,13 +88,25 @@ export function validateGrounding(text: string, facts: readonly EvidenceFact[]):
 
   const entities = sentences.flatMap((s) => s.entities);
   const unsupported = entities.filter((e) => !e.supported).map(({ kind, value }) => ({ kind, value }));
+
+  let completeness: number | null = null;
+  if (options.requiredFactIds) {
+    const required = new Set(options.requiredFactIds);
+    const keys = extractEntities(facts.filter((f) => required.has(f.id)).map((f) => f.statement).join('\n')).filter(isKeyEntity);
+    const unique = [...new Map(keys.map((k) => [`${k.kind}|${k.value}`, k])).values()];
+    const mentioned = unique.filter((key) => entities.some((e) => e.kind === key.kind &&
+      (key.kind === 'number' ? numberSupported(e.value, [toQuantity(key.value)]) : e.value === key.value)));
+    completeness = unique.length === 0 ? null : mentioned.length / unique.length;
+  }
+
   return {
     sentences,
     entityCount: entities.length,
     unsupported,
-    faithfulness: entities.length === 0 ? 1 : (entities.length - unsupported.length) / entities.length,
+    faithfulness: entities.length === 0 ? null : (entities.length - unsupported.length) / entities.length,
+    completeness,
     citationCoverage: sentences.length === 0 ? 0 : sentences.filter((s) => s.validCitations).length / sentences.length,
     hallucinated: unsupported.length > 0,
-    startsWithRequiredPhrase: text.trimStart().startsWith(REQUIRED_OPENING),
+    startsWithRequiredPhrase: stripLeadingDecoration(text).startsWith(REQUIRED_OPENING),
   };
 }

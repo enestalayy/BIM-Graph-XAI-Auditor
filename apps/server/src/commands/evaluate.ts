@@ -76,10 +76,11 @@ async function explanations({ graph, config, args }: CommandContext): Promise<vo
   const md = [
     `# Açıklama değerlendirmesi — ${summary.method}`,
     '',
-    '| Açıklama | Halüsinasyon oranı | Ort. sadakat | Ort. atıf kapsaması | Biçim uyumu | Gecikme (medyan / p95) |',
-    '|---|---|---|---|---|---|',
-    `| ${summary.count} | ${pct(summary.hallucinationRate)} | ${pct(summary.meanFaithfulness)} | ${pct(summary.meanCitationCoverage)} | ` +
-      `${pct(summary.formatCompliance)} | ${ms(summary.latencyMs.median)} / ${ms(summary.latencyMs.p95)} |`,
+    '| Açıklama | Halüsinasyon oranı | Ort. sadakat | Ort. eksiksizlik | Boş açıklama | Ort. atıf kapsaması | Biçim uyumu | Gecikme (medyan / p95) |',
+    '|---|---|---|---|---|---|---|---|',
+    `| ${summary.count} | ${pct(summary.hallucinationRate)} | ${pct(summary.meanFaithfulness)} | ${pct(summary.meanCompleteness)} | ` +
+      `${pct(summary.emptyRate)} | ${pct(summary.meanCitationCoverage)} | ${pct(summary.formatCompliance)} | ` +
+      `${ms(summary.latencyMs.median)} / ${ms(summary.latencyMs.p95)} |`,
     '',
     ...items.filter((x) => x.grounding.hallucinated).map((x) =>
       `- ${x.violationId}: desteksiz ${x.grounding.unsupported.map((e) => `${e.value} (${e.kind})`).join(', ')}`),

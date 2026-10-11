@@ -16,7 +16,9 @@ export async function explainViolation(context: ViolationContext, explainer: Exp
     method: explainer.method,
     text,
     facts: evidence.facts,
-    grounding: validateGrounding(text, evidence.facts),
+    grounding: validateGrounding(text, evidence.facts, {
+      requiredFactIds: [evidence.roles.subject, evidence.roles.object, ...evidence.roles.findings].filter((id): id is string => id !== null),
+    }),
     latencyMs,
     createdAt: new Date().toISOString(),
   };

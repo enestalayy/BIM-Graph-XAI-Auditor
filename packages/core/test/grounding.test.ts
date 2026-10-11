@@ -95,3 +95,33 @@ describe('validateGrounding: unit-aware numbers and robust tokenisation', () => 
     assert.equal(report.citationCoverage, 1);
   });
 });
+
+describe('validateGrounding: empty answers and completeness', () => {
+  const pool: EvidenceFact[] = [
+    { id: 'F1', statement: 'Kural CLASH-1 (önem derecesi: major).' },
+    { id: 'F2', statement: 'Konu eleman: IfcDuctSegment "duct" (GlobalId 38WbwIGD90nB_3T2BTU5Ed); model: MEP; konum: 00 groundfloor.' },
+    { id: 'F3', statement: 'Nesne eleman: IfcSlab "roof" (GlobalId 12UVOn4wvAJPMUExKdZLb8).' },
+    { id: 'F4', statement: 'İki eleman kesişmektedir: kesişim hacmi 0,129 m³, penetrasyon derinliği 0,2 m.' },
+  ];
+  const required = { requiredFactIds: ['F2', 'F3', 'F4'] };
+
+  it('leaves faithfulness undefined for a text without any checkable entity', () => {
+    const report = validateGrounding('Bu bir hatadır çünkü [F1][F2][F3][F4].', pool, required);
+    assert.equal(report.faithfulness, null);
+    assert.equal(report.completeness, 0);
+  });
+
+  it('measures how many key evidence entities (ids, measures) the text mentions', () => {
+    const report = validateGrounding('Bu bir hatadır çünkü 38WbwIGD90nB_3T2BTU5Ed kanalı döşemeyi 0,13 m³ hacimle kesiyor [F2][F4].', pool, required);
+    assert.equal(report.completeness, 2 / 4); // duct id + volume of {duct id, slab id, volume, depth}
+    assert.equal(report.faithfulness, 1);
+  });
+
+  it('has no completeness when no facts are required', () => {
+    assert.equal(validateGrounding('Bu bir hatadır çünkü [F1].', pool).completeness, null);
+  });
+
+  it('accepts the opening phrase wrapped in Markdown emphasis', () => {
+    assert.equal(validateGrounding('**Bu bir hatadır çünkü** kanal kesiyor [F2].', pool).startsWithRequiredPhrase, true);
+  });
+});

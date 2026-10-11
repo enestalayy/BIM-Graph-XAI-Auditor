@@ -5,7 +5,12 @@ export interface ExplanationSummary {
   readonly count: number;
   /** Share of explanations with at least one unsupported entity. */
   readonly hallucinationRate: number;
-  readonly meanFaithfulness: number;
+  /** Over explanations that contain at least one checkable entity; null if none does. */
+  readonly meanFaithfulness: number | null;
+  /** Share of key evidence entities mentioned, averaged; null if not measured. */
+  readonly meanCompleteness: number | null;
+  /** Share of explanations without any checkable entity (nothing to verify, little to learn). */
+  readonly emptyRate: number;
   readonly meanCitationCoverage: number;
   /** Share starting with the required "Bu bir hatadır çünkü". */
   readonly formatCompliance: number;
@@ -13,6 +18,10 @@ export interface ExplanationSummary {
 }
 
 const mean = (values: readonly number[]): number => (values.length === 0 ? 0 : values.reduce((a, b) => a + b, 0) / values.length);
+const meanDefined = (values: readonly (number | null)[]): number | null => {
+  const defined = values.filter((v): v is number => v !== null);
+  return defined.length === 0 ? null : mean(defined);
+};
 
 /** Nearest-rank percentile. */
 function percentile(values: readonly number[], q: number): number {
@@ -27,7 +36,9 @@ export function summarizeExplanations(method: string, explanations: readonly Exp
     method,
     count: explanations.length,
     hallucinationRate: mean(explanations.map((x) => (x.grounding.hallucinated ? 1 : 0))),
-    meanFaithfulness: mean(explanations.map((x) => x.grounding.faithfulness)),
+    meanFaithfulness: meanDefined(explanations.map((x) => x.grounding.faithfulness)),
+    meanCompleteness: meanDefined(explanations.map((x) => x.grounding.completeness ?? null)),
+    emptyRate: mean(explanations.map((x) => (x.grounding.entityCount === 0 ? 1 : 0))),
     meanCitationCoverage: mean(explanations.map((x) => x.grounding.citationCoverage)),
     formatCompliance: mean(explanations.map((x) => (x.grounding.startsWithRequiredPhrase ? 1 : 0))),
     latencyMs: { median: percentile(latencies, 0.5), p95: percentile(latencies, 0.95), max: Math.max(0, ...latencies) },

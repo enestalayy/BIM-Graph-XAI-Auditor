@@ -22,7 +22,7 @@ export { toViolations } from './rules/to-violations.ts';
 export type { ElementRef, Evidence, FailedCheck, Violation } from './rules/violation.ts';
 export { extractCitations, extractEntities, splitSentences, toQuantity, type Dimension, type Entity, type EntityKind, type Quantity } from './grounding/entities.ts';
 export {
-  REQUIRED_OPENING, validateGrounding, type EntityCheck, type EvidenceFact, type GroundingReport, type SentenceCheck,
+  REQUIRED_OPENING, validateGrounding, type EntityCheck, type EvidenceFact, type GroundingOptions, type GroundingReport, type SentenceCheck,
 } from './grounding/validate.ts';
 export type { ElementContext, Explanation, ViolationContext } from './explanation.ts';
 export { classificationMetrics, metricsByRule, ruleOf, type ClassificationMetrics } from './evaluation/classification.ts';

@@ -1,6 +1,6 @@
 import type { Explanation } from '../api/types.ts';
 
-const percent = (x: number) => `%${Math.round(x * 100)}`;
+const percent = (x: number | null | undefined) => (x == null ? '—' : `%${Math.round(x * 100)}`);
 
 /** One explanation with its grounding metrics; citations [F1] are rendered as fact tags. */
 export function ExplanationCard({ explanation }: { explanation: Explanation }) {
@@ -13,7 +13,8 @@ export function ExplanationCard({ explanation }: { explanation: Explanation }) {
         <span className={`badge ${grounding.hallucinated ? 'critical' : 'ok'}`}>
           {grounding.hallucinated ? 'Desteksiz bilgi var' : 'Tüm varlıklar kanıtlı'}
         </span>
-        <span className="badge">Sadakat {percent(grounding.faithfulness)}</span>
+        <span className="badge" title="Metindeki varlıkların kanıtta bulunma oranı">Sadakat {percent(grounding.faithfulness)}</span>
+        <span className="badge" title="Kilit kanıtların (kimlik, ölçü) metinde anılma oranı">Eksiksizlik {percent(grounding.completeness)}</span>
         <span className="badge">Atıf {percent(grounding.citationCoverage)}</span>
         <span className="muted">{explanation.latencyMs.toFixed(0)} ms</span>
       </header>
@@ -21,6 +22,7 @@ export function ExplanationCard({ explanation }: { explanation: Explanation }) {
       {grounding.unsupported.length > 0 && (
         <p className="error">Kanıtta bulunmayan: {grounding.unsupported.map((e) => `${e.value} (${e.kind})`).join(', ')}</p>
       )}
+      {grounding.entityCount === 0 && <p className="muted">Uyarı: açıklama doğrulanabilir hiçbir kimlik veya ölçü içermiyor.</p>}
       {!grounding.startsWithRequiredPhrase && <p className="muted">Uyarı: açıklama "Bu bir hatadır çünkü" ile başlamıyor.</p>}
       <details>
         <summary>Kullanılan olgular ({explanation.facts.length})</summary>
