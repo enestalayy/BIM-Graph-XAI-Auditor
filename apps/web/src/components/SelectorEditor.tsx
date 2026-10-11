@@ -1,4 +1,4 @@
-import type { Condition, Selector } from '../api/types.ts';
+import type { Condition, PropertyType, Selector } from '../api/types.ts';
 import { ConditionList } from './ConditionList.tsx';
 
 interface SelectorEditorProps {
@@ -6,11 +6,12 @@ interface SelectorEditorProps {
   selector: { classes: string[]; where?: Condition[] };
   classListId: string;
   propertyListId: string;
+  propertyTypes: Readonly<Record<string, PropertyType>>;
   onChange: (selector: Selector) => void;
 }
 
 /** IFC classes (any of them, subtypes included) plus conditions that all must hold. */
-export function SelectorEditor({ label, selector, classListId, propertyListId, onChange }: SelectorEditorProps) {
+export function SelectorEditor({ label, selector, classListId, propertyListId, propertyTypes, onChange }: SelectorEditorProps) {
   const where = selector.where ?? [];
   const setClasses = (classes: string[]) => onChange({ classes, where });
   return (
@@ -34,6 +35,7 @@ export function SelectorEditor({ label, selector, classListId, propertyListId, o
       <ConditionList
         conditions={where}
         propertyListId={propertyListId}
+        propertyTypes={propertyTypes}
         emptyText="Ek koşul yok (sınıfın tüm elemanları)."
         onChange={(next) => onChange({ classes: selector.classes, where: next })}
       />

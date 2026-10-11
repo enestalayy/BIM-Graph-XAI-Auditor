@@ -1,4 +1,4 @@
-import type { Condition, RuleInput } from '../api/types.ts';
+import type { Condition, PropertyType, RuleInput } from '../api/types.ts';
 
 export type ConditionOp = Condition['op'];
 
@@ -37,19 +37,24 @@ export function newRule(kind: RuleInput['kind'], existingIds: readonly string[])
     : { ...base, kind, subject: { classes: ['IfcFlowSegment'], where: [] }, object: { classes: ['IfcWall'], where: [] }, minVolume: 0 };
 }
 
+const toNumber = (text: string): number => (text === '' ? Number.NaN : Number(text.replace(',', '.')));
+
 /**
- * Interprets the text typed into a condition's value box. Numeric operators take
- * numbers, "in" takes a comma-separated list, eq/neq read true/false and numbers
- * as such; everything else stays a string.
+ * Interprets the text typed into a condition's value box using the type the
+ * property actually has in the model (from the vocabulary). IFC labels such as
+ * FireRating are strings even when they look numeric, so text stays text unless
+ * the property is known to be numeric or boolean. Comparison operators always take numbers.
  */
-export function parseConditionValue(op: ConditionOp, text: string): string | number | boolean | (string | number)[] {
+export function parseConditionValue(op: ConditionOp, text: string, type?: PropertyType): string | number | boolean | (string | number)[] {
   const trimmed = text.trim();
-  const asNumber = trimmed !== '' && Number.isFinite(Number(trimmed.replace(',', '.'))) ? Number(trimmed.replace(',', '.')) : null;
-  if (op === 'gt' || op === 'gte' || op === 'lt' || op === 'lte') return asNumber ?? Number.NaN;
-  if (op === 'in') return trimmed.split(',').map((s) => s.trim()).filter(Boolean);
+  if (op === 'gt' || op === 'gte' || op === 'lt' || op === 'lte') return toNumber(trimmed);
+  if (op === 'in') {
+    const items = trimmed.split(',').map((s) => s.trim()).filter(Boolean);
+    return type === 'number' ? items.map(toNumber) : items;
+  }
   if (op === 'eq' || op === 'neq') {
-    if (trimmed === 'true' || trimmed === 'false') return trimmed === 'true';
-    if (asNumber !== null) return asNumber;
+    if (type === 'number') return toNumber(trimmed);
+    if (type === 'boolean' || (type === undefined && (trimmed === 'true' || trimmed === 'false'))) return trimmed === 'true';
   }
   return trimmed;
 }
@@ -61,9 +66,9 @@ export function formatConditionValue(value: unknown): string {
 }
 
 /** Builds a condition for the chosen operator, carrying the value over when it still applies. */
-export function changeOperator(condition: Condition, op: ConditionOp): Condition {
+export function changeOperator(condition: Condition, op: ConditionOp, type?: PropertyType): Condition {
   const needsValue = OPERATORS.find((o) => o.op === op)!.needsValue;
   if (!needsValue) return { property: condition.property, op } as Condition;
   const text = 'value' in condition ? formatConditionValue(condition.value) : '';
-  return { property: condition.property, op, value: parseConditionValue(op, text) } as Condition;
+  return { property: condition.property, op, value: parseConditionValue(op, text, type) } as Condition;
 }

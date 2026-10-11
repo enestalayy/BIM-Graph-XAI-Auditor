@@ -22,7 +22,7 @@ export function App() {
   const [tab, setTab] = useState<Tab>('violations');
   const [models, setModels] = useState<ModelSummary[]>([]);
   const [modelInputs, setModelInputs] = useState<ModelInput[]>([]);
-  const [vocabulary, setVocabulary] = useState<Vocabulary>({ classes: [], propertyKeys: [] });
+  const [vocabulary, setVocabulary] = useState<Vocabulary>({ classes: [], propertyKeys: [], propertyTypes: {} });
   const [violations, setViolations] = useState<Violation[]>([]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<Detail | null>(null);

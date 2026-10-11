@@ -1,14 +1,15 @@
-import type { Condition } from '../api/types.ts';
+import type { Condition, PropertyType } from '../api/types.ts';
 import { changeOperator, formatConditionValue, OPERATORS, parseConditionValue } from '../lib/rule-draft.ts';
 
 interface ConditionListProps {
   conditions: readonly Condition[];
   propertyListId: string;
+  propertyTypes: Readonly<Record<string, PropertyType>>;
   onChange: (conditions: Condition[]) => void;
   emptyText: string;
 }
 
-export function ConditionList({ conditions, propertyListId, onChange, emptyText }: ConditionListProps) {
+export function ConditionList({ conditions, propertyListId, propertyTypes, onChange, emptyText }: ConditionListProps) {
   const update = (index: number, next: Condition) => onChange(conditions.map((c, i) => (i === index ? next : c)));
   return (
     <div className="conditions">
@@ -21,7 +22,7 @@ export function ConditionList({ conditions, propertyListId, onChange, emptyText 
             placeholder="Pset_WallCommon.FireRating"
             onChange={(e) => update(index, { ...condition, property: e.target.value })}
           />
-          <select value={condition.op} onChange={(e) => update(index, changeOperator(condition, e.target.value as Condition['op']))}>
+          <select value={condition.op} onChange={(e) => update(index, changeOperator(condition, e.target.value as Condition['op'], propertyTypes[condition.property]))}>
             {OPERATORS.map((o) => <option key={o.op} value={o.op}>{o.label}</option>)}
           </select>
           {'value' in condition && (
@@ -29,7 +30,7 @@ export function ConditionList({ conditions, propertyListId, onChange, emptyText 
               defaultValue={formatConditionValue(condition.value)}
               key={`${index}-${condition.op}`}
               placeholder="değer"
-              onBlur={(e) => update(index, { ...condition, value: parseConditionValue(condition.op, e.target.value) } as Condition)}
+              onBlur={(e) => update(index, { ...condition, value: parseConditionValue(condition.op, e.target.value, propertyTypes[condition.property]) } as Condition)}
             />
           )}
           <button type="button" className="ghost" aria-label="Koşulu sil" onClick={() => onChange(conditions.filter((_, i) => i !== index))}>✕</button>

@@ -5,6 +5,20 @@ export interface Vocabulary {
   readonly classes: readonly string[];
   /** Property-set keys ("<Pset>.<Property>") present on elements. */
   readonly propertyKeys: readonly string[];
+  /** Value type observed for each property key; "mixed" when elements disagree. */
+  readonly propertyTypes: Readonly<Record<string, PropertyType>>;
+}
+
+export type PropertyType = 'string' | 'number' | 'boolean' | 'mixed';
+
+function toPropertyType(valueTypes: readonly string[]): PropertyType {
+  const kinds = new Set(valueTypes.map((t) => {
+    if (t.startsWith('STRING')) return 'string';
+    if (t.startsWith('INTEGER') || t.startsWith('FLOAT')) return 'number';
+    if (t.startsWith('BOOLEAN')) return 'boolean';
+    return 'mixed';
+  }));
+  return kinds.size === 1 ? [...kinds][0]! as PropertyType : 'mixed';
 }
 
 /** What rule authors can refer to: the classes and properties that actually occur in the federated model. */
@@ -16,12 +30,16 @@ export async function loadVocabulary(runner: CypherRunner): Promise<Vocabulary> 
      WITH DISTINCT c ORDER BY c
      RETURN collect(c) AS classes`,
   );
-  const [keys] = await runner.run(
+  const keyRows = await runner.run(
     `MATCH (e:Element)
      UNWIND keys(e) AS k
-     WITH DISTINCT k WHERE k CONTAINS '.'
-     WITH k ORDER BY k
-     RETURN collect(k) AS keys`,
+     WITH k, e[k] AS v WHERE k CONTAINS '.'
+     RETURN k AS key, collect(DISTINCT valueType(v)) AS types
+     ORDER BY key`,
   );
-  return { classes: (classes?.classes as string[]) ?? [], propertyKeys: (keys?.keys as string[]) ?? [] };
+  return {
+    classes: (classes?.classes as string[]) ?? [],
+    propertyKeys: keyRows.map((row) => String(row.key)),
+    propertyTypes: Object.fromEntries(keyRows.map((row) => [String(row.key), toPropertyType(row.types as string[])])),
+  };
 }

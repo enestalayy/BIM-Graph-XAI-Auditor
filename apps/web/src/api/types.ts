@@ -21,9 +21,12 @@ export interface IngestOutcome {
   intersections: number;
 }
 
+export type PropertyType = 'string' | 'number' | 'boolean' | 'mixed';
+
 export interface Vocabulary {
   classes: string[];
   propertyKeys: string[];
+  propertyTypes: Record<string, PropertyType>;
 }
 
 export interface RuleSetInput {

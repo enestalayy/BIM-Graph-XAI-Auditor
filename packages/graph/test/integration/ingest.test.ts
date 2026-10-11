@@ -56,6 +56,8 @@ describe('federated ingest into Neo4j', { skip: SKIP_REASON }, () => {
     for (const c of ['IfcWall', 'IfcDuctSegment', 'IfcFlowSegment', 'IfcElement']) assert.ok(vocabulary.classes.includes(c), c);
     assert.ok(vocabulary.propertyKeys.includes('Pset_SlabCommon.FireRating'));
     assert.ok(!vocabulary.propertyKeys.includes('globalId'));
+    assert.equal(vocabulary.propertyTypes['Pset_SlabCommon.FireRating'], 'string');
+    assert.equal(vocabulary.propertyTypes['Pset_SlabCommon.IsExternal'], 'boolean');
   });
 
   it('is idempotent when a model is ingested again', async () => {

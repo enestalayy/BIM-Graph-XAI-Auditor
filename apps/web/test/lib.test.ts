@@ -21,9 +21,21 @@ describe('rule drafts', () => {
     assert.equal(parseConditionValue('gte', '0,5'), 0.5);
     assert.ok(Number.isNaN(parseConditionValue('gt', 'abc')));
     assert.deepEqual(parseConditionValue('in', 'EI60, EI90'), ['EI60', 'EI90']);
-    assert.equal(parseConditionValue('eq', 'true'), true);
     assert.equal(parseConditionValue('eq', 'FIREDAMPER'), 'FIREDAMPER');
     assert.equal(parseConditionValue('contains', ' 60 '), '60');
+  });
+
+  it('keeps numeric-looking text as text unless the property is numeric', () => {
+    assert.equal(parseConditionValue('eq', '60', 'string'), '60');
+    assert.equal(parseConditionValue('eq', '60'), '60');
+    assert.equal(parseConditionValue('eq', '0,2', 'number'), 0.2);
+    assert.deepEqual(parseConditionValue('in', '30, 60', 'number'), [30, 60]);
+  });
+
+  it('reads booleans for boolean properties', () => {
+    assert.equal(parseConditionValue('eq', 'true', 'boolean'), true);
+    assert.equal(parseConditionValue('eq', 'false'), false);
+    assert.equal(parseConditionValue('eq', 'true', 'string'), 'true');
   });
 
   it('drops the value when switching to an operator without one and keeps it otherwise', () => {

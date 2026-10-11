@@ -102,16 +102,16 @@ export function RuleEditor({ rule, vocabulary, onChange, onDelete }: RuleEditorP
 
           {rule.kind === 'property' ? (
             <>
-              <SelectorEditor label="Hedef elemanlar" selector={rule.target} classListId={CLASS_LIST} propertyListId={PROPERTY_LIST} onChange={(target) => set({ target })} />
+              <SelectorEditor label="Hedef elemanlar" selector={rule.target} classListId={CLASS_LIST} propertyListId={PROPERTY_LIST} propertyTypes={vocabulary.propertyTypes} onChange={(target) => set({ target })} />
               <fieldset>
                 <legend>Zorunlu koşullar (hepsi sağlanmalı)</legend>
-                <ConditionList conditions={rule.require} propertyListId={PROPERTY_LIST} emptyText="En az bir koşul gerekli." onChange={(require) => set({ require })} />
+                <ConditionList conditions={rule.require} propertyListId={PROPERTY_LIST} propertyTypes={vocabulary.propertyTypes} emptyText="En az bir koşul gerekli." onChange={(require) => set({ require })} />
               </fieldset>
             </>
           ) : (
             <>
-              <SelectorEditor label="Konu (kesen eleman)" selector={rule.subject} classListId={CLASS_LIST} propertyListId={PROPERTY_LIST} onChange={(subject) => set({ subject })} />
-              <SelectorEditor label="Nesne (kesilen eleman)" selector={rule.object} classListId={CLASS_LIST} propertyListId={PROPERTY_LIST} onChange={(object) => set({ object })} />
+              <SelectorEditor label="Konu (kesen eleman)" selector={rule.subject} classListId={CLASS_LIST} propertyListId={PROPERTY_LIST} propertyTypes={vocabulary.propertyTypes} onChange={(subject) => set({ subject })} />
+              <SelectorEditor label="Nesne (kesilen eleman)" selector={rule.object} classListId={CLASS_LIST} propertyListId={PROPERTY_LIST} propertyTypes={vocabulary.propertyTypes} onChange={(object) => set({ object })} />
               <label>
                 En küçük kesişim hacmi (m³)
                 <input type="number" min={0} step={0.001} value={rule.minVolume ?? 0} onChange={(e) => set({ minVolume: Number(e.target.value) })} />
@@ -130,7 +130,7 @@ export function RuleEditor({ rule, vocabulary, onChange, onDelete }: RuleEditorP
                     label="Koruyucu eleman"
                     selector={rule.mitigation}
                     classListId={CLASS_LIST}
-                    propertyListId={PROPERTY_LIST}
+                    propertyListId={PROPERTY_LIST} propertyTypes={vocabulary.propertyTypes}
                     onChange={(m) => set({ mitigation: { ...m, maxDistance: rule.mitigation!.maxDistance } })}
                   />
                   <label>

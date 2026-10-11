@@ -7,5 +7,5 @@ export { loadViolations, saveAudit } from './audit-store.ts';
 export { loadViolationContext } from './violation-context.ts';
 export { loadExplanations, saveExplanation } from './explanation-store.ts';
 export { listModels, type ModelSummary } from './models.ts';
-export { loadVocabulary, type Vocabulary } from './vocabulary.ts';
+export { loadVocabulary, type PropertyType, type Vocabulary } from './vocabulary.ts';
 export { readDisposableGraphConfig } from './disposable.ts';
