@@ -78,3 +78,23 @@ export interface ActivationResult {
   audit: AuditSummary;
   durationMs: number;
 }
+
+export type Verdict = 'agree' | 'disagree' | 'unsure';
+
+export interface ReviewItem {
+  index: number;
+  ruleId: string;
+  elements: string[];
+  note: string;
+  verdict: Verdict | null;
+  comment: string;
+  reviewedAt: string | null;
+}
+
+export interface Review {
+  dataset: string;
+  question: string;
+  source: string;
+  items: ReviewItem[];
+  summary: { total: number; reviewed: number; agree: number; disagree: number; unsure: number; agreement: number | null };
+}

@@ -22,6 +22,8 @@ export interface ModelInput {
 
 const ROLE_COLOURS = { subject: 0xd93025, object: 0xf29900, mitigation: 0x188038 } as const;
 const DIMMED_OPACITY = 0.12;
+/** The crossed element is drawn see-through so that a subject running inside it stays visible. */
+const OBJECT_OPACITY = 0.4;
 
 interface MaterialState {
   readonly color: THREE.Color;
@@ -116,14 +118,15 @@ export class IfcScene {
       return;
     }
     const roles = Object.entries(highlight).filter(([, id]) => id) as [keyof Highlight, string][];
-    const highlighted = new Map(roles.map(([role, id]) => [id, ROLE_COLOURS[role]]));
+    const highlighted = new Map(roles.map(([role, id]) => [id, role]));
     for (const [globalId, element] of this.elements) {
-      const colour = highlighted.get(globalId);
+      const role = highlighted.get(globalId);
       this.forEachMaterial(element, (m) => {
-        if (colour !== undefined) {
-          m.color.setHex(colour);
-          m.opacity = 1;
-          m.transparent = false;
+        if (role !== undefined) {
+          m.color.setHex(ROLE_COLOURS[role]);
+          m.opacity = role === 'object' ? OBJECT_OPACITY : 1;
+          m.transparent = role === 'object';
+          m.depthWrite = role !== 'object';
         } else {
           m.opacity = DIMMED_OPACITY;
           m.transparent = true;
@@ -154,6 +157,7 @@ export class IfcScene {
       material.color.copy(state.color);
       material.opacity = state.opacity;
       material.transparent = state.transparent;
+      material.depthWrite = true;
       material.needsUpdate = true;
     }
   }

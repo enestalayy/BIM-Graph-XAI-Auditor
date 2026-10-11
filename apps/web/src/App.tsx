@@ -3,13 +3,14 @@ import { api } from './api/client.ts';
 import type { DatasetList, ModelSummary, Violation, ViolationDetail as Detail, Vocabulary } from './api/types.ts';
 import { ErrorMessage } from './components/ErrorMessage.tsx';
 import { ModelsPanel } from './components/ModelsPanel.tsx';
+import { ReviewPanel } from './components/ReviewPanel.tsx';
 import { RulesPanel } from './components/RulesPanel.tsx';
 import { ViolationDetail } from './components/ViolationDetail.tsx';
 import { ViolationsPanel } from './components/ViolationsPanel.tsx';
 import type { Highlight, ModelInput } from './viewer/scene.ts';
 import { Viewer } from './viewer/Viewer.tsx';
 
-type Tab = 'models' | 'rules' | 'violations';
+type Tab = 'models' | 'rules' | 'violations' | 'review';
 
 function highlightOf(detail: Detail | null): Highlight | null {
   if (!detail) return null;
@@ -73,13 +74,15 @@ export function App() {
     void refreshDatasets();
   }, [refreshModels, refreshViolations, refreshDatasets]);
 
-  const onDatasetLoaded = useCallback(() => {
+  const onDatasetLoaded = useCallback((nextTab: Tab = 'violations') => {
     setSelectedId(null);
     void refreshDatasets();
     void refreshModels();
     void refreshViolations();
-    setTab('violations');
+    setTab(nextTab);
   }, [refreshDatasets, refreshModels, refreshViolations]);
+
+  const [reviewHighlight, setReviewHighlight] = useState<Highlight | null>(null);
 
   const activeTitle = datasets?.datasets.find((d) => d.id === datasets.active)?.title;
 
@@ -87,7 +90,8 @@ export function App() {
     void refreshDetail(selectedId);
   }, [selectedId, refreshDetail]);
 
-  const highlight = useMemo(() => highlightOf(detail), [detail]);
+  const detailHighlight = useMemo(() => highlightOf(detail), [detail]);
+  const highlight = tab === 'review' ? reviewHighlight : detailHighlight;
 
   return (
     <div className="app">
@@ -101,19 +105,23 @@ export function App() {
           <button type="button" className={tab === 'models' ? 'active' : ''} onClick={() => setTab('models')}>Modeller</button>
           <button type="button" className={tab === 'rules' ? 'active' : ''} onClick={() => setTab('rules')}>Kurallar</button>
           <button type="button" className={tab === 'violations' ? 'active' : ''} onClick={() => setTab('violations')}>Bulgular ({violations.length})</button>
+          <button type="button" className={tab === 'review' ? 'active' : ''} onClick={() => setTab('review')}>Doğrulama</button>
         </nav>
         <ErrorMessage error={error} />
         {tab === 'models' && (
-          <ModelsPanel models={models} datasets={datasets} onChanged={() => void refreshModels()} onDatasetLoaded={onDatasetLoaded} />
+          <ModelsPanel models={models} datasets={datasets} onChanged={() => void refreshModels()} onDatasetLoaded={() => onDatasetLoaded()} />
         )}
         {tab === 'rules' && <RulesPanel vocabulary={vocabulary} onSaved={() => void refreshViolations()} />}
+        {tab === 'review' && (
+          <ReviewPanel activeDataset={datasets?.active ?? null} onDatasetLoaded={() => onDatasetLoaded('review')} onHighlight={setReviewHighlight} />
+        )}
         {tab === 'violations' && (
           <ViolationsPanel violations={violations} selectedId={selectedId} onSelect={setSelectedId} onAudited={() => void refreshViolations()} />
         )}
       </aside>
       <main className="main">
         <Viewer models={modelInputs} highlight={highlight} />
-        {detail && <ViolationDetail detail={detail} onExplained={() => void refreshDetail(selectedId)} />}
+        {detail && tab !== 'review' && <ViolationDetail detail={detail} onExplained={() => void refreshDetail(selectedId)} />}
       </main>
     </div>
   );

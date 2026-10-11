@@ -142,3 +142,9 @@ th, td { text-align: left; padding: 0.3rem; border-bottom: 1px solid var(--borde
 .dataset-card { border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.7rem; background: var(--surface); }
 .dataset-card p { margin: 0.25rem 0; }
 .active-dataset { margin-left: auto; border-color: var(--accent); color: var(--accent); }
+
+.review-item { border: 1px solid var(--accent); border-radius: 8px; padding: 0.6rem; margin: 0.5rem 0; }
+.review-item p { margin: 0.3rem 0; }
+.review-list { padding-left: 1.2rem; }
+.review-list li { margin: 0.2rem 0; }
+.review-list .current { font-weight: 600; }
