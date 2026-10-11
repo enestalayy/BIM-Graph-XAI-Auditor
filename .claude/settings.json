@@ -28,13 +28,15 @@
       "WebSearch",
       "WebFetch"
     ],
+    "ask": [
+      "Bash(git push *)",
+      "Bash(git push)"
+    ],
     "deny": [
       "Read(./.env)",
       "Read(./.env.local)",
       "Edit(./.env)",
-      "Write(./.env)",
-      "Bash(git push *)",
-      "Bash(git push)"
+      "Write(./.env)"
     ]
   }
 }
