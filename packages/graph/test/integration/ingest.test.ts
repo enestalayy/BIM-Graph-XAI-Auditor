@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { after, before, describe, it } from 'node:test';
 import { findIntersections, type IfcModel } from '@bim/core';
 import { parseIfc } from '@bim/ifc';
-import { ensureSchema, ingestModel, listModels, loadBoxedElements, replaceIntersections, type GraphClient } from '../../src/index.ts';
+import { ensureSchema, ingestModel, listModels, loadBoxedElements, loadVocabulary, replaceIntersections, type GraphClient } from '../../src/index.ts';
 import { connectTestGraph, SKIP_REASON } from './graph-client.ts';
 
 const SAMPLE_DIR = new URL('../../../../data/sample/', import.meta.url);
@@ -49,6 +49,13 @@ describe('federated ingest into Neo4j', { skip: SKIP_REASON }, () => {
       ['Building-Architecture.ifc', 'ARCH', arch.elements.length],
       ['Building-Hvac.ifc', 'MEP', mep.elements.length],
     ]);
+  });
+
+  it('exposes the classes and property keys that rule authors can use', async () => {
+    const vocabulary = await loadVocabulary(graph);
+    for (const c of ['IfcWall', 'IfcDuctSegment', 'IfcFlowSegment', 'IfcElement']) assert.ok(vocabulary.classes.includes(c), c);
+    assert.ok(vocabulary.propertyKeys.includes('Pset_SlabCommon.FireRating'));
+    assert.ok(!vocabulary.propertyKeys.includes('globalId'));
   });
 
   it('is idempotent when a model is ingested again', async () => {

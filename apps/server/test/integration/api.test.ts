@@ -63,6 +63,12 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
     assert.ok(file.rawPayload.toString('latin1').startsWith('ISO-10303-21'));
   });
 
+  it('serves the vocabulary of the federated model', async () => {
+    const vocabulary = (await app.inject({ method: 'GET', url: '/api/vocabulary' })).json();
+    assert.ok(vocabulary.classes.includes('IfcWall'));
+    assert.ok(vocabulary.propertyKeys.includes('Pset_SlabCommon.FireRating'));
+  });
+
   it('rejects an upload without a discipline', async () => {
     const response = await app.inject({ method: 'POST', url: '/api/models', ...multipart('a.ifc', Buffer.from('ISO-10303-21;')) });
     assert.equal(response.statusCode, 400);

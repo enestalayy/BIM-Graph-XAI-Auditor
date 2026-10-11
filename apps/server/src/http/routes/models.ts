@@ -1,5 +1,5 @@
 import type { FastifyInstance } from 'fastify';
-import { listModels } from '@bim/graph';
+import { listModels, loadVocabulary } from '@bim/graph';
 import { BadRequestError } from '../../errors.ts';
 import { ingestIfc } from '../../services/ingest.ts';
 import { assertSafeIfcFileName } from '../../services/upload-store.ts';
@@ -9,6 +9,9 @@ const DISCIPLINE = /^[A-Z][A-Z0-9_-]{0,15}$/;
 
 export function registerModelRoutes(app: FastifyInstance, deps: AppDependencies): void {
   app.get('/api/models', async () => listModels(deps.graph));
+
+  /** Classes and property keys present in the federated model, for the rule editor. */
+  app.get('/api/vocabulary', async () => loadVocabulary(deps.graph));
 
   /** multipart/form-data with one "file" part; ?discipline=ARCH|MEP|... */
   app.post<{ Querystring: { discipline?: string } }>('/api/models', async (request, reply) => {
