@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "datasets": [
+    {
+      "id": "buildingsmart-scene",
+      "title": "buildingSMART örnek sahne",
+      "description": "Küçük tek katlı ev; mimari + HVAC. Hızlı deneme için.",
+      "schema": "IFC4X3_ADD2",
+      "license": "CC BY 4.0",
+      "attribution": "© buildingSMART International Ltd., Sample-Test-Files (CC BY 4.0)",
+      "sourceUrl": "https://github.com/buildingSMART/Sample-Test-Files",
+      "files": [
+        { "name": "Building-Architecture.ifc", "discipline": "ARCH", "path": "data/sample/Building-Architecture.ifc", "sha256": "a42962f9e2068040ac96636b1e7f6117150b6c0e3371f81088721b22796e463f" },
+        { "name": "Building-Hvac.ifc", "discipline": "MEP", "path": "data/sample/Building-Hvac.ifc", "sha256": "5451d81cd76a5743b33e0a685bf9c45fa283ca62f3807542c858c4d90aad7919" }
+      ]
+    },
+    {
+      "id": "duplex",
+      "title": "Duplex Apartment",
+      "description": "İki katlı ikiz konut; mimari + MEP (HVAC, tesisat, elektrik). Birimleri ayıran 'Party Wall' duvarları var.",
+      "schema": "IFC2X3",
+      "license": "CC BY 4.0",
+      "attribution": "BSI (2020) \"Duplex Apartment Test Files,\" buildingSMART International (CC BY 4.0)",
+      "sourceUrl": "https://github.com/buildingSMART/Sample-Test-Files",
+      "files": [
+        { "name": "Duplex_A_20110907.ifc", "discipline": "ARCH", "path": "data/duplex/Duplex_A_20110907.ifc", "url": "https://raw.githubusercontent.com/jakob-beetz/Sample-Test-Files/a859c60342201dd9adcd29990b8b5779e0559db8/IFC%202x3/Duplex%20Apartment/Duplex_A_20110907.ifc", "sha256": "b347a2c8aa8fff6db896a4417a9c50c22ac0ccd7c5cfc22b99b8d29336c606ed" },
+        { "name": "Duplex_MEP_20110907.ifc", "discipline": "MEP", "path": "data/duplex/Duplex_MEP_20110907.ifc", "url": "https://raw.githubusercontent.com/jakob-beetz/Sample-Test-Files/a859c60342201dd9adcd29990b8b5779e0559db8/IFC%202x3/Duplex%20Apartment/Duplex_MEP_20110907.ifc", "sha256": "13976a8e223f177a6d7123679e4b02e750cd90c13f7bb20c593be125d9407119" }
+      ]
+    },
+    {
+      "id": "clinic",
+      "title": "Medical-Dental Clinic",
+      "description": "Gerçek bir klinik binası (anonimleştirilmiş), iki kat; mimari, taşıyıcı sistem, HVAC ve tesisat. 1 saat yangın dayanımlı duvarlar ve ~1500 hava kanalı içerir.",
+      "schema": "IFC2X3",
+      "license": "CC BY 4.0",
+      "attribution": "BSI (2020) \"Medical-Dental Test Files,\" buildingSMART International (CC BY 4.0)",
+      "sourceUrl": "https://github.com/buildingSMART/Sample-Test-Files",
+      "files": [
+        { "name": "Clinic_Architectural.ifc", "discipline": "ARCH", "path": "data/clinic/Clinic_Architectural.ifc", "url": "https://raw.githubusercontent.com/jakob-beetz/Sample-Test-Files/a859c60342201dd9adcd29990b8b5779e0559db8/IFC%202x3/Medical-Dental%20Clinic/Clinic_Architectural.ifc", "sha256": "2ac970ce065ecac4e0c9e5f453a257169e90d0067f419b7e33533a64ef837880" },
+        { "name": "Clinic_Structural.ifc", "discipline": "STR", "path": "data/clinic/Clinic_Structural.ifc", "url": "https://raw.githubusercontent.com/jakob-beetz/Sample-Test-Files/a859c60342201dd9adcd29990b8b5779e0559db8/IFC%202x3/Medical-Dental%20Clinic/Clinic_Structural.ifc", "sha256": "325287b375f154dc79504c4bbf67b40c501f458f23a8c4ba13b27171e00533d8" },
+        { "name": "Clinic_HVAC.ifc", "discipline": "MEP", "path": "data/clinic/Clinic_HVAC.ifc", "url": "https://raw.githubusercontent.com/jakob-beetz/Sample-Test-Files/a859c60342201dd9adcd29990b8b5779e0559db8/IFC%202x3/Medical-Dental%20Clinic/Clinic_HVAC.ifc", "sha256": "39c88a79f48fbe56da86afb0fb3ebd188f8930df3df7dbfbd9ecaa535aaeab9b" },
+        { "name": "Clinic_Plumbing.ifc", "discipline": "PLU", "path": "data/clinic/Clinic_Plumbing.ifc", "url": "https://raw.githubusercontent.com/jakob-beetz/Sample-Test-Files/a859c60342201dd9adcd29990b8b5779e0559db8/IFC%202x3/Medical-Dental%20Clinic/Clinic_Plumbing.ifc", "sha256": "e662a8d0273694b745a313fc18ee8d4916db03453caa8f9d00d4d80b62bb6e23" }
+      ]
+    },
+    {
+      "id": "schependomlaan",
+      "title": "Schependomlaan (Nijmegen)",
+      "description": "Gerçek bir konut projesinin Archicad tasarım modeli; yalnız mimari. Özellik (bilgi) kurallarını büyük ölçekte denemek için.",
+      "schema": "IFC2X3",
+      "license": "Bilimsel ve akademik kullanım izni (veri sahipleri; TU Eindhoven)",
+      "attribution": "Schependomlaan dataset, S. van Schaijk / TU Eindhoven ISBE, Hendriks Bouw en Ontwikkeling, ROOT, TNO, RAAMAC; via buildingSMART Sample-Test-Files",
+      "sourceUrl": "https://github.com/buildingSMART/Sample-Test-Files",
+      "files": [
+        { "name": "IFC Schependomlaan.ifc", "discipline": "ARCH", "path": "data/schependomlaan/IFC Schependomlaan.ifc", "url": "https://media.githubusercontent.com/media/jakob-beetz/Sample-Test-Files/a859c60342201dd9adcd29990b8b5779e0559db8/IFC%202x3/Schependomlaan/Design%20model%20IFC/IFC%20Schependomlaan.ifc", "sha256": "2c3565ca1904f2aa61adab92024cf3755b2c5b21a498144d3094d7cb58cebec7" }
+      ]
+    }
+  ]
+}

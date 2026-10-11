@@ -25,3 +25,5 @@ data/uploads/
 .DS_Store
 apps/web/dist/
 data/duplex/
+data/clinic/
+data/schependomlaan/

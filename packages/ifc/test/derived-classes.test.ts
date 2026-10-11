@@ -24,7 +24,7 @@ describe('deriveOccurrenceClasses', () => {
 
 const DUPLEX_MEP = new URL('../../../data/duplex/Duplex_MEP_20110907.ifc', import.meta.url);
 
-describe('IFC2x3 Duplex MEP model', { skip: existsSync(DUPLEX_MEP) ? false : 'data/duplex not downloaded (npm run datasets:duplex)' }, () => {
+describe('IFC2x3 Duplex MEP model', { skip: existsSync(DUPLEX_MEP) ? false : 'data/duplex not downloaded (npm run datasets:fetch -- duplex)' }, () => {
   it('exposes ducts and pipes under their IFC4 classes and records the type class', async () => {
     const model = await parseIfc(new Uint8Array(await readFile(DUPLEX_MEP)), { fileName: 'Duplex_MEP_20110907.ifc', discipline: 'MEP' });
     const segments = model.elements.filter((e) => e.ifcClass === 'IfcFlowSegment');

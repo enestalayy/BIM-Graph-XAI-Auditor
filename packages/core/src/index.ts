@@ -28,3 +28,4 @@ export type { ElementContext, Explanation, ViolationContext } from './explanatio
 export { classificationMetrics, metricsByRule, ruleOf, type ClassificationMetrics } from './evaluation/classification.ts';
 export { summarizeExplanations, type ExplanationSummary } from './evaluation/explanations.ts';
 export { expectedViolationIds, goldStandardSchema, type GoldStandard } from './evaluation/gold-standard.ts';
+export { datasetCatalogSchema, datasetSchema, type Dataset, type DatasetCatalog, type DatasetFile } from './datasets/catalog.ts';
