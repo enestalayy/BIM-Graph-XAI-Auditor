@@ -21,7 +21,8 @@
     "start": "node --env-file-if-exists=.env apps/server/src/main.ts",
     "dev:server": "node --env-file-if-exists=.env --watch apps/server/src/main.ts",
     "build": "npm run build -w @bim/web",
-    "dev": "node tools/dev/run.ts"
+    "dev": "node tools/dev/run.ts",
+    "datasets:duplex": "node tools/datasets/fetch-duplex.ts"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",

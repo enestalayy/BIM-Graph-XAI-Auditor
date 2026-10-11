@@ -24,3 +24,4 @@ data/uploads/
 .vscode/
 .DS_Store
 apps/web/dist/
+data/duplex/
