@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { after, before, describe, it } from 'node:test';
 import { findIntersections, type IfcModel } from '@bim/core';
 import { parseIfc } from '@bim/ifc';
-import { ensureSchema, ingestModel, loadBoxedElements, replaceIntersections, type GraphClient } from '../../src/index.ts';
+import { ensureSchema, ingestModel, listModels, loadBoxedElements, replaceIntersections, type GraphClient } from '../../src/index.ts';
 import { connectTestGraph, SKIP_REASON } from './graph-client.ts';
 
 const SAMPLE_DIR = new URL('../../../../data/sample/', import.meta.url);
@@ -41,6 +41,14 @@ describe('federated ingest into Neo4j', { skip: SKIP_REASON }, () => {
   it('creates topology relations from both models', async () => {
     assert.equal(await count(`MATCH (:IfcDuctSegment)-[:CONTAINED_IN]->(:IfcBuildingStorey) RETURN count(*) AS n`), 1);
     assert.equal(await count(`MATCH (:IfcBuilding)-[:AGGREGATES]->(:IfcBuildingStorey) RETURN count(*) AS n`), 1);
+  });
+
+  it('lists the ingested models with their element counts', async () => {
+    const models = await listModels(graph);
+    assert.deepEqual(models.map((m) => [m.fileName, m.discipline, m.elementCount]), [
+      ['Building-Architecture.ifc', 'ARCH', arch.elements.length],
+      ['Building-Hvac.ifc', 'MEP', mep.elements.length],
+    ]);
   });
 
   it('is idempotent when a model is ingested again', async () => {

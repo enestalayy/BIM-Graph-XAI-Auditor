@@ -6,3 +6,4 @@ export { runAudit, type AuditResult, type RuleOutcome } from './audit.ts';
 export { loadViolations, saveAudit } from './audit-store.ts';
 export { loadViolationContext } from './violation-context.ts';
 export { loadExplanations, saveExplanation } from './explanation-store.ts';
+export { listModels, type ModelSummary } from './models.ts';
