@@ -121,10 +121,25 @@ describe('rule audit on a synthetic federated graph', { skip: SKIP_REASON }, () 
     await assert.rejects(saveExplanation(graph, { ...stored!, id: 'x-2', violationId: 'missing' }), /not found/);
   });
 
+  it('keeps the explanations of findings that persist across audits', async () => {
+    await saveAudit(graph, rules.rules, await runAudit(graph, rules.rules));
+    const kept = await loadExplanations(graph, 'FS-DUCT-WALL-01:duct-bad:fire-wall');
+    assert.equal(kept.length, 1);
+  });
+
+  it('removes findings (and their explanations) that disappear in a later audit', async () => {
+    const onlyInfo = rules.rules.filter((r) => r.id === 'INFO-WALL-01');
+    await saveAudit(graph, onlyInfo, await runAudit(graph, onlyInfo));
+    assert.deepEqual((await loadViolations(graph)).map((v) => v.ruleId), ['INFO-WALL-01']);
+    const orphans = await graph.run('MATCH (x:Explanation) WHERE NOT (x)-[:EXPLAINS]->() RETURN count(x) AS n');
+    assert.equal(Number(orphans[0]?.n), 0);
+    await saveAudit(graph, rules.rules, await runAudit(graph, rules.rules));
+  });
+
   it('replaces the findings of the previous audit when run again', async () => {
     await saveAudit(graph, rules.rules, await runAudit(graph, rules.rules));
     assert.equal((await loadViolations(graph)).length, violations.length);
     const audits = await graph.run('MATCH (a:Audit) RETURN count(a) AS n');
-    assert.equal(Number(audits[0]?.n), 2);
+    assert.equal(Number(audits[0]?.n), 5);
   });
 });

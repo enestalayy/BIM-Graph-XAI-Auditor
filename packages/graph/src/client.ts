@@ -8,7 +8,17 @@ export interface CypherRunner {
   run(cypher: string, params?: Params): Promise<Row[]>;
 }
 
-export interface GraphClient extends CypherRunner {
+/** A runner that can group several statements into one atomic write transaction. */
+export interface GraphWriter extends CypherRunner {
+  /**
+   * Runs `work` in a single managed write transaction: either every statement
+   * commits or none does, and readers never see the intermediate state. The
+   * driver may retry `work` on transient errors, so it must be idempotent.
+   */
+  inTransaction<T>(work: (tx: CypherRunner) => Promise<T>): Promise<T>;
+}
+
+export interface GraphClient extends GraphWriter {
   close(): Promise<void>;
 }
 
@@ -49,6 +59,15 @@ export async function connectGraph(config: GraphConfig): Promise<GraphClient> {
     run: async (cypher, params = {}) => {
       const result = await driver.executeQuery(cypher, params, { database: config.database });
       return result.records.map((record) => record.toObject());
+    },
+    inTransaction: async (work) => {
+      const session = driver.session({ database: config.database });
+      try {
+        return await session.executeWrite((tx) =>
+          work({ run: async (cypher, params = {}) => (await tx.run(cypher, params)).records.map((record) => record.toObject()) }));
+      } finally {
+        await session.close();
+      }
     },
     close: () => driver.close(),
   };

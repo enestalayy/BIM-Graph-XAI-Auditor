@@ -1,6 +1,6 @@
 import { assertIfcClassName, quoteIdentifier, type Element, type IfcModel, type RelationType } from '@bim/core';
 import { chunk } from './batch.ts';
-import type { CypherRunner } from './client.ts';
+import type { CypherRunner, GraphWriter } from './client.ts';
 import { elementLabels, toNodeProperties } from './node-properties.ts';
 
 export interface IngestResult {
@@ -35,8 +35,15 @@ function groupByLabels(elements: readonly Element[]): Map<string, Element[]> {
   return groups;
 }
 
-/** Writes one parsed IFC model into the federated graph; re-ingesting a file replaces it. */
-export async function ingestModel(runner: CypherRunner, model: IfcModel): Promise<IngestResult> {
+/**
+ * Writes one parsed IFC model into the federated graph in a single transaction;
+ * re-ingesting a file replaces it, and a failure leaves the previous state intact.
+ */
+export async function ingestModel(graph: GraphWriter, model: IfcModel): Promise<IngestResult> {
+  return graph.inTransaction((tx) => writeModel(tx, model));
+}
+
+async function writeModel(runner: CypherRunner, model: IfcModel): Promise<IngestResult> {
   const { fileName, schema, discipline } = model.source;
   await removePreviousContribution(runner, fileName);
   await runner.run(

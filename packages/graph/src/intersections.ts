@@ -1,6 +1,6 @@
 import type { BoxedItem, Intersection } from '@bim/core';
 import { chunk } from './batch.ts';
-import type { CypherRunner } from './client.ts';
+import type { CypherRunner, GraphWriter } from './client.ts';
 
 /** Physical elements that have body geometry, i.e. the clash candidates of the whole federation. */
 export async function loadBoxedElements(runner: CypherRunner): Promise<BoxedItem[]> {
@@ -18,8 +18,15 @@ export async function loadBoxedElements(runner: CypherRunner): Promise<BoxedItem
   }));
 }
 
-/** Replaces every INTERSECTS_WITH relationship with the given set (stored a -> b, read undirected). */
-export async function replaceIntersections(runner: CypherRunner, hits: readonly Intersection[], tolerance: number): Promise<void> {
+/**
+ * Atomically replaces every INTERSECTS_WITH relationship with the given set
+ * (stored a -> b, read undirected); a concurrent audit sees either the old or the new set.
+ */
+export async function replaceIntersections(graph: GraphWriter, hits: readonly Intersection[], tolerance: number): Promise<void> {
+  await graph.inTransaction((tx) => writeIntersections(tx, hits, tolerance));
+}
+
+async function writeIntersections(runner: CypherRunner, hits: readonly Intersection[], tolerance: number): Promise<void> {
   await runner.run('MATCH ()-[r:INTERSECTS_WITH]->() DELETE r');
   const rows = hits.map((hit) => ({ a: hit.a, b: hit.b, ...hit.box, volume: hit.volume, depth: hit.depth }));
   for (const batch of chunk(rows)) {

@@ -2,7 +2,7 @@ import {
   classificationMetrics, expectedViolationIds, metricsByRule, summarizeExplanations,
   type ClassificationMetrics, type Explanation, type ExplanationSummary, type GoldStandard, type RuleSet,
 } from '@bim/core';
-import { ensureSchema, ingestModel, loadViolations, runAudit, type CypherRunner } from '@bim/graph';
+import { ensureSchema, ingestModel, loadViolations, runAudit, type GraphWriter } from '@bim/graph';
 import type { Explainer } from '@bim/xai';
 import { explainAndStore } from '../services/explain.ts';
 import { refreshIntersections } from '../services/ingest.ts';
@@ -31,7 +31,7 @@ export interface InjectionReport {
  * so this must only be pointed at a disposable database.
  */
 export async function runInjectionExperiment(
-  graph: CypherRunner, ruleSet: RuleSet, seeds: readonly number[], caseCount: number, tolerance: number, ruleId = 'FS-DUCT-WALL-01',
+  graph: GraphWriter, ruleSet: RuleSet, seeds: readonly number[], caseCount: number, tolerance: number, ruleId = 'FS-DUCT-WALL-01',
 ): Promise<InjectionReport> {
   const rule = ruleSet.rules.find((r) => r.id === ruleId);
   if (!rule) throw new Error(`Rule ${ruleId} is not in the rule set`);
@@ -71,7 +71,7 @@ export interface GoldReport {
 }
 
 /** Compares a fresh audit of the current graph with an expert gold standard. */
-export async function evaluateAgainstGold(graph: CypherRunner, ruleSet: RuleSet, gold: GoldStandard): Promise<GoldReport> {
+export async function evaluateAgainstGold(graph: GraphWriter, ruleSet: RuleSet, gold: GoldStandard): Promise<GoldReport> {
   const audit = await runAudit(graph, ruleSet.rules);
   const predicted = audit.violations.map((v) => v.id);
   const expected = expectedViolationIds(gold);
@@ -84,7 +84,7 @@ export interface ExplanationReport {
 }
 
 /** Explains every current violation (or the first `limit`) with one explainer and summarises grounding. */
-export async function evaluateExplanations(graph: CypherRunner, explainer: Explainer, limit?: number): Promise<ExplanationReport> {
+export async function evaluateExplanations(graph: GraphWriter, explainer: Explainer, limit?: number): Promise<ExplanationReport> {
   const violations = (await loadViolations(graph)).slice(0, limit);
   const explanations: Explanation[] = [];
   for (const violation of violations) explanations.push(await explainAndStore(graph, violation.id, explainer));

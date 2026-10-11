@@ -1,5 +1,5 @@
 import { findIntersections } from '@bim/core';
-import { ingestModel, loadBoxedElements, replaceIntersections, type CypherRunner } from '@bim/graph';
+import { ingestModel, loadBoxedElements, replaceIntersections, type GraphWriter } from '@bim/graph';
 import { parseIfc } from '@bim/ifc';
 
 export interface IngestOutcome {
@@ -14,7 +14,7 @@ export interface IngestOutcome {
 }
 
 /** Recomputes INTERSECTS_WITH over every physical element in the graph. */
-export async function refreshIntersections(graph: CypherRunner, tolerance: number): Promise<number> {
+export async function refreshIntersections(graph: GraphWriter, tolerance: number): Promise<number> {
   const hits = findIntersections(await loadBoxedElements(graph), tolerance);
   await replaceIntersections(graph, hits, tolerance);
   return hits.length;
@@ -22,7 +22,7 @@ export async function refreshIntersections(graph: CypherRunner, tolerance: numbe
 
 /** IFC bytes -> domain model -> federated graph -> refreshed intersections. */
 export async function ingestIfc(
-  graph: CypherRunner,
+  graph: GraphWriter,
   data: Uint8Array,
   source: { fileName: string; discipline: string },
   tolerance: number,

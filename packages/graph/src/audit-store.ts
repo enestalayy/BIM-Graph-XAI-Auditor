@@ -1,15 +1,22 @@
 import { compileRule, type Rule, type Violation } from '@bim/core';
 import { chunk } from './batch.ts';
-import type { CypherRunner } from './client.ts';
+import type { CypherRunner, GraphWriter } from './client.ts';
 import type { AuditResult } from './audit.ts';
 
 /**
- * Persists an audit: the rule set as :Rule nodes (with their compiled Cypher for
- * traceability), the audit summary as an :Audit node and the current findings as
- * :Violation nodes linked to their rule and elements. Violations of earlier
- * audits are replaced; audit summaries are kept as history.
+ * Persists an audit atomically: the rule set as :Rule nodes (with their compiled
+ * Cypher for traceability), the audit summary as an :Audit node and the current
+ * findings as :Violation nodes linked to their rule and elements.
+ *
+ * Violations are matched by their deterministic id: a finding that persists keeps
+ * its node and therefore its explanations; findings that no longer occur are
+ * removed together with their explanations. Audit summaries are kept as history.
  */
-export async function saveAudit(runner: CypherRunner, rules: readonly Rule[], audit: AuditResult): Promise<void> {
+export async function saveAudit(graph: GraphWriter, rules: readonly Rule[], audit: AuditResult): Promise<void> {
+  await graph.inTransaction((tx) => writeAudit(tx, rules, audit));
+}
+
+async function writeAudit(runner: CypherRunner, rules: readonly Rule[], audit: AuditResult): Promise<void> {
   const ruleRows = rules.map((rule) => ({
     id: rule.id,
     props: {
@@ -27,7 +34,15 @@ export async function saveAudit(runner: CypherRunner, rules: readonly Rule[], au
   await runner.run('MATCH (r:Rule) WHERE NOT r.id IN $ids DETACH DELETE r', { ids: rules.map((r) => r.id) });
   await runner.run('UNWIND $rows AS row MERGE (r:Rule {id: row.id}) SET r += row.props', { rows: ruleRows });
 
-  await runner.run('MATCH (v:Violation) DETACH DELETE v');
+  const currentIds = audit.violations.map((v) => v.id);
+  await runner.run(
+    `MATCH (v:Violation) WHERE NOT v.id IN $ids
+     OPTIONAL MATCH (x:Explanation)-[:EXPLAINS]->(v)
+     DETACH DELETE x, v`,
+    { ids: currentIds },
+  );
+  // Links of surviving violations are rebuilt below from the current evidence.
+  await runner.run('MATCH (v:Violation)-[r:OF_RULE|INVOLVES|FOUND_IN]->() DELETE r');
   await runner.run(
     `CREATE (:Audit {id: $id, startedAt: datetime($startedAt), durationMs: $durationMs,
                      ruleCount: $ruleCount, violationCount: $violationCount, outcomes: $outcomes})`,
@@ -54,7 +69,8 @@ export async function saveAudit(runner: CypherRunner, rules: readonly Rule[], au
       `MATCH (a:Audit {id: $auditId})
        UNWIND $rows AS row
        MATCH (r:Rule {id: row.ruleId}), (s:Element {globalId: row.subject})
-       CREATE (v:Violation {id: row.id, ruleId: row.ruleId, severity: row.severity, evidence: row.evidence})
+       MERGE (v:Violation {id: row.id})
+       SET v.ruleId = row.ruleId, v.severity = row.severity, v.evidence = row.evidence
        CREATE (v)-[:OF_RULE]->(r), (v)-[:FOUND_IN]->(a), (v)-[:INVOLVES {role: 'subject'}]->(s)
        WITH v, row
        OPTIONAL MATCH (o:Element {globalId: row.object})
