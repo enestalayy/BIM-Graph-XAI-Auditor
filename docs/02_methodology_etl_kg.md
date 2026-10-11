@@ -110,4 +110,54 @@ Her iki model için eleman kümeleri ve sınıflar birebir örtüşmüştür. Sa
 
 ## 2.2. Labeled Property Graph (LPG) Tasarımı
 
-*(Bölüm 3. uygulama adımında yazılacaktır.)*
+### 2.2.1. Veri Modeli
+
+Ayrıştırılan modeller Neo4j 5.26 (LTS) üzerinde etiketli özellik grafı (Labeled Property Graph, LPG) olarak temsil edilmiştir.
+
+**Düğüm tipleri:**
+
+| Düğüm | Etiketler | Temel özellikler |
+|---|---|---|
+| Bina elemanı | `:Element` + IFC sınıfı + tüm ataları (örn. `:Element:IfcWallStandardCase:IfcWall:IfcBuiltElement:IfcElement`) | `globalId`, `ifcClass`, `category`, `name`, `predefinedType`, `materials`, `minX…maxZ`, `Pset.Özellik` anahtarları |
+| Model | `:Model` | `fileName`, `schema`, `discipline`, `ingestedAt` |
+
+**Etiketleme tercihi:** IFC sınıf adları etiket olarak `Ifc` önekiyle birlikte korunmuştur. Ayrıca sınıfın tüm ataları da etiket olarak eklenmiştir. Önceki prototipte etiketler önek kırpılarak üretiliyordu (örn. `Wall`) ve alt tipler kapsanmıyordu. Bu tasarımda şemaya sadakat sağlanmış ve bir üst sınıfa yazılan sorgu bütün alt tiplerini doğrudan kapsamıştır.
+
+**İlişki tipleri:**
+
+| İlişki | Yön | Kaynak |
+|---|---|---|
+| `CONTAINED_IN` | eleman → mekansal yapı | `IfcRelContainedInSpatialStructure` |
+| `AGGREGATES` | bütün → parça | `IfcRelAggregates` |
+| `HOSTED_BY` | dolgu elemanı → taşıyıcı eleman | `IfcRelFillsElement` ∘ `IfcRelVoidsElement` |
+| `FROM_MODEL` | eleman → model | Ingest sırasında |
+| `INTERSECTS_WITH` | eleman — eleman (simetrik) | Mekansal akıl yürütme (Bölüm 3.1) |
+
+**`HOSTED_BY` türetimi:** IFC'de bir kapı duvara doğrudan bağlanmaz. Kapı, duvarı oyan bir boşluğu (`IfcOpeningElement`) doldurur. Boşluklar maddi eleman olmadığından grafa düğüm olarak alınmamıştır. Bunun yerine iki ilişkinin bileşimi tek bir anlamsal kenara indirgenmiştir:
+
+$$\text{HOSTED\_BY}(d, w) \iff \exists o : \text{Fills}(d, o) \wedge \text{Voids}(w, o)$$
+
+**`INTERSECTS_WITH` özellikleri:** Bu ilişki öneri formundaki adlandırmayla oluşturulmuştur. Kesişim kutusu (`minX…maxZ`), hacim (`volume`), penetrasyon derinliği (`depth`) ve kullanılan tolerans kenar özelliği olarak saklanmaktadır. Böylece her kesişimin sayısal kanıtı graf içinde izlenebilir durumdadır.
+
+**Özellik kümelerinin temsili:** Özellik kümeleri ayrı düğümler yerine `Pset.Özellik` biçiminde düğüm özelliği olarak düzleştirilmiştir. Bu tercih kural sorgularını tek düğüm erişimine indirger: `` n.`Pset_WallCommon.FireRating` ``. Bunun karşılığında özellik kümelerinin kendi kimlikleri (GlobalId) grafa taşınmamaktadır.
+
+### 2.2.2. Federasyon
+
+Disiplin modelleri tek bir grafta birleştirilmektedir.
+
+**Eşleştirme:** Elemanlar `globalId` üzerinden `MERGE` edilir. Birden fazla modelde bulunan bir eleman tek bir düğümde birleşir ve her modele bir `FROM_MODEL` kenarıyla bağlanır.
+- Örnek modellerde kat, bina, arsa ve baca elemanları her iki dosyada da aynı GlobalId ile yer almaktadır.
+- Bu sayede mimari ve HVAC elemanları ortak kat düğümü üzerinden birbirine bağlanmıştır.
+
+**Aynı dosyanın yeniden yüklenmesi** idempotent olarak tasarlanmıştır:
+1. Önce dosyanın önceki katkısı silinir. Yalnızca o modele ait elemanlar silinir; paylaşılan elemanlar korunur.
+2. Ardından model yeniden yazılır.
+
+Bu davranış entegrasyon testiyle doğrulanmıştır: yeniden yükleme sonrası düğüm ve kenar sayıları değişmemiştir.
+
+**Kesişimlerin yeniden hesaplanması:** Kesişimler, dosya bazında değil bütün federe graf üzerinden hesaplanır. Fiziksel ve geometrili tüm elemanlar graftan okunur ve sonuç `INTERSECTS_WITH` kümesinin tamamının yerine yazılır. Böylece disiplinler arası çakışmalar, modellerin yüklenme sırasından bağımsız olarak saptanmaktadır.
+
+**Yazım ve tutarlılık:**
+- Tüm yazımlar parametreli Cypher ile ve 1000'lik `UNWIND` grupları hâlinde yapılmaktadır.
+- Etiket adları Cypher'da parametrelenemediğinden, sorguya girmeden önce `^Ifc[A-Za-z0-9]+$` beyaz listesinden geçirilmektedir.
+- `Element.globalId`, `Model.fileName`, `Rule.id` ve `Violation.id` üzerinde tekillik kısıtları tanımlanmıştır.
