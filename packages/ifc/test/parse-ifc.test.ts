@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { before, describe, it } from 'node:test';
 import { isOfClass, type IfcModel } from '@bim/core';
-import { parseIfc } from '../src/index.ts';
+import { InvalidIfcError, parseIfc } from '../src/index.ts';
 import { loadSample } from './samples.ts';
 
 const byGuid = (model: IfcModel, guid: string) => {
@@ -91,6 +91,16 @@ describe('parseIfc: architecture sample', () => {
 
 describe('parseIfc: invalid input', () => {
   it('rejects an empty file', async () => {
-    await assert.rejects(parseIfc(new Uint8Array(), { fileName: 'empty.ifc', discipline: 'ARCH' }), /Empty IFC file/);
+    await assert.rejects(parseIfc(new Uint8Array(), { fileName: 'empty.ifc', discipline: 'ARCH' }), InvalidIfcError);
+  });
+
+  it('rejects content that is not a STEP file', async () => {
+    const junk = new TextEncoder().encode('PK\u0003\u0004 zipped or random bytes');
+    await assert.rejects(parseIfc(junk, { fileName: 'junk.ifc', discipline: 'ARCH' }), /not an IFC STEP file/);
+  });
+
+  it('rejects a truncated STEP file with a readable error instead of crashing', async () => {
+    const truncated = new TextEncoder().encode('ISO-10303-21;\nHEADER;\n');
+    await assert.rejects(parseIfc(truncated, { fileName: 'truncated.ifc', discipline: 'ARCH' }), InvalidIfcError);
   });
 });

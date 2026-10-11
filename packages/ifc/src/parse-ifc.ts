@@ -1,5 +1,6 @@
 import type { Element, IfcModel } from '@bim/core';
 import { getIfcApi } from './api.ts';
+import { InvalidIfcError } from './errors.ts';
 import { createClassResolver } from './classes.ts';
 import { computeAabbs } from './geometry.ts';
 import { plain } from './lines.ts';
@@ -20,14 +21,26 @@ export interface ParseOptions {
  * Parses an IFC file into the domain model. Coordinates are kept in the file's
  * own world frame (no re-centring) so that models of one project can be federated.
  */
+const STEP_MAGIC = 'ISO-10303-21';
+
 export async function parseIfc(data: Uint8Array, options: ParseOptions): Promise<IfcModel> {
-  if (data.byteLength === 0) throw new Error(`Empty IFC file: ${options.fileName}`);
+  if (data.byteLength === 0) throw new InvalidIfcError(`Empty IFC file: ${options.fileName}`);
+  const header = new TextDecoder('latin1').decode(data.subarray(0, 64)).replace(/^\uFEFF/, '').trimStart();
+  if (!header.startsWith(STEP_MAGIC)) {
+    throw new InvalidIfcError(`${options.fileName} is not an IFC STEP file (it must start with ${STEP_MAGIC})`);
+  }
   const api = await getIfcApi();
-  const modelID = api.OpenModel(data, { COORDINATE_TO_ORIGIN: false });
-  if (modelID < 0) throw new Error(`web-ifc could not open ${options.fileName}`);
+  let modelID: number;
+  let schema: string;
+  try {
+    modelID = api.OpenModel(data, { COORDINATE_TO_ORIGIN: false });
+    schema = api.GetModelSchema(modelID);
+  } catch (error) {
+    throw new InvalidIfcError(`web-ifc could not read ${options.fileName}: ${(error as Error).message}`, { cause: error });
+  }
+  if (modelID < 0 || !schema) throw new InvalidIfcError(`web-ifc could not read ${options.fileName}`);
 
   try {
-    const schema = api.GetModelSchema(modelID);
     const classes = createClassResolver(api, schema);
     const scales = readUnitScales(api, modelID);
     const typeOf = readTypeAssignments(api, modelID);
