@@ -75,20 +75,23 @@ function compileIntersectionRule(rule: IntersectionRule): CompiledQuery {
   ];
   const { mitigation } = rule;
   if (mitigation) {
+    // The nearest candidate is chosen with an explicit reduce (ties broken by GlobalId), so the
+    // result does not depend on row order; the crossing elements themselves are never candidates.
     lines.push(
       'OPTIONAL MATCH (m:Element)',
-      `WHERE ${selectorExpression('m', mitigation, sink)} AND m.minX IS NOT NULL`,
-      `WITH s, o, x, cx, cy, cz, m, CASE WHEN m IS NULL THEN null ELSE sqrt(${DISTANCE_TO_BOX}) END AS distance`,
-      'ORDER BY distance',
-      'WITH s, o, x, cx, cy, cz, collect(CASE WHEN m IS NULL THEN null ELSE m {.globalId, .ifcClass, .name, distance: distance} END) AS candidates',
-      `WHERE size([c IN candidates WHERE c.distance <= ${sink.add(mitigation.maxDistance)}]) = 0`,
+      `WHERE ${selectorExpression('m', mitigation, sink)} AND m.minX IS NOT NULL AND m <> s AND m <> o`,
+      `WITH s, o, x, cx, cy, cz, collect(CASE WHEN m IS NULL THEN null ELSE m {.globalId, .ifcClass, .name, distance: sqrt(${DISTANCE_TO_BOX})} END) AS candidates`,
+      'WITH s, o, x, cx, cy, cz, reduce(best = null, c IN candidates |',
+      '  CASE WHEN best IS NULL OR c.distance < best.distance OR (c.distance = best.distance AND c.globalId < best.globalId)',
+      '  THEN c ELSE best END) AS nearest',
+      `WHERE nearest IS NULL OR nearest.distance > ${sink.add(mitigation.maxDistance)}`,
     );
   }
   lines.push(
     `RETURN ${REF('s')} AS subject, ${REF('o')} AS object,`,
     '  x {.minX, .minY, .minZ, .maxX, .maxY, .maxZ, .volume, .depth} AS intersection,',
     '  {x: cx, y: cy, z: cz} AS centre,',
-    `  ${mitigation ? 'head(candidates)' : 'null'} AS nearestMitigation`,
+    `  ${mitigation ? 'nearest' : 'null'} AS nearestMitigation`,
     'ORDER BY subject.globalId, object.globalId',
   );
   return { cypher: lines.join('\n'), params: sink.params };

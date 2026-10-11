@@ -90,3 +90,15 @@ describe('toViolations', () => {
     assert.equal(violations[0]!.id, 'T-1:A:B');
   });
 });
+
+describe('compileRule: identifiers from user input', () => {
+  it('keeps a hostile property key inside a quoted identifier', () => {
+    const rule = parseRule({
+      id: 'T-3', kind: 'property', title: 't', severity: 'minor', regulation: { source: 'x', article: null },
+      target: { classes: ['IfcWall'] },
+      require: [{ property: 'Pset_X.a` IS NULL OR true //', op: 'exists' }],
+    });
+    const { cypher } = compileRule(rule);
+    assert.ok(cypher.includes('t.`Pset_X.a`` IS NULL OR true //` IS NOT NULL'));
+  });
+});

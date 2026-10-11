@@ -78,8 +78,10 @@ Bağımlılık yönü tek yönlüdür: `core` ← `ifc`, `graph`, `xai` ← `app
   - Yalnızca `packages/graph` içinde yazılır. Tek istisna, kural derleyicisinin
     ürettiği sorgulardır.
   - Değerler her zaman parametre olarak geçer.
-  - Etiket ve özellik adları beyaz liste regex'inden geçer ve backtick ile
-    kaçırılır.
+  - Etiket adları (IFC sınıfları) `^Ifc[A-Za-z0-9]+$` beyaz listesinden geçer.
+  - Özellik anahtarları desen denetiminden (sabit alan ya da `Pset.Özellik`,
+    kontrol karakteri yok) geçer ve backtick ile kaçırılır; içerideki backtick
+    ikilenir.
 - **Birimler:** graftaki tüm uzunluklar metre, hacimler m³ cinsindendir.
   Dönüşüm `packages/ifc` içinde açıkça yapılır ve testle doğrulanır.
 - **Testler:** `node:test` kullanılır. Birim testleri I/O gerektirmez. Neo4j
@@ -90,7 +92,7 @@ Bağımlılık yönü tek yönlüdür: `core` ← `ifc`, `graph`, `xai` ← `app
 
 ## 4. Veri gerçekleri
 
-`data/sample/*.ifc` dosyaları git'e girmez.
+`data/sample/*.ifc` dosyaları test verisi olarak git'te tutulur (CC BY 4.0, atıf `data/sample/README.md`).
 
 - **İçerik:** buildingSMART "silly sample scene" (IFC4X3_ADD2, mm birim).
   Mimari ve HVAC dosyaları aynı koordinat sistemini ve ortak site, bina ve kat

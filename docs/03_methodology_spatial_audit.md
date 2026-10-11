@@ -131,12 +131,18 @@ Bu formülde $c(s,o)$ kesişim kutusunun merkezidir. $\operatorname{dist}(p, B)$
 
 $$\operatorname{dist}(p,B) = \sqrt{\sum_{k} \max\big(B_k^{\min} - p_k,\; 0,\; p_k - B_k^{\max}\big)^2}$$
 
-Eşiğin içinde aday yoksa ihlal raporlanır. Bu durumda en yakın aday ve uzaklığı da kanıt olarak döndürülür (örn. "en yakın yangın damperi 1,9 m uzakta").
+Adaylar arasından en yakını, satır sırasına bağlı olmayan açık bir indirgeme (`reduce`) ile seçilir. Eşit uzaklıkta GlobalId'ye göre belirlenimci bir seçim yapılır. Kesişen elemanların kendileri aday sayılmaz.
+
+En yakın adayın uzaklığı $d_{\max}$'tan büyükse ya da hiç aday yoksa ihlal raporlanır. Bu durumda en yakın aday ve uzaklığı da kanıt olarak döndürülür (örn. "en yakın yangın damperi 1,9 m uzakta").
+
+**Performans sınırlılığı.** Aday araması kesişim başına tüm adayları tarar. Bu tarama $O(|I| \cdot |M|)$ karmaşıklığındadır; burada $I$ kesişimler, $M$ seçiciyi sağlayan koruyucu elemanlar kümesidir. Bu çalışmanın ölçeğinde sorun oluşturmamaktadır. Büyük modellerde sorgu, kesişim kutusu çevresinde mekansal bir ön elemeyle daraltılabilir.
 
 **Güvenlik:**
 - Kullanıcıdan gelen tüm değerler sorgu parametresi olarak iletilir.
-- Cypher'da parametrelenemeyen etiket ve özellik adları, IFC sınıf adı beyaz listesinden geçirilir ve tırnaklanır.
-- Bu sayede arayüzden girilen kurallar sorgu enjeksiyonuna yol açamaz. Bu durum birim testle doğrulanmıştır.
+- Cypher'da parametrelenemeyen tanımlayıcılar iki yolla korunur:
+  - Etiketler (IFC sınıf adları) `^Ifc[A-Za-z0-9]+$` beyaz listesinden geçirilir.
+  - Özellik anahtarları desen denetiminden geçirilir ve backtick ile tırnaklanır. Anahtarın içindeki backtick karakterleri Cypher dilbilgisine uygun olarak ikilenir.
+- Bu sayede arayüzden girilen kurallar sorgu enjeksiyonuna yol açamaz. Bu durum, saldırgan bir değer ve saldırgan bir özellik anahtarı için birim testlerle doğrulanmıştır.
 
 **Tekillik:**
 - İhlal kimlikleri belirlenimcidir: `kuralId:elemanId[:elemanId]`. Aynı kural ve aynı elemanlar her denetimde aynı kimliği üretir.
