@@ -9,7 +9,7 @@
 | D1 Uygulama doğruluğu | Bileşenler tanımlandıkları gibi mi çalışıyor? | Birim ve entegrasyon testleri (113 + 33, `npm test`, `npm run test:integration`) | Tamamlandı |
 | D2 Araç eşdeğerliği | web-ifc, IfcOpenShell ile aynı girdiyi üretiyor mu? | Parity karşılaştırması (Bölüm 2.1.6) | Tamamlandı |
 | D3 Kural motoru doğruluğu | Doğru cevabı bilinen senaryolarda ihlaller eksiksiz ve fazlasız bulunuyor mu? | Tohumlu hata enjeksiyonu (Bölüm 5.2) | Tamamlandı |
-| D4 Gerçek model başarımı | Gerçek modellerde referans etiketlere göre P/R/F1 nedir? | Bağımsız kesin-geometri etiketlemesi (Bölüm 5.4) | Duplex tamamlandı; insan örneklem kontrolü bekleniyor |
+| D4 Gerçek model başarımı | Gerçek modellerde referans etiketlere göre P/R/F1 nedir? | Bağımsız kesin-geometri etiketlemesi + insan örneklem doğrulaması (Bölüm 5.4) | Duplex tamamlandı (örneklem uyumu 20/20) |
 | D5 Açıklama güvenilirliği | Açıklamalar kanıta sadık ve eksiksiz mi? | Varlık düzeyinde dayanaklandırma (Bölüm 5.3) | Örnek modelde tamamlandı; büyük kümede bekleniyor |
 
 **Gold standard yaklaşımı:** Önceki prototipteki "gold standard" dosyası yer tutucu kimlikler içermekteydi (`REPLACE_WITH_...`). Bu nedenle o dosya hiçbir ölçüme temel oluşturamazdı. Bu çalışmada iki tür doğru cevap kaynağı kesin olarak ayrılmıştır:
@@ -137,7 +137,13 @@ Yöntem Bölüm 4.5'te tanımlanmıştır. Değerlendirme kümesi, buildingSMART
 
 Yöntem, belirsizlikler ve insan doğrulaması için tohumlu 20 etiketlik örneklem `evaluation/gold/duplex-annotation-report.md` dosyasında yer almaktadır.
 
-**Geçerlilik notu.** Etiketler bir insan uzman tarafından üretilmemiştir. Bu nedenle "bağımsız, kesin geometriye dayalı referans etiketleme" olarak nitelenmelidir. Örneklemin insan tarafından kontrol edilmesi bekleniyor *(bekleniyor)*.
+**Geçerlilik notu.** Etiketler bir insan uzman tarafından üretilmemiştir. Bu nedenle "bağımsız, kesin geometriye dayalı referans etiketleme" olarak nitelenmelidir.
+
+**İnsan örneklem doğrulaması.** Etiketlerden kurallara göre tabakalı, tohumlu (20261011) 20'lik bir örneklem, yazar tarafından sistemin 3B görüntüleyicisinde tek tek incelenmiştir.
+- **Özellik kuralları (1–6):** Elemanın özellik setleri kontrol edilmiştir.
+- **Kesişim kuralları (7–20):** Elemanlar gerçek derinlikle (röntgen kapalı) görüntülenerek delip geçme gözle doğrulanmıştır.
+- **Sonuç:** 20 etiketin 20'sine katılım (uyum %100, "emin değilim" yanıtı yok). Kayıt: `evaluation/gold/duplex-human-review.json`, 2026-10-11.
+- Örneklem küçük olduğundan bu sonuç etiket kalitesinin bir göstergesi olarak sunulmaktadır; tüm etiketlerin doğruluğunu kanıtlamaz.
 
 ### 5.4.2. Sonuçlar
 

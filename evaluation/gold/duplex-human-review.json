@@ -1,0 +1,105 @@
+{
+  "dataset": "duplex",
+  "verdicts": {
+    "1": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:09.142Z"
+    },
+    "2": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:11.256Z"
+    },
+    "3": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:12.721Z"
+    },
+    "4": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:14.054Z"
+    },
+    "5": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:19.504Z"
+    },
+    "6": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:21.533Z"
+    },
+    "7": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:38.555Z"
+    },
+    "8": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:45.217Z"
+    },
+    "9": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:51.553Z"
+    },
+    "10": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:29:59.355Z"
+    },
+    "11": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:30:14.171Z"
+    },
+    "12": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:30:25.005Z"
+    },
+    "13": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:30:31.940Z"
+    },
+    "14": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:30:36.255Z"
+    },
+    "15": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:30:58.587Z"
+    },
+    "16": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:31:24.037Z"
+    },
+    "17": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:31:38.971Z"
+    },
+    "18": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:31:52.804Z"
+    },
+    "19": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:32:19.219Z"
+    },
+    "20": {
+      "verdict": "agree",
+      "comment": "",
+      "reviewedAt": "2026-10-11T14:32:48.255Z"
+    }
+  }
+}
