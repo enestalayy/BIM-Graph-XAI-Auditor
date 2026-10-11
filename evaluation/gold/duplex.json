@@ -1,0 +1,1120 @@
+{
+  "dataset": "duplex",
+  "annotator": "Bağımsız LLM uzman ajanı (Claude) — IfcOpenShell 0.8.5 kesin geometri; insan örneklem doğrulaması bekliyor",
+  "createdAt": "2026-10-11",
+  "models": [
+    "Duplex_A_20110907.ifc",
+    "Duplex_MEP_20110907.ifc"
+  ],
+  "ruleSet": "rules/default.json",
+  "rules": [
+    "INFO-WALL-01",
+    "FS-DUCT-WALL-01",
+    "FS-DUCT-SLAB-01",
+    "FS-PIPE-WALL-01",
+    "CLASH-MEP-STR-01",
+    "FS-PARTY-WALL-01",
+    "FS-PARTY-WALL-02"
+  ],
+  "expected": [
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKau"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Party Wall - CMU Residential Unit Dimising Wall:143239"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FNld"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):138584"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Party Wall - CMU Residential Unit Dimising Wall:139234"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Party Wall - CMU Residential Unit Dimising Wall:139347"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Party Wall - CMU Residential Unit Dimising Wall:139374"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKIu"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):139783"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKGS"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):139939"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FK80"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Foundation - Concrete (417mm):140479"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FK9N"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Foundation - Concrete (417mm):140520"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKEr"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Foundation - Concrete (417mm):140554"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKE5"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Foundation - Concrete (417mm):140602"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FK3E"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Foundation - Concrete (435mm):140913"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FK04"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Foundation - Concrete (435mm):140987"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FK1b"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Foundation - Concrete (435mm):141018"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLMr"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Plumbing (152mm Stud):144138"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLKI"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):144301"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLEJ"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):144684"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLCm"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Plumbing (152mm Stud):144783"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:138157"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:138310"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLQD"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:143410"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLOH"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:143534"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKST"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):139682"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FNau"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):139143"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLTF"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):143856"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FL8v"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):144518"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLJd"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):143960"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FL96"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):144633"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLIE"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):143921"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FL9r"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):144586"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FNtn"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:138062"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FNr2"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:138237"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLR9"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:143478"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLPP"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:143590"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0jf0rYHfX3RAB3bSIRjmmy"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:184944"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0jf0rYHfX3RAB3bSIRjmpw"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:185014"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0jf0rYHfX3RAB3bSIRjmoa"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:185064"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0jf0rYHfX3RAB3bSIRjmr1"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Exterior - Brick on Block:185101"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0iEHWY1$XA8eQeeULq4jZ1"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (152 mm Stud):189074"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0iEHWY1$XA8eQeeULq4j_U"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (152 mm Stud):189901"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0iEHWY1$XA8eQeeULq4jpl"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):190140"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0iEHWY1$XA8eQeeULq4jDb"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (152 mm Stud):190774"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0iEHWY1$XA8eQeeULq4jE6"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (152 mm Stud):190933"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0dxE1Sy6nDqfpDb5vIMNiA"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (152 mm Stud):193247"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "0dxE1Sy6nDqfpDb5vIMN_Z"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (152 mm Stud):194166"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "1aj$VJZFn2TxepZUBcKpvt"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):203347"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "1aj$VJZFn2TxepZUBcKpZw"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):203998"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "1aj$VJZFn2TxepZUBcKpee"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):204300"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "1aj$VJZFn2TxepZUBcKphf"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Partition (92mm Stud):204493"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "3Y4YRln2r91vflHcHE5IVS"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (38 mm Stud):217414"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "3Y4YRln2r91vflHcHE5IVT"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (38 mm Stud):217415"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "3Y4YRln2r91vflHcHE5IVI"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (38 mm Stud):217416"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "3Y4YRln2r91vflHcHE5IVJ"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (38 mm Stud):217417"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "3Y4YRln2r91vflHcHE5ITp"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (38 mm Stud):217577"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "3Y4YRln2r91vflHcHE5ITm"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (38 mm Stud):217578"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "3Y4YRln2r91vflHcHE5ITn"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (38 mm Stud):217579"
+    },
+    {
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "3Y4YRln2r91vflHcHE5ITs"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Interior - Furring (38 mm Stud):217580"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2_nWSI38z1MQowEuvpwI2C",
+        "2O2Fr$t4X7Zf8NOew3FNr2"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~5,453 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "1AE8TeH3D87eRKclepfjI5",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,178 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2oUDfYEAjDzQSvWL1eupfi",
+        "2O2Fr$t4X7Zf8NOew3FNr2"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,257 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3Lmaz4fj1EyB6By0_6$_I6",
+        "2O2Fr$t4X7Zf8NOew3FNr2"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,257 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0OVAices54qgFqzKdfsr1m",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,257 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "24dhWsJoPFtwoqYmwS19st",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,691 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2fzO2h2Az5APKSrvbBj6nY",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,257 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2_K0IZMGf3t8zmcf79YX$H",
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,263 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "1Ahmk4zEPCaB60aroK8iVk",
+        "2O2Fr$t4X7Zf8NOew3FKST"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,263 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3D7$N30LL0pBnXNmQY36yU",
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,146 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "08bJ5GciX44RctWg3I8Yp1",
+        "2O2Fr$t4X7Zf8NOew3FKIu"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,205 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2cBXEHhbv7WxAj1MwZ5Ik2",
+        "3bXiCStxP6Fgxdej$yc55U"
+      ],
+      "note": "hava kanalı kaplamanın/asma tavanın içinden geçiyor; kesişim ~2,816 L, kesişim kalınlığı ~55 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2cBXEHhbv7WxAj1MwZ5Ik2",
+        "3ThA22djr8AQQ9eQMA5s7I"
+      ],
+      "note": "hava kanalı çatı döşemesinin içinden geçiyor; kesişim ~22,359 L, kesişim kalınlığı ~239 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2XLUWQjcT5TP2MvyGtLx_j",
+        "2O2Fr$t4X7Zf8NOew3FNtn"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~5,452 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3HFPIdLfvCXAet8_9zF6DF",
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,936 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3zL8RCRFfExPh7HhsIIU83",
+        "3bXiCStxP6Fgxdej$yc5T8"
+      ],
+      "note": "boru kaplamanın/asma tavanın içinden geçiyor; kesişim ~1,675 L, kesişim kalınlığı ~14 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2_y20Tjd1Epu$NEFGGH1gW",
+        "2O2Fr$t4X7Zf8NOew3FNtn"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,179 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3mLgeEuJj3OfOk9ukRGKex",
+        "2O2Fr$t4X7Zf8NOew3FNtn"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,179 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2d5C19iSDBnR23cWctuEvZ",
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,179 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "27slASTjv7TuQWj9HTpun$",
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,186 L, kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3sG_XOiiDBjuHTacz8s7Hr",
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,179 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0qhCU2klz4GAVI0SV1Z_kT",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,185 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "27fGOYnQj8MQqqFxq21fgv",
+        "2O2Fr$t4X7Zf8NOew3FNau"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,185 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3T5Rd$BhX5YQB2DUuD6Yfm",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,146 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3SxW3p0SzBdhood6G7P9qz",
+        "0iEHWY1$XA8eQeeULq4jpl"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,205 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3qI03Xhmj12QySDYgBoGRD",
+        "1hOSvn6df7F8_7GcBWlRqU"
+      ],
+      "note": "elektrik konduiti döşemenin içinden geçiyor; kesişim ~1,494 L, kesişim kalınlığı ~8 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3qI03Xhmj12QySDYgBoGRD",
+        "1aj$VJZFn2TxepZUBcKpee"
+      ],
+      "note": "elektrik konduiti duvarın içinden geçiyor; kesişim ~2,278 L, kesişim kalınlığı ~27 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "1yYwYL_irExf916vZONIdA",
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~6,414 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3fq8s9NyLB19dgP900nV9R",
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,056 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3nc3ucFDTC$wIRWWTb0ut1",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,203 L, kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "08ayqJVPzCnPvZ0wv8Gs_7",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,055 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3EEUsdoeb9f8EThcDcbGyi",
+        "0iEHWY1$XA8eQeeULq4j_U"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~4,893 L, kesişim kalınlığı ~43 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0k2HCeKr1DJAq7xOJGpDhR",
+        "0iEHWY1$XA8eQeeULq4j_U"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,339 L (kesin), kesişim kalınlığı ~47 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0ji8ekfkf6ZBQZ7qgxqlqV",
+        "0iEHWY1$XA8eQeeULq4jDb"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~4,880 L, kesişim kalınlığı ~43 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3gDsPJQIP7HOn$wh2K4DS8",
+        "0iEHWY1$XA8eQeeULq4jDb"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,340 L (kesin), kesişim kalınlığı ~47 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0EIJaXv7P7o9GCWS2fgq1x",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~1,416 L, kesişim kalınlığı ~23 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0EIJaXv7P7o9GCWS2fgq1x",
+        "0iEHWY1$XA8eQeeULq4j_U"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~1,506 L, kesişim kalınlığı ~23 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0NtcwyHBzBVA6ASoO0BEYM",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~1,416 L, kesişim kalınlığı ~23 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0NtcwyHBzBVA6ASoO0BEYM",
+        "0iEHWY1$XA8eQeeULq4jDb"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~1,416 L, kesişim kalınlığı ~23 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0IWYz6Nx91YhGoaGRcM9Mo",
+        "0iEHWY1$XA8eQeeULq4j_U"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,003 L (kesin), kesişim kalınlığı ~23 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0tdBYZ_1n4Hwqj0yrnFuz$",
+        "0dxE1Sy6nDqfpDb5vIMN_Z"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~4,747 L, kesişim kalınlığı ~43 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0_dkc9hC11lA4ntVXLyrTT",
+        "0dxE1Sy6nDqfpDb5vIMNiA"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~4,749 L, kesişim kalınlığı ~43 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0uq3rG9sb5iPszypOTBXZb",
+        "0iEHWY1$XA8eQeeULq4jE6"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,448 L, kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "235DtGn3D5J8_g$P9SiyZe",
+        "0iEHWY1$XA8eQeeULq4jZ1"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,448 L, kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "36PHY8l$rBmPsWvnnIIhcd",
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,711 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2zJ3WP6bzE_u5MgDrNcyfs",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,710 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "1_D4E4zq1Bg9zNGCWzdrEm",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~6,294 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "1wNHkBhyD6Kxz6J98Pr8bt",
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,790 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3ZpZg5x6L8RhsGp3tg8aGD",
+        "0iEHWY1$XA8eQeeULq4jE6"
+      ],
+      "note": "elektrik konduiti duvarın içinden geçiyor; kesişim ~1,800 L, kesişim kalınlığı ~27 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2T9Z_3Tzn6KQmOy4nAhq7v",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "elektrik konduiti duvarın içinden geçiyor; kesişim ~1,800 L, kesişim kalınlığı ~27 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3pumjEMRj8WfnEQMDxBrk9",
+        "3bXiCStxP6Fgxdej$yc55E"
+      ],
+      "note": "hava kanalı kaplamanın/asma tavanın içinden geçiyor; kesişim ~2,816 L, kesişim kalınlığı ~55 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3pumjEMRj8WfnEQMDxBrk9",
+        "3ThA22djr8AQQ9eQMA5s7I"
+      ],
+      "note": "hava kanalı çatı döşemesinin içinden geçiyor; kesişim ~22,359 L, kesişim kalınlığı ~239 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0wir8qpa98c8is0nQvQCmE",
+        "2O2Fr$t4X7Zf8NOew3FKau"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,541 L, kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3j7DiZ01XBivFgt$SbPApz",
+        "2O2Fr$t4X7Zf8NOew3FKau"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,541 L, kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "06tz$4Kfr6hxOdBtBn_Zg8",
+        "2O2Fr$t4X7Zf8NOew3FK04"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,449 L, kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "1IZLDqpSH0Bftkn$oLUU0O",
+        "0iEHWY1$XA8eQeeULq4jpl"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,279 L, kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "08zr6JNBDBDATCIEkAVgHh",
+        "3bXiCStxP6Fgxdej$yc50n"
+      ],
+      "note": "boru kaplamanın/asma tavanın içinden geçiyor; kesişim ~1,147 L, kesişim kalınlığı ~14 mm"
+    },
+    {
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3a6ndo_ET6V9uIH8SrRBzb",
+        "0iEHWY1$XA8eQeeULq4jE6"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,279 L, kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKau"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Party Wall - CMU Residential Unit Dimising Wall:143239"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Party Wall - CMU Residential Unit Dimising Wall:139234"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Party Wall - CMU Residential Unit Dimising Wall:139347"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "Pset_WallCommon.FireRating tanımlı değil; Basic Wall:Party Wall - CMU Residential Unit Dimising Wall:139374"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "2TAzfNf1j94uj2yMPneX4$",
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,370 L, kesişim kalınlığı ~32 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "2_K0IZMGf3t8zmcf79YX$H",
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,263 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "3D7$N30LL0pBnXNmQY36yU",
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,146 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "39uRbNnz16PuVI9nFtOtMv",
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,007 L, kesişim kalınlığı ~7 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0Tjs7l9CPAQxN9XnigQv$l",
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,012 L, kesişim kalınlığı ~14 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "2SoPeCb2D87xSg3et19Mx1",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,370 L, kesişim kalınlığı ~32 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0qhCU2klz4GAVI0SV1Z_kT",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~2,185 L (kesin), kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "3T5Rd$BhX5YQB2DUuD6Yfm",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "boru tamamen duvarın içinde kalıyor; kesişim ~1,146 L (kesin), kesişim kalınlığı ~31 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0XZwkvjjz3183yhicqoMA8",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,007 L, kesişim kalınlığı ~7 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "00NSjRT2577gZ8OnXCVnRD",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,012 L, kesişim kalınlığı ~14 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "336ajHRPXDE8$eoXtNDAE2",
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,892 L, kesişim kalınlığı ~47 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "1XvfWvgFP6gPrew2jqx$Dn",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,002 L, kesişim kalınlığı ~12 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "1OIVQOHS1AE8kz$ocqmDKV",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,058 L, kesişim kalınlığı ~12 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0EIJaXv7P7o9GCWS2fgq1x",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~1,416 L, kesişim kalınlığı ~23 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "1PUyDXUGj34v2EdxSOY$fY",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,002 L, kesişim kalınlığı ~12 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0Dnw9wKzD6y98uZbgR6T92",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,058 L, kesişim kalınlığı ~12 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0NtcwyHBzBVA6ASoO0BEYM",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~1,416 L, kesişim kalınlığı ~23 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "3tMhzXDWDAa8vvTfJxuPT7",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,004 L, kesişim kalınlığı ~7 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0uHJtyP_jAGAHPThWj87pq",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,028 L, kesişim kalınlığı ~24 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "15$tmU0G9ARvozWPzAruwE",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,016 L, kesişim kalınlığı ~25 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "2qXGXPmQL9D8lj59cp7uxz",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,004 L, kesişim kalınlığı ~8 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "1SEEl_3N1649G1FNumeBoq",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~0,892 L, kesişim kalınlığı ~46 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "2T9Z_3Tzn6KQmOy4nAhq7v",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "elektrik konduiti duvarın içinden geçiyor; kesişim ~1,800 L, kesişim kalınlığı ~27 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "3oHfnTBz5C$R5u3CRLsoBz",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "elektrik konduiti duvarın içinden geçiyor; kesişim ~0,030 L, kesişim kalınlığı ~17 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0wir8qpa98c8is0nQvQCmE",
+        "2O2Fr$t4X7Zf8NOew3FKau"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,541 L, kesişim kalınlığı ~30 mm"
+    },
+    {
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "3j7DiZ01XBivFgt$SbPApz",
+        "2O2Fr$t4X7Zf8NOew3FKau"
+      ],
+      "note": "boru duvarın içinden geçiyor; kesişim ~2,541 L, kesişim kalınlığı ~30 mm"
+    }
+  ]
+}

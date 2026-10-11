@@ -27,3 +27,4 @@ apps/web/dist/
 data/duplex/
 data/clinic/
 data/schependomlaan/
+__pycache__/

@@ -9,7 +9,7 @@
 | D1 Uygulama doğruluğu | Bileşenler tanımlandıkları gibi mi çalışıyor? | Birim ve entegrasyon testleri (113 + 33, `npm test`, `npm run test:integration`) | Tamamlandı |
 | D2 Araç eşdeğerliği | web-ifc, IfcOpenShell ile aynı girdiyi üretiyor mu? | Parity karşılaştırması (Bölüm 2.1.6) | Tamamlandı |
 | D3 Kural motoru doğruluğu | Doğru cevabı bilinen senaryolarda ihlaller eksiksiz ve fazlasız bulunuyor mu? | Tohumlu hata enjeksiyonu (Bölüm 5.2) | Tamamlandı |
-| D4 Gerçek model başarımı | Gerçek modellerde uzman değerlendirmesine göre P/R/F1 nedir? | Altın standart karşılaştırması (Bölüm 5.4) | Uzman etiketi bekleniyor |
+| D4 Gerçek model başarımı | Gerçek modellerde referans etiketlere göre P/R/F1 nedir? | Bağımsız kesin-geometri etiketlemesi (Bölüm 5.4) | Duplex tamamlandı; insan örneklem kontrolü bekleniyor |
 | D5 Açıklama güvenilirliği | Açıklamalar kanıta sadık ve eksiksiz mi? | Varlık düzeyinde dayanaklandırma (Bölüm 5.3) | Örnek modelde tamamlandı; büyük kümede bekleniyor |
 
 **Gold standard yaklaşımı:** Önceki prototipteki "gold standard" dosyası yer tutucu kimlikler içermekteydi (`REPLACE_WITH_...`). Bu nedenle o dosya hiçbir ölçüme temel oluşturamazdı. Bu çalışmada iki tür doğru cevap kaynağı kesin olarak ayrılmıştır:
@@ -121,20 +121,47 @@ Yöntem Bölüm 4.5'te tanımlanmıştır. Değerlendirme kümesi, buildingSMART
 - 5 açıklamalık küme istatistiksel bir genelleme için yetersizdir. Öneri formundaki "%3'ün altında halüsinasyon" hedefi, daha büyük bir ihlal kümesi üzerinde ve birden fazla modelle sınanmalıdır (Bölüm 5.4).
 - Varlık düzeyindeki denetim anlamsal çarpıtmaları yakalamaz (Bölüm 4.5.3). Bir örneklem üzerinde uzman değerlendirmesi önerilmektedir.
 
-## 5.4. Gerçek Modellerde Değerlendirme
+## 5.4. Gerçek Modellerde Değerlendirme (Duplex Apartment)
 
-**buildingSMART örnek modelleri.** Mimari ve HVAC modelleri federe edilmiş ve varsayılan kural setiyle denetlenmiştir. Sonuçlar:
-- 4 bilgi eksikliği (FireRating tanımsız duvarlar),
-- 1 koordinasyon çakışması (kanal × çatı döşemesi),
-- yangın damperi ihlali yok.
+### 5.4.1. Referans Etiketleme
 
-Modelde yangın dayanımlı duvar bulunmadığından yangın kurallarının bu modelde sınanabilir bir örneği yoktur. Bölüm 3.1.4'te gözlenen duvar–eğimli çatı kesişimleri ise genel çakışma kuralının kapsamına girmemektedir, çünkü kural konu olarak yalnızca tesisat hattı segmentlerini almaktadır. Bu nedenle bu modelde AABB yanlış pozitifleri bulgu listesine yansımamıştır.
+**Etiketleyen ve bağımsızlık.** Duplex Apartment (mimari + MEP, 1 218 eleman) için referans etiketler bağımsız bir LLM uzman ajanı tarafından üretilmiştir (`evaluation/gold/duplex.json`, 145 etiket). Ajan, değerlendirilen sistemin koduna, çıktılarına, dokümanlarına ve veritabanına erişmemiştir. Kullandığı girdiler yalnızca şunlardır:
+- kural tanımları (`rules/default.json`, gereksinim belirtimi olarak),
+- IFC dosyaları,
+- IfcOpenShell 0.8.5 ile kendi yazdığı yeniden çalıştırılabilir bir betik (`evaluation/gold/annotators/duplex_annotate.py`).
 
-**Sonraki adımlar:**
-- **İkinci veri seti:** Yangın kurallarının gerçek bir modelde değerlendirilmesi için gerçek tesisat–duvar geçişleri içeren daha gerçekçi bir veri seti gereklidir (öneri: NIBS/buildingSMART "Common BIM Files" Duplex Apartment mimari + MEP).
-- **Uzman etiketi:** Altın standart, uzman tarafından `evaluation/gold/TEMPLATE.json` biçiminde hazırlanacaktır.
+**Ölçüt.** Kesişim kurallarında referans ölçüt, sistemin kullandığı AABB değil, elemanların gerçek üçgen ağları üzerinden hesaplanan iç içe geçmedir:
+- örtüşme kalınlığı ≥ 1 mm,
+- örtüşme hacmi rastgele kaydırılmış nokta ızgarasıyla kestirilir; kesin hacme göre ortalama hata %0,1'dir,
+- duvar ve döşemelerde açıklıklar düşülmüştür.
 
-*(Bekleniyor.)*
+Yöntem, belirsizlikler ve insan doğrulaması için tohumlu 20 etiketlik örneklem `evaluation/gold/duplex-annotation-report.md` dosyasında yer almaktadır.
+
+**Geçerlilik notu.** Etiketler bir insan uzman tarafından üretilmemiştir. Bu nedenle "bağımsız, kesin geometriye dayalı referans etiketleme" olarak nitelenmelidir. Örneklemin insan tarafından kontrol edilmesi bekleniyor *(bekleniyor)*.
+
+### 5.4.2. Sonuçlar
+
+Karşılaştırma koşulları: $\varepsilon = 1$ mm, 2026-10-11. Kaynak: `evaluation/results/*-gold-duplex.md`.
+
+| Kural | TP | FP | FN | Kesinlik | Duyarlılık | F1 |
+|---|---|---|---|---|---|---|
+| INFO-WALL-01 | 57 | 0 | 0 | 100 % | 100 % | 100 % |
+| FS-PARTY-WALL-01 | 4 | 0 | 0 | 100 % | 100 % | 100 % |
+| CLASH-MEP-STR-01 | 58 | 16 | 0 | 78,4 % | 100 % | 87,9 % |
+| FS-PARTY-WALL-02 | 26 | 38 | 0 | 40,6 % | 100 % | 57,8 % |
+| FS-DUCT-WALL-01, FS-DUCT-SLAB-01, FS-PIPE-WALL-01 | 0 | 0 | 0 | — | — | — |
+| **Toplam** | **145** | **54** | **0** | **72,9 %** | **100 %** | **84,3 %** |
+
+### 5.4.3. Yorum
+
+1. **Özellik kuralları hatasızdır.** Bu kurallar geometriye dayanmaz. Özellik okuma ve kural derleme zinciri referansla tam örtüşmüştür.
+2. **Kaçırılan ihlal yoktur.** Hiçbir kesişim kuralında yanlış negatif oluşmamıştır. Bu sonuç AABB'nin yapısal özelliğiyle tutarlıdır: AABB elemanın gerçek hacmini her zaman kapsar, dolayısıyla gerçek bir iç içe geçme AABB testinde kaybolamaz (Bölüm 3.1.3). Tek koşul, hacim eşiğinin sınırına düşen durumlardır.
+3. **Hataların tamamı yanlış pozitiftir ve AABB'nin aşırı kapsamasından kaynaklanır.** Bu sonuç Bölüm 3.1.4'teki öngörüyü nicel olarak doğrulamaktadır.
+   - FS-PARTY-WALL-02 kuralında, ayırıcı duvarın yakınından veya içindeki boşluktan geçen ancak duvar gövdesini delmeyen borular, kutuları örtüştüğü için ihlal sayılmıştır. 64 adayın 38'i bu durumdadır.
+   - CLASH-MEP-STR-01 kuralında yanlış pozitiflerin bir kısmı, AABB kesişim hacminin gerçek örtüşme hacminden büyük olması nedeniyle 1 L eşiğini aşan çiftlerdir. Bu çiftlerin bazıları referansta eşiğin hemen altında kalmıştır (0,974–1,003 L arası karar-kritik 6 çift).
+4. **Yangın kurallarında ihlal yoktur.** Modelde yangın dayanımı tanımlı duvar veya döşeme bulunmadığından bu kurallar boş kalmıştır. Sistem de referans da sıfır ihlal raporlamıştır. Yangın kuralının gerçek bir modelde tetiklendiği örnek Clinic veri setindedir (Bölüm 5.1a).
+
+**Sonuç ve yönlendirme.** Bu bulgular, AABB geniş fazının duyarlılık açısından güvenilir, kesinlik açısından yetersiz olduğunu göstermektedir. Kesinliği artırmak için bir sonraki adım, AABB adaylarına üçgen ağ düzeyinde bir dar faz testi uygulamaktır (örn. üçgen–kutu ve üçgen–üçgen örtüşme testleri). Bu iyileştirmenin etkisi aynı referans etiketlerle ölçülebilir.
 
 ## 5.5. Zaman Verimliliği
 
