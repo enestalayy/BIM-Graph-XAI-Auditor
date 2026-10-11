@@ -11,10 +11,20 @@
         "source": "Bilgi gereksinimi (yönetmelik denetiminin ön koşulu)",
         "article": null,
         "verified": false,
-        "note": "Doğrudan bir yönetmelik maddesi değil; veri bütünlüğü kuralıdır."
+        "note": "Doğrudan bir yönetmelik maddesi değildir. Madde 24/1, kompartıman duvar ve döşemelerinin en az yangın dayanım sürelerini Ek-3/B’ye bağlar; FireRating bilgisi olmadan bu uygunluk değerlendirilemez."
       },
-      "target": { "classes": ["IfcWall"], "where": [] },
-      "require": [{ "property": "Pset_WallCommon.FireRating", "op": "exists" }]
+      "target": {
+        "classes": [
+          "IfcWall"
+        ],
+        "where": []
+      },
+      "require": [
+        {
+          "property": "Pset_WallCommon.FireRating",
+          "op": "exists"
+        }
+      ]
     },
     {
       "id": "FS-DUCT-WALL-01",
@@ -24,16 +34,39 @@
       "severity": "critical",
       "regulation": {
         "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)",
-        "article": null,
-        "verified": false,
-        "note": "İlgili madde mevzuat metninden doğrulanıp article alanına yazılmalıdır."
+        "article": "87/8",
+        "verified": true,
+        "note": "Resmî konsolide metinden (mevzuat.gov.tr, MevzuatNo 200712937, son değişiklik RG 01.07.2025/32943) 2026-10-11 tarihinde kontrol edildi. Madde 87/8: “Kanalın yangına 120 dakika dayanıklı bir yangın kompartımanı duvarını veya katını geçmesi hâlinde, kanal üzerine … yangın damperi konulması veya şönt baca veya özel kelepçe gibi yangın geçişini engelleyen önlemler alınması gerekir.” Kural, FireRating değerleri serbest metin olduğundan yangın dayanımı tanımlı her elemanı kapsar (120 dakika eşiğinden daha geniş, ihtiyatlı) ve alternatif önlemleri (şönt baca, özel kelepçe) modellemez."
       },
-      "subject": { "classes": ["IfcDuctSegment"], "where": [] },
-      "object": { "classes": ["IfcWall"], "where": [{ "property": "Pset_WallCommon.FireRating", "op": "exists" }] },
+      "subject": {
+        "classes": [
+          "IfcDuctSegment"
+        ],
+        "where": []
+      },
+      "object": {
+        "classes": [
+          "IfcWall"
+        ],
+        "where": [
+          {
+            "property": "Pset_WallCommon.FireRating",
+            "op": "exists"
+          }
+        ]
+      },
       "minVolume": 0,
       "mitigation": {
-        "classes": ["IfcDamper"],
-        "where": [{ "property": "predefinedType", "op": "eq", "value": "FIREDAMPER" }],
+        "classes": [
+          "IfcDamper"
+        ],
+        "where": [
+          {
+            "property": "predefinedType",
+            "op": "eq",
+            "value": "FIREDAMPER"
+          }
+        ],
         "maxDistance": 0.5
       }
     },
@@ -45,16 +78,39 @@
       "severity": "critical",
       "regulation": {
         "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)",
-        "article": null,
-        "verified": false,
-        "note": "İlgili madde mevzuat metninden doğrulanıp article alanına yazılmalıdır."
+        "article": "87/8",
+        "verified": true,
+        "note": "Resmî konsolide metinden (mevzuat.gov.tr, MevzuatNo 200712937, son değişiklik RG 01.07.2025/32943) 2026-10-11 tarihinde kontrol edildi. Madde 87/8: “Kanalın yangına 120 dakika dayanıklı bir yangın kompartımanı duvarını veya katını geçmesi hâlinde, kanal üzerine … yangın damperi konulması veya şönt baca veya özel kelepçe gibi yangın geçişini engelleyen önlemler alınması gerekir.” Kural, FireRating değerleri serbest metin olduğundan yangın dayanımı tanımlı her elemanı kapsar (120 dakika eşiğinden daha geniş, ihtiyatlı) ve alternatif önlemleri (şönt baca, özel kelepçe) modellemez."
       },
-      "subject": { "classes": ["IfcDuctSegment"], "where": [] },
-      "object": { "classes": ["IfcSlab"], "where": [{ "property": "Pset_SlabCommon.FireRating", "op": "exists" }] },
+      "subject": {
+        "classes": [
+          "IfcDuctSegment"
+        ],
+        "where": []
+      },
+      "object": {
+        "classes": [
+          "IfcSlab"
+        ],
+        "where": [
+          {
+            "property": "Pset_SlabCommon.FireRating",
+            "op": "exists"
+          }
+        ]
+      },
       "minVolume": 0,
       "mitigation": {
-        "classes": ["IfcDamper"],
-        "where": [{ "property": "predefinedType", "op": "eq", "value": "FIREDAMPER" }],
+        "classes": [
+          "IfcDamper"
+        ],
+        "where": [
+          {
+            "property": "predefinedType",
+            "op": "eq",
+            "value": "FIREDAMPER"
+          }
+        ],
         "maxDistance": 0.5
       }
     },
@@ -66,12 +122,27 @@
       "severity": "major",
       "regulation": {
         "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)",
-        "article": null,
-        "verified": false,
-        "note": "İlgili madde mevzuat metninden doğrulanıp article alanına yazılmalıdır."
+        "article": "24/7, 25/2",
+        "verified": true,
+        "note": "Resmî konsolide metinden (mevzuat.gov.tr, MevzuatNo 200712937, son değişiklik RG 01.07.2025/32943) 2026-10-11 tarihinde kontrol edildi. Madde 24/7: “kompartımanlar arasında yangına dayanıksız açıklıklar bulunamaz.” Madde 25/2: “Su, elektrik, ısıtma, havalandırma tesisatının ve benzeri tesisatın yangın duvarından geçmesi hâlinde, tesisat çevresi, açıklık kalmayacak şekilde en az yangın duvarı yangın dayanım süresi kadar, yangın ve duman geçişine karşı yalıtılır.” Yalıtım IFC modellerinde nadiren modellendiğinden her geçiş inceleme bulgusu olarak raporlanır."
       },
-      "subject": { "classes": ["IfcPipeSegment"], "where": [] },
-      "object": { "classes": ["IfcWall"], "where": [{ "property": "Pset_WallCommon.FireRating", "op": "exists" }] },
+      "subject": {
+        "classes": [
+          "IfcPipeSegment"
+        ],
+        "where": []
+      },
+      "object": {
+        "classes": [
+          "IfcWall"
+        ],
+        "where": [
+          {
+            "property": "Pset_WallCommon.FireRating",
+            "op": "exists"
+          }
+        ]
+      },
       "minVolume": 0
     },
     {
@@ -86,8 +157,19 @@
         "verified": false,
         "note": "Yönetmelik maddesi değil; genel koordinasyon kuralıdır."
       },
-      "subject": { "classes": ["IfcFlowSegment"], "where": [] },
-      "object": { "classes": ["IfcBuiltElement", "IfcBuildingElement"], "where": [] },
+      "subject": {
+        "classes": [
+          "IfcFlowSegment"
+        ],
+        "where": []
+      },
+      "object": {
+        "classes": [
+          "IfcBuiltElement",
+          "IfcBuildingElement"
+        ],
+        "where": []
+      },
       "minVolume": 0.001
     }
   ]
