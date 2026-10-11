@@ -83,7 +83,7 @@ Bağımlılık yönü tek yönlüdür: `core` ← `ifc`, `graph`, `xai` ← `app
 - **Birimler:** graftaki tüm uzunluklar metre, hacimler m³ cinsindendir.
   Dönüşüm `packages/ifc` içinde açıkça yapılır ve testle doğrulanır.
 - **Testler:** `node:test` kullanılır. Birim testleri I/O gerektirmez. Neo4j
-  isteyen testler `*.integration.test.ts` adını taşır. `NEO4J_URI` yoksa açıkça
+  isteyen testler `packages/*/test/integration/` altında durur. `NEO4J_URI` yoksa açıkça
   skip edilir, sessizce geçmez.
 - **Sırlar:** `.env` okunmaz ve yazılmaz. Gereken değişkenler `.env.example`'da
   belgelenir.
