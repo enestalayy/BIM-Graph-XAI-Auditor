@@ -1,9 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { after, before, describe, it } from 'node:test';
-import { findIntersections, parseRuleSet, type Aabb, type Element, type IfcModel, type RuleSet, type Violation } from '@bim/core';
+import { findIntersections, parseRuleSet, validateGrounding, type Aabb, type Element, type IfcModel, type RuleSet, type Violation } from '@bim/core';
 import {
-  ensureSchema, ingestModel, loadBoxedElements, loadViolations, replaceIntersections, runAudit, saveAudit, type GraphClient,
+  ensureSchema, ingestModel, loadBoxedElements, loadExplanations, loadViolationContext, loadViolations, replaceIntersections,
+  runAudit, saveAudit, saveExplanation, type GraphClient,
 } from '../../src/index.ts';
 import { connectTestGraph, SKIP_REASON } from './graph-client.ts';
 
@@ -95,6 +96,29 @@ describe('rule audit on a synthetic federated graph', { skip: SKIP_REASON }, () 
     assert.equal(rows.length, 1);
     assert.equal(rows[0]?.s, 'duct-bad');
     assert.match(String(rows[0]?.cypher), /INTERSECTS_WITH/);
+  });
+
+  it('retrieves the context of a violation: rule definition, involved elements, their properties and models', async () => {
+    const context = await loadViolationContext(graph, 'FS-DUCT-WALL-01:duct-bad:fire-wall');
+    assert.ok(context);
+    assert.equal(context.rule.id, 'FS-DUCT-WALL-01');
+    assert.deepEqual(Object.keys(context.elements).sort(), ['damper-fire', 'duct-bad', 'fire-wall']);
+    assert.equal(context.elements['fire-wall']!.properties['Pset_WallCommon.FireRating'], 'EI60');
+    assert.deepEqual(context.elements['duct-bad']!.disciplines, ['MEP']);
+    assert.equal(await loadViolationContext(graph, 'does-not-exist'), null);
+  });
+
+  it('stores explanations linked to their violation', async () => {
+    const facts = [{ id: 'F1', statement: 'Kural FS-DUCT-WALL-01.' }];
+    const text = 'Bu bir hatadır çünkü FS-DUCT-WALL-01 sağlanmıyor [F1].';
+    await saveExplanation(graph, {
+      id: 'x-1', violationId: 'FS-DUCT-WALL-01:duct-bad:fire-wall', method: 'template', text, facts,
+      grounding: validateGrounding(text, facts), latencyMs: 1, createdAt: new Date().toISOString(),
+    });
+    const [stored] = await loadExplanations(graph, 'FS-DUCT-WALL-01:duct-bad:fire-wall');
+    assert.equal(stored?.text, text);
+    assert.equal(stored?.grounding.faithfulness, 1);
+    await assert.rejects(saveExplanation(graph, { ...stored!, id: 'x-2', violationId: 'missing' }), /not found/);
   });
 
   it('replaces the findings of the previous audit when run again', async () => {

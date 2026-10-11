@@ -64,15 +64,17 @@ export async function saveAudit(runner: CypherRunner, rules: readonly Rule[], au
   }
 }
 
-/** Reads the current findings back as domain objects. */
-export async function loadViolations(runner: CypherRunner): Promise<Violation[]> {
+/** Reads the current findings back as domain objects, optionally only the given ids. */
+export async function loadViolations(runner: CypherRunner, ids?: readonly string[]): Promise<Violation[]> {
   const rows = await runner.run(
     `MATCH (v:Violation)-[:INVOLVES {role: 'subject'}]->(s:Element)
+     WHERE $ids IS NULL OR v.id IN $ids
      OPTIONAL MATCH (v)-[:INVOLVES {role: 'object'}]->(o:Element)
      RETURN v.id AS id, v.ruleId AS ruleId, v.severity AS severity, v.evidence AS evidence,
             s {.globalId, .ifcClass, .name} AS subject,
             CASE WHEN o IS NULL THEN null ELSE o {.globalId, .ifcClass, .name} END AS object
      ORDER BY id`,
+    { ids: ids ?? null },
   );
   return rows.map((row) => ({
     id: String(row.id),

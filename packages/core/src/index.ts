@@ -24,3 +24,4 @@ export { extractCitations, extractEntities, splitSentences, type Entity, type En
 export {
   REQUIRED_OPENING, validateGrounding, type EntityCheck, type EvidenceFact, type GroundingReport, type SentenceCheck,
 } from './grounding/validate.ts';
+export type { ElementContext, Explanation, ViolationContext } from './explanation.ts';
