@@ -10,7 +10,7 @@ Tez öneri formunda (Bölüm 4.1) IFC dosyalarının Python dili ve IfcOpenShell
 2. **Şema kapsamı.** web-ifc IFC2X3, IFC4 ve IFC4X3 şemalarını desteklemektedir. Çalışmada kullanılan örnek modeller IFC4X3_ADD2 şemasındadır.
 3. **Yöntemin korunması.** Bu değişiklik yalnızca araç düzeyindedir. Öneri formundaki yöntem, yani IFC → bilgi grafiği → mekansal akıl yürütme → kural denetimi → açıklanabilir raporlama zinciri değişmemiştir.
 
-Araç değişikliğinin sonuçları etkilemediğini göstermek amacıyla iki ayrıştırıcı aynı modeller üzerinde karşılaştırılmıştır: eleman kümeleri ve sınırlayıcı kutu değerleri web-ifc ile IfcOpenShell 0.8.5 arasında kıyaslanmıştır (Bkz. Bölüm 2.1.6, `tools/parity`).
+Araç değişikliğinin sonuçları etkilemediğini göstermek amacıyla iki ayrıştırıcı aynı modeller üzerinde karşılaştırılmıştır: eleman kümeleri ve sınırlayıcı kutu değerleri web-ifc ile IfcOpenShell 0.8.5 arasında kıyaslanmıştır. Sapma 1 mm eşiğinin çok altında kalmıştır (Bkz. Bölüm 2.1.6, `tools/parity`).
 
 ### 2.1.2. Çıkarılan Bilgi
 
@@ -88,8 +88,24 @@ Ayrıştırıcının doğruluğu örnek modellerdeki bilinen değerlerle birim t
 - Döşemenin `Pset_SlabCommon.FireRating = REI30` özelliği okunmuştur.
 - Bir alt tipin üst tipiyle birlikte sorgulanması sonucu oluşan çift kayıt sorunu giderilmiştir. Önceki prototipte `IfcAirTerminal` elemanları hem kendi sınıfı hem de `IfcFlowTerminal` üzerinden iki kez sayılmaktaydı.
 
+**Parity karşılaştırması (web-ifc ↔ IfcOpenShell).** Her iki modelin fiziksel elemanları IfcOpenShell 0.8.5 (`use-world-coords`) ile bağımsız olarak okunmuş ve web-ifc çıktısıyla karşılaştırılmıştır (`npm run parity`).
+
+Karşılaştırmada üç kriter kullanılmıştır:
+- GlobalId kümelerinin eşitliği,
+- sınıf adlarının eşitliği,
+- geometri varlığının eşitliği.
+
+Bunlara ek olarak sınırlayıcı kutu köşelerindeki en büyük mutlak sapma ölçülmüştür. Kabul eşiği 1 mm olarak belirlenmiştir.
+
+| Model | Fiziksel eleman | Geometrili | Maks. AABB sapması |
+|---|---|---|---|
+| Building-Architecture.ifc | 15 | 11 | 0,0001 mm |
+| Building-Hvac.ifc | 6 | 5 | < 0,0001 mm |
+
+Her iki model için eleman kümeleri ve sınıflar birebir örtüşmüştür. Sapmalar kayan nokta hassasiyeti düzeyindedir. Bu sonuç, öneri formundaki araçtan sapmanın denetim girdisini değiştirmediğini göstermektedir.
+
 Örnek modellere ilişkin iki gözlem kayda geçirilmiştir:
-1. `IfcChimney` elemanı her iki modelde de web-ifc tarafından geometrisiz döndürülmektedir. Bunun ayrıştırıcıya mı yoksa modele mi bağlı olduğu parity karşılaştırmasıyla belirlenecektir.
+1. `IfcChimney` elemanı her iki ayrıştırıcıda da geometrisizdir. Bu durum ayrıştırıcıdan değil, modelin kendisinden kaynaklanmaktadır.
 2. `IfcSpace` elemanları web-ifc'nin geometri akışına dahil değildir. Mekanlar çakışma adayı olmadığından bu durum denetimi etkilememektedir.
 
 ## 2.2. Labeled Property Graph (LPG) Tasarımı
