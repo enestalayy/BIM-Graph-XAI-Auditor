@@ -107,8 +107,17 @@ Bağımlılık yönü tek yönlüdür: `core` ← `ifc`, `graph`, `xai` ← `app
 ```
 npm install
 npm test                    # birim testleri
-npm run test:integration    # Neo4j gerekir: docker compose up -d
+npm run test:integration    # docker compose --profile test up -d neo4j-test + NEO4J_TEST_URI
 npm run typecheck
+npm run parity              # web-ifc ↔ IfcOpenShell (.venv)
 npm run cli -- <komut>      # ingest | audit | explain | evaluate
-npm run dev                 # API + web
+npm run dev                 # API :3000 + web :5173
 ```
+
+Notlar:
+- npm'de yeni bir workspace'e ilk `npm install -w` bağımlılığı yazmayabilir; komutu
+  ikinci kez çalıştırın.
+- Neo4j'e veri yazan deneyler (`evaluate injection`) yalnızca `NEO4J_TEST_URI`'deki
+  geçici veritabanında çalışır.
+- 3D görüntüleyici sunucuyla aynı ayrıştırıcıyı (web-ifc) kullanır. That Open
+  Components bilinçli olarak kullanılmamıştır.
