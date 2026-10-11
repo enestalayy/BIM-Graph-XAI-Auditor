@@ -15,7 +15,8 @@
   "scripts": {
     "test": "node --test \"packages/*/test/*.test.ts\" \"apps/server/test/*.test.ts\"",
     "test:integration": "node --env-file-if-exists=.env --test --test-concurrency=1 \"packages/*/test/integration/*.test.ts\"",
-    "typecheck": "tsc -p tsconfig.json"
+    "typecheck": "tsc -p tsconfig.json",
+    "parity": "node tools/parity/compare.ts data/sample/Building-Architecture.ifc data/sample/Building-Hvac.ifc"
   },
   "devDependencies": {
     "@types/node": "^24.19.2",

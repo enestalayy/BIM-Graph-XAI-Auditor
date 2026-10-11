@@ -1,7 +1,15 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "types": ["node"]
+    "types": [
+      "node"
+    ]
   },
-  "include": ["packages/*/src", "packages/*/test", "apps/server/src", "apps/server/test"]
+  "include": [
+    "packages/*/src",
+    "packages/*/test",
+    "apps/server/src",
+    "apps/server/test",
+    "tools/*/*.ts"
+  ]
 }
