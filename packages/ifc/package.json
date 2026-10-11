@@ -1,0 +1,13 @@
+{
+  "name": "@bim/ifc",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@bim/core": "^0.1.0",
+    "web-ifc": "^0.0.78"
+  }
+}
