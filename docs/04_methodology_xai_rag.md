@@ -69,6 +69,9 @@ Bu açıklayıcının iki işlevi vardır:
 4. En fazla beş cümle, teknik ve tarafsız bir dil kullan.
 5. Olgularda olmayan bir hassasiyet ekleme.
 6. Doğrulanmamış madde numarası uydurma.
+7. Elemanların sınıfını, adını, GlobalId'sini ve olgulardaki ölçüleri açıkça yaz; yalnızca atıf vermek yetmez.
+
+**Tek örnekli istem.** İstemin ikinci sürümünde (`p2`) uydurma olgular üzerine kurulmuş tek bir örnek açıklama (one-shot) eklenmiştir. Örnekteki kimlikler başka hiçbir yerde geçmez. Bu nedenle örneği kopyalayan bir model dayanaklandırma denetimine takılır; bu durum birim testle güvence altına alınmıştır. İstem sürümü her açıklamayla birlikte kaydedilir (`method = "ollama:<model>#p2"`).
 
 **Hata yönetimi:**
 - Ağ hataları ile HTTP 429/5xx yanıtları üstel geri çekilmeyle (exponential backoff) yeniden denenir.
@@ -130,6 +133,13 @@ $$\text{Sadakat} = \frac{|\{e \in E : \text{destek}(e)\}|}{|E|}, \qquad \text{At
 - $E$ açıklamadaki varlıkları, $S$ cümleleri ifade eder.
 - Bir cümlenin atfının geçerli sayılması için en az bir atıf içermesi ve atıf yaptığı tüm olguların var olması gerekir.
 - En az bir desteksiz varlık içeren açıklama **halüsinasyonlu** olarak işaretlenir.
+- Hiç doğrulanabilir varlık içermeyen bir açıklamada sadakat **tanımsız** kabul edilir. Bu tür açıklamalar ayrıca **boş açıklama oranı** olarak raporlanır.
+
+**Sadakat tek başına neden yetersiz?** İlk LLM denemesinde, hiçbir kimlik veya ölçü içermeyen "Bu bir hatadır çünkü [F1][F2][F3][F4]." gibi içeriksiz açıklamalar, uydurma da içermedikleri için tam sadakat puanı almıştır. Sadakat, bir kesinlik (precision) ölçütüdür: söyleneni denetler, söylenmeyeni denetlemez. Bu nedenle onu tamamlayan bir duyarlılık (recall) ölçütü tanımlanmıştır:
+
+$$\text{Eksiksizlik} = \frac{|K \cap E|}{|K|}$$
+
+Burada $K$, kanıtın kilit varlıklarıdır. Kilit varlıklar konu eleman, nesne eleman ve bulgu olgularındaki GlobalId'ler, sınıflandırma etiketleri ve birimli ölçülerdir (hacim, derinlik, mesafe, kesişim merkezi koordinatları). $E$ açıklamada anılan varlıklardır. Kesişim noktası öneri formunda kanıt olarak anıldığından koordinatlar da kilit varlıklara dahil edilmiştir.
 
 Bir açıklayıcının değerlendirme kümesi üzerindeki **halüsinasyon oranı**, halüsinasyonlu açıklamaların oranıdır. Öneri formunda bu oran için hedef %3'ün altıdır.
 

@@ -10,7 +10,7 @@
 | D2 Araç eşdeğerliği | web-ifc, IfcOpenShell ile aynı girdiyi üretiyor mu? | Parity karşılaştırması (Bölüm 2.1.6) | Tamamlandı |
 | D3 Kural motoru doğruluğu | Doğru cevabı bilinen senaryolarda ihlaller eksiksiz ve fazlasız bulunuyor mu? | Tohumlu hata enjeksiyonu (Bölüm 5.2) | Tamamlandı |
 | D4 Gerçek model başarımı | Gerçek modellerde uzman değerlendirmesine göre P/R/F1 nedir? | Altın standart karşılaştırması (Bölüm 5.4) | Uzman etiketi bekleniyor |
-| D5 Açıklama güvenilirliği | Açıklamalar kanıta sadık mı? | Varlık düzeyinde dayanaklandırma (Bölüm 5.3) | Şablon: tamamlandı; LLM: bekleniyor |
+| D5 Açıklama güvenilirliği | Açıklamalar kanıta sadık ve eksiksiz mi? | Varlık düzeyinde dayanaklandırma (Bölüm 5.3) | Örnek modelde tamamlandı; büyük kümede bekleniyor |
 
 **Gold standard yaklaşımı:** Önceki prototipteki "gold standard" dosyası yer tutucu kimlikler içermekteydi (`REPLACE_WITH_...`). Bu nedenle o dosya hiçbir ölçüme temel oluşturamazdı. Bu çalışmada iki tür doğru cevap kaynağı kesin olarak ayrılmıştır:
 - **Yapı gereği bilinen doğru cevap (D3):** Hata enjeksiyonu senaryolarında beklenen sonuç, senaryonun kurgusundan gelir. Sistemin çıktısından türetilmez.
@@ -81,24 +81,24 @@ Bu sonuç bir başarım iddiası değil, **uygulama doğruluğu** kanıtıdır. 
 
 ## 5.3. Açıklamaların Dayanaklandırma Değerlendirmesi
 
-Yöntem Bölüm 4.5'te tanımlanmıştır.
+Yöntem Bölüm 4.5'te tanımlanmıştır. Değerlendirme kümesi, buildingSMART örnek modellerinin denetiminden çıkan 5 ihlaldir. Bu ihlallerin 4'ü özellik, 1'i kesişim ihlalidir. LLM, yerelde Ollama üzerinde çalışan Llama 3.1 8B modelidir; sıcaklık 0 ve tohum 42 olarak ayarlanmıştır. Ölçüm tarihi 2026-10-11'dir.
 
-**Şablon açıklayıcı.** buildingSMART örnek modellerinin denetiminden çıkan 5 ihlal için üretilen açıklamaların sonuçları:
+| Açıklayıcı | n | Halüsinasyon oranı | Ort. sadakat | Ort. eksiksizlik | Boş açıklama | Atıf kapsaması | Biçim uyumu | Gecikme (medyan) |
+|---|---|---|---|---|---|---|---|---|
+| Şablon (temel çizgi) | 5 | 0 % | 100 % | 91,4 % | 0 % | 100 % | 100 % | < 1 ms |
+| Llama 3.1 8B, istem p1 | 5 | 0 % | tanımsız | 0 % | 100 % | 100 % | 100 %* | 2,8 s |
+| Llama 3.1 8B, istem p2 (tek örnekli) | 5 | 0 % | 100 % | 91,4 % | 0 % | 100 % | 100 % | 5,9 s |
 
-| Açıklayıcı | Açıklama | Halüsinasyon oranı | Ort. sadakat | Ort. atıf kapsaması | Biçim uyumu |
-|---|---|---|---|---|---|
-| template | 5 | 0 % | 100 % | 100 % | 100 % |
+\* İstem p1'de model açılış ifadesini Markdown kalın biçimiyle yazmıştır. Biçim denetimi baştaki vurgu işaretlerini yok sayacak şekilde güncellendikten sonra yeniden puanlanmıştır.
 
-Bu sonuç beklenen bir sonuçtur: şablon açıklayıcı yapısı gereği yalnızca olguları yeniden ifade eder. Değeri, LLM sonuçlarının karşılaştırılacağı **üst sınırı** belirlemesindedir.
+**Bulgular:**
+1. **p1 ile içeriksiz çıktı.** İlk istemle model hiçbir kimlik veya ölçü içermeyen, yalnızca atıflardan oluşan açıklamalar üretmiştir. Bu açıklamalar uydurma içermediği için yalnızca sadakat ölçülseydi tam puan alacaktı. Bu gözlem, eksiksizlik ölçütünün eklenmesine yol açmıştır (Bölüm 4.5.2).
+2. **p2 ile şablon düzeyi.** Tek örnekli istemle model, kesişim ihlalinde iki elemanın sınıfını, adını, GlobalId'sini, kesişim hacmini ve derinliğini doğru biçimde anmıştır. Kural kimliğini ve madde durumunu da doğru aktarmıştır. Uydurma varlık saptanmamıştır.
+3. **Eksiksizlik sınırı.** Her iki açıklayıcının eksiksizliği %91,4'te kalmıştır. Nedeni, kesişim ihlalinde kesişim merkezi koordinatlarının açıklamada anılmamasıdır.
 
-**LLM açıklayıcı.** Yerel açık ağırlıklı modellerle (Ollama) aynı ihlaller üzerinde ölçüm yapılacaktır. Öneri formundaki hedef halüsinasyon oranı %3'ün altıdır.
-
-Ölçümün anlamlı olması için gerekenler:
-- daha fazla ihlal içeren bir veri seti (Bölüm 5.4),
-- birden fazla model,
-- her model için aynı istem, sıcaklık 0 ve sabit tohum.
-
-*(Bekleniyor.)*
+**Geçerlilik sınırları:**
+- 5 açıklamalık küme istatistiksel bir genelleme için yetersizdir. Öneri formundaki "%3'ün altında halüsinasyon" hedefi, daha büyük bir ihlal kümesi üzerinde ve birden fazla modelle sınanmalıdır (Bölüm 5.4).
+- Varlık düzeyindeki denetim anlamsal çarpıtmaları yakalamaz (Bölüm 4.5.3). Bir örneklem üzerinde uzman değerlendirmesi önerilmektedir.
 
 ## 5.4. Gerçek Modellerde Değerlendirme
 

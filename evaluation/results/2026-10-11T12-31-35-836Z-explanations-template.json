@@ -1,0 +1,389 @@
+{
+  "name": "explanations-template",
+  "createdAt": "2026-10-11T12:31:35.836Z",
+  "data": {
+    "summary": {
+      "method": "template",
+      "count": 5,
+      "hallucinationRate": 0,
+      "meanFaithfulness": 1,
+      "meanCompleteness": 0.9142857142857143,
+      "emptyRate": 0,
+      "meanCitationCoverage": 1,
+      "formatCompliance": 1,
+      "latencyMs": {
+        "median": 0.015208000000029642,
+        "p95": 0.09708299999999781,
+        "max": 0.09708299999999781
+      }
+    },
+    "explanations": [
+      {
+        "id": "e85e15fa-b7b6-4d04-b645-4a6f3e24d37f",
+        "violationId": "CLASH-MEP-STR-01:12UVOn4wvAJPMUExKdZLb8:38WbwIGD90nB_3T2BTU5Ed",
+        "method": "template",
+        "text": "Bu bir hatadır çünkü IfcDuctSegment \"building element\" (GlobalId 38WbwIGD90nB_3T2BTU5Ed) ile IfcSlab \"house - roof - slab right\" (GlobalId 12UVOn4wvAJPMUExKdZLb8) kesişmektedir; kesişim hacmi 0,129 m³, penetrasyon derinliği 0,2 m'dir [F2][F3][F4]. Bu kesişim CLASH-MEP-STR-01 kuralı (\"Tesisat hattı yapı elemanıyla çakışıyor\") kapsamında koordinasyon gerektiren bir bulgudur [F1]. Kuralın dayanağı: Disiplinler arası koordinasyon (genel çakışma denetimi); madde numarası henüz belirlenmemiştir [F1].",
+        "facts": [
+          {
+            "id": "F1",
+            "statement": "Kural CLASH-MEP-STR-01: \"Tesisat hattı yapı elemanıyla çakışıyor\" (önem derecesi: major). Dayanak: Disiplinler arası koordinasyon (genel çakışma denetimi); madde numarası henüz belirlenmemiştir."
+          },
+          {
+            "id": "F2",
+            "statement": "Konu eleman: IfcDuctSegment \"building element\" (GlobalId 38WbwIGD90nB_3T2BTU5Ed); model: MEP; konum: 00 groundfloor."
+          },
+          {
+            "id": "F3",
+            "statement": "Nesne eleman: IfcSlab \"house - roof - slab right\" (GlobalId 12UVOn4wvAJPMUExKdZLb8); model: ARCH."
+          },
+          {
+            "id": "F4",
+            "statement": "İki eleman kesişmektedir: kesişim hacmi 0,129 m³, penetrasyon derinliği 0,2 m, kesişim merkezi (x 7,9 m; y 7,95 m; z 3,09 m)."
+          }
+        ],
+        "grounding": {
+          "sentences": [
+            {
+              "text": "Bu bir hatadır çünkü IfcDuctSegment \"building element\" (GlobalId 38WbwIGD90nB_3T2BTU5Ed) ile IfcSlab \"house - roof - slab right\" (GlobalId 12UVOn4wvAJPMUExKdZLb8) kesişmektedir; kesişim hacmi 0,129 m³, penetrasyon derinliği 0,2 m'dir [F2][F3][F4].",
+              "citations": [
+                "F2",
+                "F3",
+                "F4"
+              ],
+              "validCitations": true,
+              "entities": [
+                {
+                  "kind": "globalId",
+                  "value": "38WbwIGD90nB_3T2BTU5Ed",
+                  "supported": true
+                },
+                {
+                  "kind": "globalId",
+                  "value": "12UVOn4wvAJPMUExKdZLb8",
+                  "supported": true
+                },
+                {
+                  "kind": "number",
+                  "value": "0.129 m³",
+                  "supported": true
+                },
+                {
+                  "kind": "number",
+                  "value": "0.2 m",
+                  "supported": true
+                }
+              ]
+            },
+            {
+              "text": "Bu kesişim CLASH-MEP-STR-01 kuralı (\"Tesisat hattı yapı elemanıyla çakışıyor\") kapsamında koordinasyon gerektiren bir bulgudur [F1].",
+              "citations": [
+                "F1"
+              ],
+              "validCitations": true,
+              "entities": [
+                {
+                  "kind": "ruleId",
+                  "value": "CLASH-MEP-STR-01",
+                  "supported": true
+                }
+              ]
+            },
+            {
+              "text": "Kuralın dayanağı: Disiplinler arası koordinasyon (genel çakışma denetimi); madde numarası henüz belirlenmemiştir [F1].",
+              "citations": [
+                "F1"
+              ],
+              "validCitations": true,
+              "entities": []
+            }
+          ],
+          "entityCount": 5,
+          "unsupported": [],
+          "faithfulness": 1,
+          "completeness": 0.5714285714285714,
+          "citationCoverage": 1,
+          "hallucinated": false,
+          "startsWithRequiredPhrase": true
+        },
+        "latencyMs": 0.09708299999999781,
+        "createdAt": "2026-10-11T12:31:35.677Z"
+      },
+      {
+        "id": "35661199-335b-4edf-ac1e-19da1b07fcc1",
+        "violationId": "INFO-WALL-01:0OfZwWc8j9QP5uX8xPTxDH",
+        "method": "template",
+        "text": "Bu bir hatadır çünkü IfcWall \"house - outer wall - house left\" (GlobalId 0OfZwWc8j9QP5uX8xPTxDH), INFO-WALL-01 kuralının (\"Duvarların yangın dayanım sınıfı tanımlı olmalı\") koşullarını sağlamamaktadır [F1][F2]. Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil [F3]. Kuralın dayanağı: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir [F1].",
+        "facts": [
+          {
+            "id": "F1",
+            "statement": "Kural INFO-WALL-01: \"Duvarların yangın dayanım sınıfı tanımlı olmalı\" (önem derecesi: minor). Dayanak: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir."
+          },
+          {
+            "id": "F2",
+            "statement": "Konu eleman: IfcWall \"house - outer wall - house left\" (GlobalId 0OfZwWc8j9QP5uX8xPTxDH); model: ARCH; konum: 00 groundfloor; Pset_WallCommon.FireRating = tanımlı değil."
+          },
+          {
+            "id": "F3",
+            "statement": "Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil."
+          }
+        ],
+        "grounding": {
+          "sentences": [
+            {
+              "text": "Bu bir hatadır çünkü IfcWall \"house - outer wall - house left\" (GlobalId 0OfZwWc8j9QP5uX8xPTxDH), INFO-WALL-01 kuralının (\"Duvarların yangın dayanım sınıfı tanımlı olmalı\") koşullarını sağlamamaktadır [F1][F2].",
+              "citations": [
+                "F1",
+                "F2"
+              ],
+              "validCitations": true,
+              "entities": [
+                {
+                  "kind": "globalId",
+                  "value": "0OfZwWc8j9QP5uX8xPTxDH",
+                  "supported": true
+                },
+                {
+                  "kind": "ruleId",
+                  "value": "INFO-WALL-01",
+                  "supported": true
+                }
+              ]
+            },
+            {
+              "text": "Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil [F3].",
+              "citations": [
+                "F3"
+              ],
+              "validCitations": true,
+              "entities": []
+            },
+            {
+              "text": "Kuralın dayanağı: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir [F1].",
+              "citations": [
+                "F1"
+              ],
+              "validCitations": true,
+              "entities": []
+            }
+          ],
+          "entityCount": 2,
+          "unsupported": [],
+          "faithfulness": 1,
+          "completeness": 1,
+          "citationCoverage": 1,
+          "hallucinated": false,
+          "startsWithRequiredPhrase": true
+        },
+        "latencyMs": 0.031084000000021206,
+        "createdAt": "2026-10-11T12:31:35.793Z"
+      },
+      {
+        "id": "6f7ff02f-456e-4d42-a952-b996042b3516",
+        "violationId": "INFO-WALL-01:1AQAupaRP1txwK1AGiN61V",
+        "method": "template",
+        "text": "Bu bir hatadır çünkü IfcWall \"house - outer wall - house right front\" (GlobalId 1AQAupaRP1txwK1AGiN61V), INFO-WALL-01 kuralının (\"Duvarların yangın dayanım sınıfı tanımlı olmalı\") koşullarını sağlamamaktadır [F1][F2]. Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil [F3]. Kuralın dayanağı: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir [F1].",
+        "facts": [
+          {
+            "id": "F1",
+            "statement": "Kural INFO-WALL-01: \"Duvarların yangın dayanım sınıfı tanımlı olmalı\" (önem derecesi: minor). Dayanak: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir."
+          },
+          {
+            "id": "F2",
+            "statement": "Konu eleman: IfcWall \"house - outer wall - house right front\" (GlobalId 1AQAupaRP1txwK1AGiN61V); model: ARCH; konum: 00 groundfloor; Pset_WallCommon.FireRating = tanımlı değil."
+          },
+          {
+            "id": "F3",
+            "statement": "Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil."
+          }
+        ],
+        "grounding": {
+          "sentences": [
+            {
+              "text": "Bu bir hatadır çünkü IfcWall \"house - outer wall - house right front\" (GlobalId 1AQAupaRP1txwK1AGiN61V), INFO-WALL-01 kuralının (\"Duvarların yangın dayanım sınıfı tanımlı olmalı\") koşullarını sağlamamaktadır [F1][F2].",
+              "citations": [
+                "F1",
+                "F2"
+              ],
+              "validCitations": true,
+              "entities": [
+                {
+                  "kind": "globalId",
+                  "value": "1AQAupaRP1txwK1AGiN61V",
+                  "supported": true
+                },
+                {
+                  "kind": "ruleId",
+                  "value": "INFO-WALL-01",
+                  "supported": true
+                }
+              ]
+            },
+            {
+              "text": "Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil [F3].",
+              "citations": [
+                "F3"
+              ],
+              "validCitations": true,
+              "entities": []
+            },
+            {
+              "text": "Kuralın dayanağı: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir [F1].",
+              "citations": [
+                "F1"
+              ],
+              "validCitations": true,
+              "entities": []
+            }
+          ],
+          "entityCount": 2,
+          "unsupported": [],
+          "faithfulness": 1,
+          "completeness": 1,
+          "citationCoverage": 1,
+          "hallucinated": false,
+          "startsWithRequiredPhrase": true
+        },
+        "latencyMs": 0.015208000000029642,
+        "createdAt": "2026-10-11T12:31:35.821Z"
+      },
+      {
+        "id": "226733d5-cb5d-451a-bab1-cc490b0a4d2c",
+        "violationId": "INFO-WALL-01:1uS5vfZPn9R8PlAaVd73on",
+        "method": "template",
+        "text": "Bu bir hatadır çünkü IfcWall \"plumbing wall\" (GlobalId 1uS5vfZPn9R8PlAaVd73on), INFO-WALL-01 kuralının (\"Duvarların yangın dayanım sınıfı tanımlı olmalı\") koşullarını sağlamamaktadır [F1][F2]. Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil [F3]. Kuralın dayanağı: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir [F1].",
+        "facts": [
+          {
+            "id": "F1",
+            "statement": "Kural INFO-WALL-01: \"Duvarların yangın dayanım sınıfı tanımlı olmalı\" (önem derecesi: minor). Dayanak: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir."
+          },
+          {
+            "id": "F2",
+            "statement": "Konu eleman: IfcWall \"plumbing wall\" (GlobalId 1uS5vfZPn9R8PlAaVd73on); model: ARCH; konum: 00 groundfloor; Pset_WallCommon.FireRating = tanımlı değil."
+          },
+          {
+            "id": "F3",
+            "statement": "Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil."
+          }
+        ],
+        "grounding": {
+          "sentences": [
+            {
+              "text": "Bu bir hatadır çünkü IfcWall \"plumbing wall\" (GlobalId 1uS5vfZPn9R8PlAaVd73on), INFO-WALL-01 kuralının (\"Duvarların yangın dayanım sınıfı tanımlı olmalı\") koşullarını sağlamamaktadır [F1][F2].",
+              "citations": [
+                "F1",
+                "F2"
+              ],
+              "validCitations": true,
+              "entities": [
+                {
+                  "kind": "globalId",
+                  "value": "1uS5vfZPn9R8PlAaVd73on",
+                  "supported": true
+                },
+                {
+                  "kind": "ruleId",
+                  "value": "INFO-WALL-01",
+                  "supported": true
+                }
+              ]
+            },
+            {
+              "text": "Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil [F3].",
+              "citations": [
+                "F3"
+              ],
+              "validCitations": true,
+              "entities": []
+            },
+            {
+              "text": "Kuralın dayanağı: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir [F1].",
+              "citations": [
+                "F1"
+              ],
+              "validCitations": true,
+              "entities": []
+            }
+          ],
+          "entityCount": 2,
+          "unsupported": [],
+          "faithfulness": 1,
+          "completeness": 1,
+          "citationCoverage": 1,
+          "hallucinated": false,
+          "startsWithRequiredPhrase": true
+        },
+        "latencyMs": 0.014916999999968539,
+        "createdAt": "2026-10-11T12:31:35.828Z"
+      },
+      {
+        "id": "4e48ee9a-7987-4bdd-a216-9cb2d166c841",
+        "violationId": "INFO-WALL-01:3wdauVJT5Fx9drrREiDqA$",
+        "method": "template",
+        "text": "Bu bir hatadır çünkü IfcWall \"house - outer wall - house right back\" (GlobalId 3wdauVJT5Fx9drrREiDqA$), INFO-WALL-01 kuralının (\"Duvarların yangın dayanım sınıfı tanımlı olmalı\") koşullarını sağlamamaktadır [F1][F2]. Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil [F3]. Kuralın dayanağı: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir [F1].",
+        "facts": [
+          {
+            "id": "F1",
+            "statement": "Kural INFO-WALL-01: \"Duvarların yangın dayanım sınıfı tanımlı olmalı\" (önem derecesi: minor). Dayanak: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir."
+          },
+          {
+            "id": "F2",
+            "statement": "Konu eleman: IfcWall \"house - outer wall - house right back\" (GlobalId 3wdauVJT5Fx9drrREiDqA$); model: ARCH; konum: 00 groundfloor; Pset_WallCommon.FireRating = tanımlı değil."
+          },
+          {
+            "id": "F3",
+            "statement": "Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil."
+          }
+        ],
+        "grounding": {
+          "sentences": [
+            {
+              "text": "Bu bir hatadır çünkü IfcWall \"house - outer wall - house right back\" (GlobalId 3wdauVJT5Fx9drrREiDqA$), INFO-WALL-01 kuralının (\"Duvarların yangın dayanım sınıfı tanımlı olmalı\") koşullarını sağlamamaktadır [F1][F2].",
+              "citations": [
+                "F1",
+                "F2"
+              ],
+              "validCitations": true,
+              "entities": [
+                {
+                  "kind": "globalId",
+                  "value": "3wdauVJT5Fx9drrREiDqA$",
+                  "supported": true
+                },
+                {
+                  "kind": "ruleId",
+                  "value": "INFO-WALL-01",
+                  "supported": true
+                }
+              ]
+            },
+            {
+              "text": "Zorunlu koşul karşılanmamaktadır: Pset_WallCommon.FireRating tanımlı olmalı; modeldeki değer: tanımlı değil [F3].",
+              "citations": [
+                "F3"
+              ],
+              "validCitations": true,
+              "entities": []
+            },
+            {
+              "text": "Kuralın dayanağı: Bilgi gereksinimi (yönetmelik denetiminin ön koşulu); madde numarası henüz belirlenmemiştir [F1].",
+              "citations": [
+                "F1"
+              ],
+              "validCitations": true,
+              "entities": []
+            }
+          ],
+          "entityCount": 2,
+          "unsupported": [],
+          "faithfulness": 1,
+          "completeness": 1,
+          "citationCoverage": 1,
+          "hallucinated": false,
+          "startsWithRequiredPhrase": true
+        },
+        "latencyMs": 0.011500000000012278,
+        "createdAt": "2026-10-11T12:31:35.833Z"
+      }
+    ]
+  }
+}
