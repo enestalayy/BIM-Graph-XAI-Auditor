@@ -36,6 +36,11 @@ describe('toPropertyValue', () => {
   it('returns null for missing values', () => {
     assert.equal(toPropertyValue(null, mm), null);
   });
+
+  it('treats blank labels as missing, since an empty IfcLabel carries no information', () => {
+    assert.equal(toPropertyValue({ name: 'IFCLABEL', value: '' }, mm), null);
+    assert.equal(toPropertyValue({ name: 'IFCLABEL', value: '   ' }, mm), null);
+  });
 });
 
 describe('toIfcFrame', () => {

@@ -28,6 +28,7 @@ export function toPropertyValue(measure: unknown, scales: UnitScales): PropertyV
   }
   const scaleKey = MEASURE_SCALE[name];
   if (scaleKey && typeof value === 'number') return value * scales[scaleKey];
+  if (typeof value === 'string' && value.trim() === '') return null; // an empty label is not a value
   return value;
 }
 
