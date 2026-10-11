@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
-const SAFE_IFC_NAME = /^[\w\-. ()]{1,200}\.ifc$/i;
+const SAFE_IFC_NAME = /^[\p{L}\p{N}_\-. ()]{1,200}\.ifc$/iu;
 
 /** Accepts plain IFC file names only; rejects paths, traversal and other extensions. */
 export function assertSafeIfcFileName(fileName: string): string {

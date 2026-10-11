@@ -27,6 +27,7 @@ describe('readServerConfig', () => {
 describe('assertSafeIfcFileName', () => {
   it('accepts ordinary IFC file names', () => {
     assert.equal(assertSafeIfcFileName('Building-Hvac (v2).ifc'), 'Building-Hvac (v2).ifc');
+    assert.equal(assertSafeIfcFileName('Şantiye_Mimari.ifc'), 'Şantiye_Mimari.ifc');
   });
 
   it('rejects paths, traversal, hidden files and other extensions', () => {
