@@ -32,7 +32,7 @@ describe('classificationMetrics', () => {
 describe('gold standard', () => {
   it('maps entries to the engine id scheme with sorted pairs', () => {
     const gold = goldStandardSchema.parse({
-      dataset: 'd', annotator: 'a', createdAt: '2026-10-11', models: ['m.ifc'], ruleSet: 'rules/default.json',
+      dataset: 'd', annotator: 'a', createdAt: '2026-10-11', models: ['m.ifc'], ruleSet: 'rules/default.json', rules: ['FS-1', 'INFO-1'],
       expected: [{ ruleId: 'FS-1', elements: ['wall', 'duct'] }, { ruleId: 'INFO-1', elements: ['w2'] }],
     });
     assert.deepEqual(expectedViolationIds(gold), ['FS-1:duct:wall', 'INFO-1:w2']);
@@ -40,8 +40,14 @@ describe('gold standard', () => {
 
   it('rejects entries with more than two elements', () => {
     assert.throws(() => goldStandardSchema.parse({
-      dataset: 'd', annotator: 'a', createdAt: 'x', models: ['m'], ruleSet: 'r', expected: [{ ruleId: 'R', elements: ['a', 'b', 'c'] }],
+      dataset: 'd', annotator: 'a', createdAt: 'x', models: ['m'], ruleSet: 'r', rules: ['R'], expected: [{ ruleId: 'R', elements: ['a', 'b', 'c'] }],
     }));
+  });
+
+  it('rejects labels for rules the annotator did not declare as covered', () => {
+    assert.throws(() => goldStandardSchema.parse({
+      dataset: 'd', annotator: 'a', createdAt: 'x', models: ['m'], ruleSet: 'r', rules: ['A'], expected: [{ ruleId: 'B', elements: ['x'] }],
+    }), /Rule B is not listed/);
   });
 });
 

@@ -12,6 +12,8 @@ export const goldStandardSchema = z
     models: z.array(z.string().min(1)).min(1),
     /** Rule set the labels refer to (path or version note). */
     ruleSet: z.string().min(1),
+    /** Rules the annotator labelled exhaustively; only these are evaluated. */
+    rules: z.array(z.string().min(1)).min(1),
     expected: z.array(
       z
         .object({
@@ -22,7 +24,14 @@ export const goldStandardSchema = z
         .strict(),
     ),
   })
-  .strict();
+  .strict()
+  .superRefine((gold, ctx) => {
+    gold.expected.forEach((entry, index) => {
+      if (!gold.rules.includes(entry.ruleId)) {
+        ctx.addIssue({ code: 'custom', message: `Rule ${entry.ruleId} is not listed in "rules"`, path: ['expected', index, 'ruleId'] });
+      }
+    });
+  });
 
 export type GoldStandard = z.infer<typeof goldStandardSchema>;
 

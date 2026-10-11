@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { after, before, describe, it } from 'node:test';
 import { parseRuleSet, type RuleSet } from '@bim/core';
-import { connectGraph, readGraphConfig, type GraphClient } from '@bim/graph';
+import { connectGraph, readDisposableGraphConfig, type GraphClient } from '@bim/graph';
 import { runInjectionExperiment } from '../../src/evaluation/experiments.ts';
 
 const SKIP = process.env.NEO4J_TEST_URI ? false : 'NEO4J_TEST_URI is not set (docker compose --profile test up -d neo4j-test)';
@@ -12,7 +12,7 @@ describe('fault-injection experiment', { skip: SKIP }, () => {
   let rules: RuleSet;
 
   before(async () => {
-    graph = await connectGraph(readGraphConfig(process.env, 'NEO4J_TEST_URI'));
+    graph = await connectGraph(readDisposableGraphConfig());
     rules = parseRuleSet(JSON.parse(await readFile(new URL('../../../../rules/default.json', import.meta.url), 'utf8')));
   });
   after(() => graph?.close());

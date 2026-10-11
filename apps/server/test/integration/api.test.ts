@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { after, before, describe, it } from 'node:test';
 import type { FastifyInstance } from 'fastify';
-import { connectGraph, ensureSchema, readGraphConfig, type GraphClient } from '@bim/graph';
+import { connectGraph, ensureSchema, readDisposableGraphConfig, type GraphClient } from '@bim/graph';
 import { buildApp } from '../../src/http/app.ts';
 import { createExplainerFactory } from '../../src/services/explainers.ts';
 import { createFileRuleRepository } from '../../src/services/rule-repository.ts';
@@ -27,7 +27,7 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
   let app: FastifyInstance;
 
   before(async () => {
-    graph = await connectGraph(readGraphConfig(process.env, 'NEO4J_TEST_URI'));
+    graph = await connectGraph(readDisposableGraphConfig());
     await graph.run('MATCH (n) DETACH DELETE n');
     await ensureSchema(graph);
     const work = await mkdtemp(join(tmpdir(), 'bim-api-'));

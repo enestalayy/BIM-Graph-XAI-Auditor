@@ -2,7 +2,7 @@ import {
   classificationMetrics, expectedViolationIds, metricsByRule, summarizeExplanations,
   type ClassificationMetrics, type Explanation, type ExplanationSummary, type GoldStandard, type RuleSet,
 } from '@bim/core';
-import { ensureSchema, ingestModel, loadViolations, runAudit, type GraphWriter } from '@bim/graph';
+import { ensureSchema, ingestModel, listModels, loadViolations, runAudit, type GraphWriter } from '@bim/graph';
 import type { Explainer } from '@bim/xai';
 import { explainAndStore } from '../services/explain.ts';
 import { refreshIntersections } from '../services/ingest.ts';
@@ -70,9 +70,19 @@ export interface GoldReport {
   readonly auditMs: number;
 }
 
-/** Compares a fresh audit of the current graph with an expert gold standard. */
+/**
+ * Compares a fresh audit of the current graph with an expert gold standard, over
+ * the rules the gold standard declares as labelled. Fails if a labelled model is
+ * not in the graph or a labelled rule is not in the rule set.
+ */
 export async function evaluateAgainstGold(graph: GraphWriter, ruleSet: RuleSet, gold: GoldStandard): Promise<GoldReport> {
-  const audit = await runAudit(graph, ruleSet.rules);
+  const ingested = new Set((await listModels(graph)).map((m) => m.fileName));
+  const missingModels = gold.models.filter((m) => !ingested.has(m));
+  if (missingModels.length) throw new Error(`Labelled models are not ingested: ${missingModels.join(', ')}`);
+  const rules = ruleSet.rules.filter((r) => gold.rules.includes(r.id));
+  const missingRules = gold.rules.filter((id) => !rules.some((r) => r.id === id));
+  if (missingRules.length) throw new Error(`Labelled rules are not in the rule set: ${missingRules.join(', ')}`);
+  const audit = await runAudit(graph, rules.map((r) => ({ ...r, enabled: true })));
   const predicted = audit.violations.map((v) => v.id);
   const expected = expectedViolationIds(gold);
   return { dataset: gold.dataset, total: classificationMetrics(predicted, expected), byRule: metricsByRule(predicted, expected), auditMs: audit.durationMs };

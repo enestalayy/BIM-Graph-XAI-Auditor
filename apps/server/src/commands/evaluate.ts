@@ -1,7 +1,7 @@
 import { readFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import { goldStandardSchema } from '@bim/core';
-import { connectGraph, readGraphConfig } from '@bim/graph';
+import { connectGraph, readDisposableGraphConfig } from '@bim/graph';
 import { evaluateAgainstGold, evaluateExplanations, runInjectionExperiment } from '../evaluation/experiments.ts';
 import { ms, pct, writeReport } from '../evaluation/report.ts';
 import { createExplainerFactory, isExplainerKind } from '../services/explainers.ts';
@@ -16,7 +16,7 @@ async function injection({ config, args }: CommandContext): Promise<void> {
   const cases = Number(values.cases);
   if (seeds.some((s) => !Number.isInteger(s)) || !Number.isInteger(cases) || cases < 1) throw new UsageError('--seeds a,b,c and --cases N must be integers');
   if (!process.env.NEO4J_TEST_URI) throw new UsageError('The injection experiment wipes its database; set NEO4J_TEST_URI to the disposable test instance');
-  const graph = await connectGraph(readGraphConfig(process.env, 'NEO4J_TEST_URI'));
+  const graph = await connectGraph(readDisposableGraphConfig());
   try {
     const report = await runInjectionExperiment(graph, await createFileRuleRepository(config.rulesFile).load(), seeds, cases, config.clashTolerance);
     const rows = report.runs.map((r) =>

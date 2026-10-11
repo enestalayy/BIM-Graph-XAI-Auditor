@@ -18,5 +18,7 @@ Her çalıştırma `results/` altına zaman damgalı bir `.json` (ham veri) ve `
 2. Modelleri sistem çıktısına **bakmadan** inceleyin. Her gerçek ihlal için kural
    kimliğini ve elemanların GlobalId'lerini yazın. Kesişim kurallarında iki eleman,
    özellik kurallarında tek eleman girilir; sıra önemli değildir.
-3. Etiketleyen kişiyi ve tarihi doldurun. Etiketler sistem çıktısından türetilirse
+3. `rules` alanına eksiksiz etiketlediğiniz kuralları yazın; yalnızca bu kurallar
+   ölçülür (etiketlenmemiş bir kuralın bütün çıktısı yanlış pozitif sayılmasın diye).
+4. Etiketleyen kişiyi ve tarihi doldurun. Etiketler sistem çıktısından türetilirse
    ölçüm döngüsel olur ve geçersiz sayılır.

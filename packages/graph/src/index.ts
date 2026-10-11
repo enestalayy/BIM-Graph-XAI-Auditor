@@ -8,3 +8,4 @@ export { loadViolationContext } from './violation-context.ts';
 export { loadExplanations, saveExplanation } from './explanation-store.ts';
 export { listModels, type ModelSummary } from './models.ts';
 export { loadVocabulary, type Vocabulary } from './vocabulary.ts';
+export { readDisposableGraphConfig } from './disposable.ts';
