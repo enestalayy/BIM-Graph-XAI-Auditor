@@ -2,6 +2,7 @@ import type { DatasetCatalog } from '@bim/core';
 import type { GraphWriter } from '@bim/graph';
 import type { ExplainerKind } from '../config.ts';
 import type { ExplainerFactory } from '../services/explainers.ts';
+import type { ReviewStore } from '../services/review-store.ts';
 import type { RuleRepository } from '../services/rule-repository.ts';
 import type { UploadStore } from '../services/upload-store.ts';
 
@@ -11,6 +12,7 @@ export interface AppDependencies {
   readonly uploads: UploadStore;
   readonly explainerFor: ExplainerFactory;
   readonly catalog: DatasetCatalog;
+  readonly reviews: ReviewStore;
   readonly settings: {
     readonly clashTolerance: number;
     readonly maxUploadBytes: number;

@@ -3,6 +3,7 @@ import { readServerConfig } from './config.ts';
 import { buildApp } from './http/app.ts';
 import { loadCatalog } from './services/datasets.ts';
 import { createExplainerFactory } from './services/explainers.ts';
+import { createReviewStore } from './services/review-store.ts';
 import { createFileRuleRepository } from './services/rule-repository.ts';
 import { createUploadStore } from './services/upload-store.ts';
 
@@ -17,6 +18,7 @@ const app = await buildApp(
     uploads: createUploadStore(config.uploadsDir),
     explainerFor: createExplainerFactory(config),
     catalog: await loadCatalog(config.catalogFile),
+    reviews: createReviewStore(config.reviewDir),
     settings: {
       clashTolerance: config.clashTolerance,
       maxUploadBytes: config.maxUploadBytes,

@@ -1,0 +1,182 @@
+{
+  "dataset": "duplex",
+  "seed": 20261011,
+  "source": "evaluation/gold/duplex-annotation-report.md §7",
+  "question": "Bu etiket doğru mu? (Özellik kuralı: özellik gerçekten eksik mi? Kesişim kuralı: eleman diğerini gerçekten delip geçiyor mu?)",
+  "items": [
+    {
+      "index": 1,
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLCm"
+      ],
+      "note": "Interior Plumbing 152 mm, FireRating yok"
+    },
+    {
+      "index": 2,
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FLOH"
+      ],
+      "note": "Exterior Brick on Block"
+    },
+    {
+      "index": 3,
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKST"
+      ],
+      "note": "Interior Partition 92 mm"
+    },
+    {
+      "index": 4,
+      "ruleId": "INFO-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FNr2"
+      ],
+      "note": "Exterior Brick on Block"
+    },
+    {
+      "index": 5,
+      "ruleId": "FS-PARTY-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKau"
+      ],
+      "note": "Party Wall (IfcWall)"
+    },
+    {
+      "index": 6,
+      "ruleId": "FS-PARTY-WALL-01",
+      "elements": [
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "Party Wall"
+    },
+    {
+      "index": 7,
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2_nWSI38z1MQowEuvpwI2C",
+        "2O2Fr$t4X7Zf8NOew3FNr2"
+      ],
+      "note": "Boru duvarın içinde, 5,45 L"
+    },
+    {
+      "index": 8,
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2oUDfYEAjDzQSvWL1eupfi",
+        "2O2Fr$t4X7Zf8NOew3FNr2"
+      ],
+      "note": "Boru duvarın içinde, 2,26 L"
+    },
+    {
+      "index": 9,
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "27fGOYnQj8MQqqFxq21fgv",
+        "2O2Fr$t4X7Zf8NOew3FNau"
+      ],
+      "note": "Boru duvarın içinde, 2,19 L"
+    },
+    {
+      "index": 10,
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "08ayqJVPzCnPvZ0wv8Gs_7",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "1,055 L, eşiğe yakın"
+    },
+    {
+      "index": 11,
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "0uq3rG9sb5iPszypOTBXZb",
+        "0iEHWY1$XA8eQeeULq4jE6"
+      ],
+      "note": "Boru duvarı kesiyor, 2,45 L"
+    },
+    {
+      "index": 12,
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "36PHY8l$rBmPsWvnnIIhcd",
+        "2O2Fr$t4X7Zf8NOew3FNqI"
+      ],
+      "note": "Duvarın içinde, 1,71 L"
+    },
+    {
+      "index": 13,
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "2zJ3WP6bzE_u5MgDrNcyfs",
+        "2O2Fr$t4X7Zf8NOew3FNhv"
+      ],
+      "note": "Duvarın içinde, 1,71 L"
+    },
+    {
+      "index": 14,
+      "ruleId": "CLASH-MEP-STR-01",
+      "elements": [
+        "3ZpZg5x6L8RhsGp3tg8aGD",
+        "0iEHWY1$XA8eQeeULq4jE6"
+      ],
+      "note": "Konduit duvarı kesiyor, 1,80 L"
+    },
+    {
+      "index": 15,
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0Tjs7l9CPAQxN9XnigQv$l",
+        "2O2Fr$t4X7Zf8NOew3FNbT"
+      ],
+      "note": "0,012 L, 14 mm"
+    },
+    {
+      "index": 16,
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0qhCU2klz4GAVI0SV1Z_kT",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "Duvarın içinde, 2,19 L"
+    },
+    {
+      "index": 17,
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "1XvfWvgFP6gPrew2jqx$Dn",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "En küçük geçiş, 0,002 L, 12 mm"
+    },
+    {
+      "index": 18,
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "0NtcwyHBzBVA6ASoO0BEYM",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "Soğuk su, 1,42 L"
+    },
+    {
+      "index": 19,
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "15$tmU0G9ARvozWPzAruwE",
+        "2O2Fr$t4X7Zf8NOew3FKRH"
+      ],
+      "note": "Sıcak su, 0,016 L"
+    },
+    {
+      "index": 20,
+      "ruleId": "FS-PARTY-WALL-02",
+      "elements": [
+        "1SEEl_3N1649G1FNumeBoq",
+        "2O2Fr$t4X7Zf8NOew3FKRi"
+      ],
+      "note": "Atık su, 0,89 L"
+    }
+  ]
+}

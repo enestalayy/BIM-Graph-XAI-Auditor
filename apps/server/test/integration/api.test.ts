@@ -9,6 +9,7 @@ import { buildApp } from '../../src/http/app.ts';
 import { loadCatalog } from '../../src/services/datasets.ts';
 import { createExplainerFactory } from '../../src/services/explainers.ts';
 import { fileURLToPath } from 'node:url';
+import { createReviewStore } from '../../src/services/review-store.ts';
 import { createFileRuleRepository } from '../../src/services/rule-repository.ts';
 import { createUploadStore } from '../../src/services/upload-store.ts';
 
@@ -35,12 +36,14 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
     const work = await mkdtemp(join(tmpdir(), 'bim-api-'));
     const rulesFile = join(work, 'rules.json');
     await copyFile(new URL('rules/default.json', ROOT), rulesFile);
+    await copyFile(new URL('evaluation/gold/duplex-review-sample.json', ROOT), join(work, 'duplex-review-sample.json'));
     app = await buildApp({
       graph,
       rules: createFileRuleRepository(rulesFile),
       uploads: createUploadStore(join(work, 'uploads')),
       explainerFor: createExplainerFactory({ ollama: { host: 'http://127.0.0.1:1', model: 'none', timeoutMs: 1000 } }),
       catalog: await loadCatalog(fileURLToPath(new URL('data/catalog.json', ROOT))),
+      reviews: createReviewStore(work),
       settings: { clashTolerance: 0.001, maxUploadBytes: 50 * 1024 * 1024, defaultExplainer: 'template', dataRoot: fileURLToPath(ROOT) },
     });
   });
@@ -156,5 +159,15 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
 
   it('rejects an unknown dataset', async () => {
     assert.equal((await app.inject({ method: 'POST', url: '/api/datasets/nope/activate' })).statusCode, 404);
+  });
+
+  it('serves the human review sample and records verdicts', async () => {
+    const review = (await app.inject({ method: 'GET', url: '/api/reviews/duplex' })).json();
+    assert.equal(review.items.length, 20);
+    const saved = await app.inject({ method: 'PUT', url: '/api/reviews/duplex/1', payload: { verdict: 'agree', comment: 'görüldü' } });
+    assert.equal(saved.statusCode, 200);
+    assert.equal(saved.json().summary.agree, 1);
+    assert.equal((await app.inject({ method: 'PUT', url: '/api/reviews/duplex/1', payload: { verdict: 'maybe' } })).statusCode, 400);
+    assert.equal((await app.inject({ method: 'GET', url: '/api/reviews/clinic' })).statusCode, 404);
   });
 });

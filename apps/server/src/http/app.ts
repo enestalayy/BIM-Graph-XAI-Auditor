@@ -9,6 +9,7 @@ import { registerAuditRoutes } from './routes/audits.ts';
 import { registerDatasetRoutes } from './routes/datasets.ts';
 import { DatasetUnavailableError } from '../services/datasets.ts';
 import { registerModelRoutes } from './routes/models.ts';
+import { registerReviewRoutes } from './routes/reviews.ts';
 import { registerRuleRoutes } from './routes/rules.ts';
 import { registerViolationRoutes } from './routes/violations.ts';
 
@@ -39,5 +40,6 @@ export async function buildApp(deps: AppDependencies, options: { logger?: boolea
   registerAuditRoutes(app, deps);
   registerViolationRoutes(app, deps);
   registerDatasetRoutes(app, deps);
+  registerReviewRoutes(app, deps);
   return app;
 }

@@ -10,6 +10,8 @@ export interface ServerConfig {
   /** Dataset catalog (data/catalog.json); file paths in it are relative to dataRoot. */
   readonly catalogFile: string;
   readonly dataRoot: string;
+  /** Human review samples and verdicts (evaluation/gold). */
+  readonly reviewDir: string;
   /** Uploaded IFC files are kept here so the web viewer can load them again. */
   readonly uploadsDir: string;
   /** AABB interpenetration tolerance, metres. */
@@ -37,6 +39,7 @@ export function readServerConfig(env: NodeJS.ProcessEnv = process.env, cwd = pro
     rulesFile: resolve(cwd, env.RULES_FILE || 'rules/default.json'),
     catalogFile: resolve(cwd, env.CATALOG_FILE || 'data/catalog.json'),
     dataRoot: cwd,
+    reviewDir: resolve(cwd, env.REVIEW_DIR || 'evaluation/gold'),
     uploadsDir: resolve(cwd, env.UPLOADS_DIR || 'data/uploads'),
     clashTolerance: positiveNumber(env, 'CLASH_TOLERANCE_M', 0.001),
     maxUploadBytes: positiveNumber(env, 'MAX_UPLOAD_MB', 200) * 1024 * 1024,
