@@ -171,6 +171,71 @@
         "where": []
       },
       "minVolume": 0.001
+    },
+    {
+      "id": "FS-PARTY-WALL-01",
+      "kind": "property",
+      "title": "Bağımsız birimleri ayıran duvar yangın duvarı olarak tanımlanmalı",
+      "description": "İkiz/bitişik birimleri ayıran duvar yangın duvarıdır ve en az 90 dakika dayanıklı olmalıdır; modelde yangın dayanım sınıfının tanımlı olması beklenir. Ayırıcı duvarlar model adlandırmasıyla seçilir (\"Party Wall\"); başka adlandırma kullanan modellerde seçici uyarlanmalıdır.",
+      "severity": "major",
+      "enabled": true,
+      "regulation": {
+        "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)",
+        "article": "24/3, 25/1",
+        "verified": true,
+        "note": "Resmî konsolide metinden (mevzuat.gov.tr, MevzuatNo 200712937, son değişiklik RG 01.07.2025/32943) 2026-10-11 tarihinde kontrol edildi. Madde 24/3: “İkiz evleri birbirinden ayıran her duvar yangın duvarı olarak inşa edilir ve evler ayrı binalar olarak değerlendirilir.” Madde 25/1: “Bitişik nizam yapıları birbirinden ayıran yangın duvarları, yangına en az 90 dakika dayanıklı olarak projelendirilir.” Kural yalnızca FireRating bilgisinin varlığını denetler; değerin 90 dakikayı karşılayıp karşılamadığı serbest metin olduğundan denetlenmez."
+      },
+      "target": {
+        "classes": [
+          "IfcWall"
+        ],
+        "where": [
+          {
+            "property": "name",
+            "op": "contains",
+            "value": "Party Wall"
+          }
+        ]
+      },
+      "require": [
+        {
+          "property": "Pset_WallCommon.FireRating",
+          "op": "exists"
+        }
+      ]
+    },
+    {
+      "id": "FS-PARTY-WALL-02",
+      "kind": "intersection",
+      "title": "Bağımsız birimleri ayıran duvardan geçen tesisat yangın yalıtımı açısından incelenmeli",
+      "description": "Yangın duvarı niteliğindeki ayırıcı duvardan geçen her tesisat hattı (kanal, boru, kablo taşıyıcı) için geçiş çevresinin duvarın dayanım süresi kadar yalıtılması gerekir; yalıtım modellerde nadiren bulunduğundan her geçiş inceleme bulgusu olarak raporlanır.",
+      "severity": "major",
+      "enabled": true,
+      "regulation": {
+        "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)",
+        "article": "24/3, 25/2",
+        "verified": true,
+        "note": "Resmî konsolide metinden (mevzuat.gov.tr, MevzuatNo 200712937, son değişiklik RG 01.07.2025/32943) 2026-10-11 tarihinde kontrol edildi. Madde 25/2: “Su, elektrik, ısıtma, havalandırma tesisatının ve benzeri tesisatın yangın duvarından geçmesi hâlinde, tesisat çevresi, açıklık kalmayacak şekilde en az yangın duvarı yangın dayanım süresi kadar, yangın ve duman geçişine karşı yalıtılır.”"
+      },
+      "subject": {
+        "classes": [
+          "IfcFlowSegment"
+        ],
+        "where": []
+      },
+      "object": {
+        "classes": [
+          "IfcWall"
+        ],
+        "where": [
+          {
+            "property": "name",
+            "op": "contains",
+            "value": "Party Wall"
+          }
+        ]
+      },
+      "minVolume": 0
     }
   ]
 }

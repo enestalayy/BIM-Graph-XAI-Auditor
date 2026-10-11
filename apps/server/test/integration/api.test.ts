@@ -91,7 +91,8 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
     const response = await app.inject({ method: 'PUT', url: '/api/rules', payload: { version: 1, rules: [{ id: 'bad' }] } });
     assert.equal(response.statusCode, 400);
     assert.ok(response.json().issues.length > 0);
-    assert.equal((await app.inject({ method: 'GET', url: '/api/rules' })).json().rules.length, 5);
+    const shipped = JSON.parse(await readFile(new URL('rules/default.json', ROOT), 'utf8')).rules.length;
+    assert.equal((await app.inject({ method: 'GET', url: '/api/rules' })).json().rules.length, shipped);
   });
 
   it('compiles a rule for preview without saving it', async () => {
@@ -104,7 +105,7 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
   it('runs an audit, lists violations and serves one with its context', async () => {
     const audit = await app.inject({ method: 'POST', url: '/api/audits' });
     assert.equal(audit.statusCode, 201);
-    assert.equal(audit.json().violations.length, 5);
+    assert.equal(audit.json().violations.length, 5); // 4 walls without FireRating + duct x roof slab
     const violations = (await app.inject({ method: 'GET', url: '/api/violations' })).json();
     assert.equal(violations.length, 5);
     const detail = await app.inject({ method: 'GET', url: `/api/violations/${encodeURIComponent(violations[0].id)}` });
