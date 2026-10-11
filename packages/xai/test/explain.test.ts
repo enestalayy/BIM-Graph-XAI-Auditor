@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { describe, it } from 'node:test';
+import { validateGrounding } from '@bim/core';
 import { buildEvidence, createLlmExplainer, explainViolation, formatNumber, templateExplainer, type TextGenerator } from '../src/index.ts';
 import { intersectionContext, propertyContext } from './fixtures.ts';
 
@@ -22,6 +23,16 @@ describe('buildEvidence', () => {
     assert.match(text, /1,94 m uzaklıktadır/);
     assert.match(text, /madde numarası henüz belirlenmemiştir/);
     assert.equal(roles.findings.length, 3);
+  });
+});
+
+describe('buildEvidence: regulation articles', () => {
+  it('names every article of a multi-article reference so each can be cited', () => {
+    const context = { ...intersectionContext, rule: { ...intersectionContext.rule, regulation: { source: 'Yönetmelik', article: '24/7, 25/2', verified: true } } };
+    const { facts } = buildEvidence(context);
+    assert.match(facts[0]!.statement, /madde 24\/7, madde 25\/2\./);
+    assert.equal(validateGrounding('Bu bir hatadır çünkü Madde 25/2 gereği geçiş yalıtılmalıdır [F1].', facts).hallucinated, false);
+    assert.equal(validateGrounding('Bu bir hatadır çünkü Madde 26 gereği geçiş yalıtılmalıdır [F1].', facts).hallucinated, true);
   });
 });
 

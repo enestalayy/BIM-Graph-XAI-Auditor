@@ -43,8 +43,9 @@ export function buildEvidence(context: ViolationContext): Evidence {
   };
 
   const { regulation } = rule;
-  const article = regulation.article
-    ? `madde ${regulation.article}${regulation.verified ? '' : ' (madde numarası henüz doğrulanmamıştır)'}`
+  const articles = regulation.article?.split(/\s*,\s*/).filter(Boolean).map((a) => `madde ${a}`).join(', ');
+  const article = articles
+    ? `${articles}${regulation.verified ? '' : ' (madde numarası henüz doğrulanmamıştır)'}`
     : 'madde numarası henüz belirlenmemiştir';
   const ruleFact = add(`Kural ${rule.id}: "${rule.title}" (önem derecesi: ${violation.severity}). Dayanak: ${regulation.source}; ${article}.`);
 
