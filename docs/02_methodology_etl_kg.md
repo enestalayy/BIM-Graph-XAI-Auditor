@@ -1,9 +1,97 @@
-# Bölüm 2: Veri İşleme ve Bilgi Grafı İnşası (ETL & KG)
+# Bölüm 2: Veri Dönüşümü ve Bilgi Grafiği İnşası
 
-*(Yapay Zeka Asistanı İçin Not: Kod tabanında `src/etl` ve `src/graph` dizinlerinde yapılan her türlü geometrik basitleştirme, veri çıkarma ve graf veritabanı tasarımı mantığını bu dosyaya yazın.)*
+## 2.1. IFC Verisinin Ayrıştırılması
 
-## 2.1. IFC Veri Çıkarımı ve AABB (Axis-Aligned Bounding Box) Yaklaşımı
-Büyük ölçekli BIM modellerinde tam geometrik kesişim algoritmaları ($O(n^2)$ karmaşıklığı nedeniyle) yüksek hesaplama maliyeti gerektirir. Bu projede tam geometri yerine Eksenlere Hizalı Sınırlayıcı Kutu (AABB - Axis-Aligned Bounding Box) yaklaşımı benimsenmiştir...
+### 2.1.1. Araç Seçimi ve Öneri Formundan Sapmanın Gerekçesi
 
-## 2.2. Labeled Property Graph (LPG) Tasarımı ve Neo4j
-Bina elemanları arasındaki mekansal hiyerarşi (`CONTAINS`, `PART_OF`) ve anlamsal özellikler Neo4j graf veritabanında Labeled Property Graph (LPG) veri modeli ile temsil edilmiştir...
+Tez öneri formunda (Bölüm 4.1) IFC dosyalarının Python dili ve IfcOpenShell kütüphanesi ile işlenmesi öngörülmüştür. Uygulama aşamasında ise ayrıştırma katmanı TypeScript dili ve **web-ifc** kütüphanesi (That Open Company, MPL-2.0, sürüm 0.0.78) ile gerçekleştirilmiştir. Bu tercihin gerekçeleri şunlardır:
+
+1. **Uçtan uca tek dil.** Sistemin son kullanıcı arayüzü, tarayıcıda çalışan bir 3B BIM görüntüleyicisi içermektedir. web-ifc hem Node.js sunucusunda hem de tarayıcıda aynı C++/WebAssembly çekirdeğiyle çalışır. Bu nedenle sunucunun denetim için okuduğu geometri ile kullanıcının gördüğü geometri aynı ayrıştırıcıdan üretilmektedir.
+2. **Şema kapsamı.** web-ifc IFC2X3, IFC4 ve IFC4X3 şemalarını desteklemektedir. Çalışmada kullanılan örnek modeller IFC4X3_ADD2 şemasındadır.
+3. **Yöntemin korunması.** Bu değişiklik yalnızca araç düzeyindedir. Öneri formundaki yöntem, yani IFC → bilgi grafiği → mekansal akıl yürütme → kural denetimi → açıklanabilir raporlama zinciri değişmemiştir.
+
+Araç değişikliğinin sonuçları etkilemediğini göstermek amacıyla iki ayrıştırıcı aynı modeller üzerinde karşılaştırılmıştır: eleman kümeleri ve sınırlayıcı kutu değerleri web-ifc ile IfcOpenShell 0.8.5 arasında kıyaslanmıştır (Bkz. Bölüm 2.1.6, `tools/parity`).
+
+### 2.1.2. Çıkarılan Bilgi
+
+Öneri formundaki "veritabanına sadece çakışma analizi için gerekli teknik özelliklerin aktarılması" ilkesi doğrultusunda her ürün (IfcProduct) için yalnızca şu bilgiler çıkarılmıştır:
+
+| Alan | Kaynak | Not |
+|---|---|---|
+| `globalId` | `IfcRoot.GlobalId` | Birincil anahtar; federasyonda modeller arası eşleştirme anahtarıdır |
+| `ifcClass`, `ifcSuperClasses` | Şema kalıtım tanımı | Örn. `IfcWallStandardCase` → `IfcWall`, `IfcBuiltElement`, `IfcElement` |
+| `category` | Kalıtım | `physical` (IfcElement alt tipleri) / `spatial` (IfcSpatialElement alt tipleri) |
+| `name`, `predefinedType` | Öznitelikler | |
+| `properties` | `IfcRelDefinesByProperties`, `IfcRelDefinesByType` | `Pset.Özellik` anahtarlarıyla düzleştirilmiştir |
+| `materials` | `IfcRelAssociatesMaterial` | Katman, liste, bileşen ve profil kümeleri dahil |
+| `aabb` | Gövde geometrisi | Metre, Z-yukarı dünya koordinatları |
+
+Ataları ayrıca saklanmaktadır, çünkü IFC'de bir kural genellikle bir üst sınıfa yazılır ("her `IfcWall`…"). Atalar saklanmasaydı IFC2X3 modellerindeki `IfcWallStandardCase` örnekleri bu kuralların dışında kalırdı. Önceki prototipte bu hata gözlenmiştir.
+
+**Fiziksel elemanların kapsamı:**
+- Fiziksel eleman kümesine `IfcFeatureElement` alt tipleri dahil edilmemiştir (boşluklar, çıkıntılar).
+- `IfcVirtualElement` de dahil edilmemiştir.
+- Bu elemanların maddi bir varlığı bulunmadığından çakışma adayı olmaları anlamsızdır.
+
+### 2.1.3. Özellik Kümeleri ve Tip/Örnek Semantiği
+
+IFC'de bir özellik hem tip nesnesine (`IfcTypeObject.HasPropertySets`) hem de örneğe (occurrence) atanabilir. Standart semantik gereği önce tip düzeyindeki özellikler uygulanmış, ardından örnek düzeyindeki değerler bunları ezmiştir:
+
+$$P(e) = P_{\text{tip}}(e) \oplus P_{\text{örnek}}(e)$$
+
+Burada $\oplus$ sağdaki değerin önceliğini ifade eder.
+
+**Değer dönüşümleri:**
+- `IfcLengthMeasure` türündeki değerler modelin uzunluk birimine göre metreye çevrilmiştir.
+- `IfcAreaMeasure` türündeki değerler m²'ye çevrilmiştir.
+- `IfcVolumeMeasure` türündeki değerler m³'e çevrilmiştir.
+- `IfcLogical` değerleri ikili mantığa indirgenmiş, `UNKNOWN` değeri ise boş bırakılmıştır.
+
+Miktar kümeleri (`IfcElementQuantity`) bilinçli olarak aktarılmamıştır. Denetim kuralları geometrik büyüklükleri doğrudan sınırlayıcı kutulardan hesaplamaktadır.
+
+### 2.1.4. Birimler ve Koordinat Çerçevesi
+
+Örnek modellerin uzunluk birimi milimetredir (`IFCSIUNIT(*,.LENGTHUNIT.,.MILLI.,.METRE.)`).
+
+**Birim ölçekleme:**
+- SI önekleri boyut sayısı kadar üslü uygulanmıştır. Bir $d$ boyutlu birim ve $p$ öneki için ölçek $s = p^{d}$ olarak alınmıştır (örn. mm² için $10^{-6}$).
+- Dönüşüme dayalı birimler (`IfcConversionBasedUnit`, örn. foot) dönüşüm katsayısı ile temel SI birimi çarpılarak çözümlenmiştir.
+- Geometri web-ifc tarafından metreye ölçeklenmektedir.
+
+**Eksen dönüşümü:** web-ifc geometriyi three.js geleneğine uygun olarak Y-yukarı bir çerçevede üretmektedir. Bu davranış deneysel olarak doğrulanmıştır: kanalın IFC'deki düşey aralığı (0,9–4,7 m) web-ifc çıktısında Y ekseninde görülmüştür. Bu nedenle tüm noktalar IFC'nin Z-yukarı dünya çerçevesine şu dönüşümle geri çevrilmiştir:
+
+$$(x, y, z)_{\text{IFC}} = (x,\; -z,\; y)_{\text{web-ifc}}$$
+
+Modeller yeniden merkezlenmeden (`COORDINATE_TO_ORIGIN = false`) okunmuştur. Aynı projeye ait disiplin modelleri ortak bir dünya koordinat sistemini paylaştığından bu tercih, federasyonda ek bir hizalama adımını gereksiz kılmaktadır.
+
+### 2.1.5. Sınırlayıcı Kutu (AABB)
+
+Her elemanın sınırlayıcı kutusu şu adımlarla hesaplanmıştır:
+1. Gövde geometrisinin üçgenlenmiş ağı (tessellation) alınır.
+2. Ağın tüm köşe noktalarına yerleşim matrisi uygulanır.
+3. Dünya koordinatlarındaki noktaların eksen bazında en küçük ve en büyük değerleri alınır:
+
+$$\text{AABB}(e) = \Big[\min_{v \in V_e} v_x,\ \max_{v \in V_e} v_x\Big] \times \Big[\min_{v \in V_e} v_y,\ \max_{v \in V_e} v_y\Big] \times \Big[\min_{v \in V_e} v_z,\ \max_{v \in V_e} v_z\Big]$$
+
+Düzlemsel yüzeylerde bu kutu kesindir. Eğri yüzeylerde ise üçgenleme hassasiyetine bağlı, ihmal edilebilir bir yaklaşım hatası içerir.
+
+AABB eksenlere hizalı olduğundan, eksenlere göre döndürülmüş elemanlarda gerçek hacimden büyük bir kutu üretir. Bu durum çakışma tespitinde yanlış pozitif riski doğurur. Bu sınırlılık Bölüm 3'te ele alınmakta ve Bölüm 5'te kesinlik (precision) metriğiyle ölçülmektedir.
+
+**Geometrisi olmayan elemanlar:** Gövde geometrisi bulunmayan elemanlarda `aabb` boş bırakılmıştır. Bu elemanlar çakışma analizine girmez, ancak grafa düğüm olarak eklenir:
+- yalnızca alt parçalardan oluşan birleşik elemanlar (örn. `IfcRoof`),
+- gruplayıcı vekil (proxy) elemanlar.
+
+### 2.1.6. Doğrulama ve Gözlemler
+
+Ayrıştırıcının doğruluğu örnek modellerdeki bilinen değerlerle birim testleri üzerinden sınanmıştır (`packages/ifc/test`):
+- Kanal elemanının sınırlayıcı kutusu $[7{,}80; 8{,}00] \times [7{,}85; 8{,}05] \times [0{,}90; 4{,}70]$ m olarak elde edilmiştir.
+- Döşemenin `Pset_SlabCommon.FireRating = REI30` özelliği okunmuştur.
+- Bir alt tipin üst tipiyle birlikte sorgulanması sonucu oluşan çift kayıt sorunu giderilmiştir. Önceki prototipte `IfcAirTerminal` elemanları hem kendi sınıfı hem de `IfcFlowTerminal` üzerinden iki kez sayılmaktaydı.
+
+Örnek modellere ilişkin iki gözlem kayda geçirilmiştir:
+1. `IfcChimney` elemanı her iki modelde de web-ifc tarafından geometrisiz döndürülmektedir. Bunun ayrıştırıcıya mı yoksa modele mi bağlı olduğu parity karşılaştırmasıyla belirlenecektir.
+2. `IfcSpace` elemanları web-ifc'nin geometri akışına dahil değildir. Mekanlar çakışma adayı olmadığından bu durum denetimi etkilememektedir.
+
+## 2.2. Labeled Property Graph (LPG) Tasarımı
+
+*(Bölüm 3. uygulama adımında yazılacaktır.)*
