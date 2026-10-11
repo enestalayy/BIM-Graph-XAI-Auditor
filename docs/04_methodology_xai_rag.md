@@ -87,21 +87,37 @@ Bu nedenle yöntem tümüyle değiştirilmiştir. Yeni yöntemde açıklamanın 
 
 **Varlık türleri.** Metinden düzenli ifadelerle beş tür doğrulanabilir varlık çıkarılır:
 
-| Tür | Örnek |
-|---|---|
-| IFC GlobalId (22 karakter) | `38WbwIGD90nB_3T2BTU5Ed` |
-| Kural kimliği | `FS-DUCT-WALL-01` |
-| Yönetmelik madde atfı | `Madde 51` |
-| Sınıflandırma etiketi | `EI60`, `REI30` |
-| Sayı | `0,129` |
+| Tür | Örnek | Normalleştirme |
+|---|---|---|
+| IFC GlobalId (22 karakter) | `38WbwIGD90nB_3T2BTU5Ed` | Birebir |
+| Kural kimliği | `FS-DUCT-WALL-01`, `R-01` | Birebir |
+| Yönetmelik madde atfı | `Madde 51`, `md. 7` | Madde numarası |
+| Sınıflandırma etiketi | `EI60`, `REI30` | Büyük harf (`ei60` = `EI60`) |
+| Birimli sayı | `0,129 m³`, `194 cm`, `3` | SI değeri ve boyut (uzunluk, alan, hacim, birimsiz) |
 
 **Destek ölçütü.** Aynı çıkarıcı olgulara da uygulanır ve bir izinli varlık kümesi $\mathcal{A}$ elde edilir. Açıklamadaki bir $e$ varlığı şu durumlarda **desteklenmiş** sayılır:
 - Sayı dışındaki türlerde: $e \in \mathcal{A}$.
-- Sayılarda: yazıldığı hassasiyete yuvarlandığında bir kanıt değeriyle örtüşmesi. Bu karşılaştırmada m→cm, m→mm ve m³→L dönüşümleri de kabul edilir:
+- Sayılarda: değer yalnızca **aynı boyuttaki** bir kanıt değeriyle karşılaştırılır, yazıldığı hassasiyetin yarım basamağı kadar bir pay tanınır.
 
-$$\text{destek}(n) \iff \exists a \in \mathcal{A}_{\text{sayı}},\ f \in \{1, 100, 1000\} : |a \cdot f - n| \le \tfrac{1}{2}\,10^{-k}$$
+Sayılar için ölçüt şöyledir:
 
-Burada $k$, $n$'nin yazıldığı ondalık basamak sayısıdır. Örneğin 0,129 m³ değeri "0,13 m³" olarak yazılabilir. Buna karşın 1,94 m olarak verilen bir değer "1,9416 m" olarak yazılamaz, çünkü kanıtta olmayan bir hassasiyet uydurulmuş olur.
+$$\text{destek}(n) \iff \exists a \in \mathcal{A}_{\text{sayı}} : \text{boyut}(a) = \text{boyut}(n) \;\wedge\; |a_{SI} - n_{SI}| \le \tfrac{1}{2}\,10^{-k}\, f_u$$
+
+Burada $k$, $n$'nin yazıldığı ondalık basamak sayısı, $f_u$ ise yazıldığı birimin SI çarpanıdır.
+
+Birim dönüşümleri yalnızca bir boyut içinde kabul edilir (m ↔ cm ↔ mm, m³ ↔ L). Bu sayede şu yazımlar kabul edilir:
+- 0,129 m³ değerinin "0,13 m³" ya da "129 L" olarak yazılması,
+- 1,94 m değerinin "194 cm" olarak yazılması.
+
+Buna karşın şu yazımlar reddedilir:
+- 1,94 m'nin "1,9416 m" olarak yazılması (uydurulmuş hassasiyet),
+- "y 8 m" koordinatının "8 m³ hacim" olarak yazılması (boyut farkı).
+
+Kanıt olgularındaki tüm ölçüler birimleriyle birlikte yazılmaktadır; buna kesişim merkezi koordinatları da dahildir.
+
+**İlk tasarımın zayıflıkları.** Bu ölçüt, bağımsız kod incelemesinde ilk tasarımın iki zayıflığı ortaya çıktıktan sonra benimsenmiştir:
+- **Boyutsuz eşleşme.** İlk tasarımda sayılar boyuttan bağımsız olarak $\{1, 100, 1000\}$ çarpanlarıyla herhangi bir kanıt değeriyle eşleşebiliyordu. Bu durum, olgu havuzu büyüdükçe sahte kabul olasılığını artırmaktaydı.
+- **Yanlış cümle bölme.** "md. 7" ve "1. Kat" gibi kısaltma ve sıra sayıları cümleyi hatalı biçimde bölmekteydi.
 
 **Rakam maskeleme.** Kimliklerin ve etiketlerin içindeki rakamların sayı olarak okunmaması için bu varlıklar sayı çıkarımından önce metinden maskelenmektedir.
 
@@ -123,7 +139,10 @@ Her açıklama, olguları ve doğrulama raporuyla birlikte grafta saklanır: `(:
 
 ### 4.5.3. Sınırlılıklar
 
-Varlık düzeyindeki denetim, uydurulmuş kimlik, sayı, madde ve sınıflandırmaları yakalar. Buna karşın anlamsal düzeydeki çarpıtmaları yakalayamaz. Örneğin varlık içermeyen "damper mevcuttur" gibi bir olumsuzlama hatası bu denetimden geçer.
+Varlık düzeyindeki denetim, uydurulmuş kimlik, sayı, madde ve sınıflandırmaları yakalar. Buna karşın üç tür hatayı yakalayamaz:
+- **Anlamsal çarpıtmalar.** Örneğin varlık içermeyen "damper mevcuttur" gibi bir olumsuzlama hatası bu denetimden geçer.
+- **Aynı boyutta yanlış niceliğe bağlanan sayılar.** Örneğin derinlik değerinin uzaklıkmış gibi yazılması, her ikisi de uzunluk olduğundan kabul edilir.
+- **Yazıyla yazılmış sayılar.** Örneğin "yüz yirmi" çıkarılamaz.
 
 Bu tür hataların ölçülmesi için iki tamamlayıcı yöntem değerlendirmeye alınmıştır:
 - doğrulama kümesinin bir örnekleminde uzman değerlendirmesi,

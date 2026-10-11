@@ -17,7 +17,7 @@ describe('extractEntities', () => {
       { kind: 'globalId', value: '38WbwIGD90nB_3T2BTU5Ed' },
       { kind: 'ruleId', value: 'FS-DUCT-WALL-01' },
       { kind: 'label', value: 'EI60' },
-      { kind: 'number', value: '0.129' },
+      { kind: 'number', value: '0.129 m³' },
     ]);
   });
 
@@ -57,5 +57,41 @@ describe('validateGrounding', () => {
 
   it('notices when the required opening phrase is missing', () => {
     assert.equal(validateGrounding('Kanal duvarı kesiyor [F2].', facts).startsWithRequiredPhrase, false);
+  });
+});
+
+describe('validateGrounding: unit-aware numbers and robust tokenisation', () => {
+  const pool: EvidenceFact[] = [
+    { id: 'F1', statement: 'Kural R-01: "Test" (önem derecesi: major). Dayanak: Yönetmelik; madde 7.' },
+    { id: 'F2', statement: 'Konu eleman: IfcWall "Duvar 1. Kat" (GlobalId 1uS5vfZPn9R8PlAaVd73on).' },
+    { id: 'F3', statement: 'Kesişim hacmi 0,129 m³, penetrasyon derinliği 0,2 m, kesişim merkezi (x 7,9 m; y 8 m; z 4,59 m).' },
+    { id: 'F4', statement: 'En yakın eleman 1,94 m uzaklıktadır; sınıfı EI60.' },
+  ];
+
+  it('does not let a coordinate support a volume of the same magnitude', () => {
+    const report = validateGrounding('Kanal 8 m³ hacimle kesiyor [F3].', pool);
+    assert.deepEqual(report.unsupported, [{ kind: 'number', value: '8 m³' }]);
+  });
+
+  it('accepts unit conversions within the same dimension only', () => {
+    assert.equal(validateGrounding('Hacim 129 L, uzaklık 194 cm, derinlik 200 mm [F3][F4].', pool).hallucinated, false);
+    assert.equal(validateGrounding('Uzaklık 1,9416 m [F4].', pool).hallucinated, true);
+  });
+
+  it('treats classification labels case-insensitively', () => {
+    assert.deepEqual(validateGrounding('Duvar Ei120 sınıfındadır [F4].', pool).unsupported, [{ kind: 'label', value: 'EI120' }]);
+    assert.equal(validateGrounding('Duvar ei60 sınıfındadır [F4].', pool).hallucinated, false);
+  });
+
+  it('reads short rule ids and abbreviated articles without splitting the sentence', () => {
+    const report = validateGrounding('Bu bir hatadır çünkü R-01 kuralı md. 7 gereği sağlanmıyor [F1].', pool);
+    assert.equal(report.hallucinated, false, JSON.stringify(report.unsupported));
+    assert.equal(report.sentences.length, 1);
+  });
+
+  it('does not split sentences at ordinals inside names', () => {
+    const report = validateGrounding('Bu bir hatadır çünkü "Duvar 1. Kat" yangın sınıfı içermiyor [F2].', pool);
+    assert.equal(report.sentences.length, 1);
+    assert.equal(report.citationCoverage, 1);
   });
 });

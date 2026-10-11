@@ -1,4 +1,4 @@
-import { extractCitations, extractEntities, splitSentences, type Entity, type EntityKind } from './entities.ts';
+import { extractCitations, extractEntities, splitSentences, toQuantity, type Entity, type EntityKind, type Quantity } from './entities.ts';
 
 export interface EvidenceFact {
   readonly id: string;
@@ -33,17 +33,13 @@ export interface GroundingReport {
 export const REQUIRED_OPENING = 'Bu bir hatadır çünkü';
 
 /**
- * Unit conversions a writer may legitimately apply to evidence values
- * (m -> cm, m -> mm, m³ -> L). A number is supported when it equals an
- * evidence value times one of these factors, up to the precision it is written with.
+ * A written number is supported when an evidence number of the same dimension
+ * (length, area, volume or unitless) equals it up to the precision it is written
+ * with. Units convert within a dimension (m <-> cm <-> mm, m³ <-> L), never across.
  */
-const CONVERSION_FACTORS = [1, 100, 1000] as const;
-
-function numberSupported(written: string, evidence: readonly number[]): boolean {
-  const value = Number(written);
-  const decimals = written.includes('.') ? written.split('.')[1]!.length : 0;
-  const halfStep = 0.5 * 10 ** -decimals + 1e-9;
-  return evidence.some((e) => CONVERSION_FACTORS.some((f) => Math.abs(e * f - value) <= halfStep));
+function numberSupported(written: string, evidence: readonly Quantity[]): boolean {
+  const q = toQuantity(written);
+  return evidence.some((e) => e.dimension === q.dimension && Math.abs(e.si - q.si) <= q.halfStep + 1e-12);
 }
 
 /**
@@ -55,7 +51,7 @@ export function validateGrounding(text: string, facts: readonly EvidenceFact[]):
   const evidence = extractEntities(facts.map((f) => f.statement).join('\n'));
   const allowed = new Map<EntityKind, Set<string>>();
   for (const e of evidence) allowed.set(e.kind, (allowed.get(e.kind) ?? new Set()).add(e.value));
-  const evidenceNumbers = [...(allowed.get('number') ?? [])].map(Number);
+  const evidenceNumbers = [...(allowed.get('number') ?? [])].map(toQuantity);
   const factIds = new Set(facts.map((f) => f.id));
 
   const isSupported = (entity: Entity): boolean =>

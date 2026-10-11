@@ -20,7 +20,7 @@ export { parseRule, parseRuleSet, RuleValidationError } from './rules/parse.ts';
 export { compileRule, type CompiledQuery } from './rules/compile.ts';
 export { toViolations } from './rules/to-violations.ts';
 export type { ElementRef, Evidence, FailedCheck, Violation } from './rules/violation.ts';
-export { extractCitations, extractEntities, splitSentences, type Entity, type EntityKind } from './grounding/entities.ts';
+export { extractCitations, extractEntities, splitSentences, toQuantity, type Dimension, type Entity, type EntityKind, type Quantity } from './grounding/entities.ts';
 export {
   REQUIRED_OPENING, validateGrounding, type EntityCheck, type EvidenceFact, type GroundingReport, type SentenceCheck,
 } from './grounding/validate.ts';

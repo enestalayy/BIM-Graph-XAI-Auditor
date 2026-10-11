@@ -65,7 +65,7 @@ export function buildEvidence(context: ViolationContext): Evidence {
     const { intersection: x, centre, mitigation } = evidence;
     findings.push(add(
       `İki eleman kesişmektedir: kesişim hacmi ${formatNumber(x.volume)} m³, penetrasyon derinliği ${formatNumber(x.depth)} m, ` +
-      `kesişim merkezi (x ${formatNumber(centre.x)}; y ${formatNumber(centre.y)}; z ${formatNumber(centre.z)}) m.`,
+      `kesişim merkezi (x ${formatNumber(centre.x)} m; y ${formatNumber(centre.y)} m; z ${formatNumber(centre.z)} m).`,
     ));
     if (mitigation && rule.kind === 'intersection' && rule.mitigation) {
       findings.push(add(
