@@ -98,3 +98,10 @@ export interface Review {
   items: ReviewItem[];
   summary: { total: number; reviewed: number; agree: number; disagree: number; unsure: number; agreement: number | null };
 }
+
+export interface ElementDetail {
+  ref: { globalId: string; ifcClass: string; name: string | null };
+  properties: Record<string, unknown>;
+  containers: string[];
+  disciplines: string[];
+}

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { api } from '../api/client.ts';
-import type { Review, Verdict } from '../api/types.ts';
+import type { Review, Rule, Verdict } from '../api/types.ts';
+import { ElementProperties } from './ElementProperties.tsx';
 import type { Highlight } from '../viewer/scene.ts';
 import { ErrorMessage } from './ErrorMessage.tsx';
 
@@ -25,9 +26,11 @@ export function ReviewPanel({ activeDataset, onDatasetLoaded, onHighlight }: Rev
   const [comment, setComment] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
+  const [rules, setRules] = useState<Rule[]>([]);
 
   useEffect(() => {
     api.getReview(DATASET).then(setReview, setError);
+    api.getRules().then((set) => setRules(set.rules), setError);
   }, []);
 
   const item = review?.items[current];
@@ -91,6 +94,16 @@ export function ReviewPanel({ activeDataset, onDatasetLoaded, onHighlight }: Rev
             <button type="button" disabled={current === review.items.length - 1} onClick={() => setCurrent(current + 1)}>Sonraki ›</button>
           </div>
           <p>{item.note}</p>
+          {item.elements.length === 1 && (() => {
+            const rule = rules.find((r) => r.id === item.ruleId);
+            const keys = rule?.kind === 'property' ? rule.require.map((c) => c.property) : [];
+            return (
+              <>
+                <p className="muted small">Bu bir özellik kuralı: geometriye değil, elemanın bilgisine bakılır. Kuralın aradığı alan modelde gerçekten boş mu?</p>
+                <ElementProperties globalId={item.elements[0]!} checkedKeys={keys} />
+              </>
+            );
+          })()}
           <p className="muted small">
             <span className="swatch subject" /> <code>{item.elements[0]}</code>
             {item.elements[1] && <> &nbsp; <span className="swatch object" /> <code>{item.elements[1]}</code></>}

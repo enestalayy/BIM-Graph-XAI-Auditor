@@ -1,5 +1,5 @@
 import type {
-  ActivationResult, AuditSummary, DatasetList, Review, Verdict, ExplainerKind, Explanation, IngestOutcome, ModelSummary, Rule, RuleInput, RuleSetInput, Violation, ViolationDetail, Vocabulary,
+  ActivationResult, AuditSummary, DatasetList, ElementDetail, Review, Verdict, ExplainerKind, Explanation, IngestOutcome, ModelSummary, Rule, RuleInput, RuleSetInput, Violation, ViolationDetail, Vocabulary,
 } from './types.ts';
 
 export class ApiError extends Error {
@@ -41,6 +41,7 @@ const json = (method: string, payload: unknown): RequestInit => ({
 });
 
 export const api = {
+  getElement: (globalId: string) => request<ElementDetail>(`/api/elements/${encodeURIComponent(globalId)}`),
   getReview: (dataset: string) => request<Review>(`/api/reviews/${encodeURIComponent(dataset)}`),
   saveVerdict: (dataset: string, index: number, verdict: Verdict, comment: string) =>
     request<Review>(`/api/reviews/${encodeURIComponent(dataset)}/${index}`, json('PUT', { verdict, comment })),
