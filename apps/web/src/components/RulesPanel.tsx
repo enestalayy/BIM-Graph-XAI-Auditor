@@ -4,6 +4,7 @@ import type { RuleInput, Vocabulary } from '../api/types.ts';
 import { newRule } from '../lib/rule-draft.ts';
 import { SEVERITY_LABEL } from '../lib/severity.ts';
 import { ErrorMessage } from './ErrorMessage.tsx';
+import { InfoTip } from './InfoTip.tsx';
 import { RuleEditor } from './RuleEditor.tsx';
 
 interface RulesPanelProps {
@@ -73,6 +74,7 @@ export function RulesPanel({ vocabulary, onSaved }: RulesPanelProps) {
             <button type="button" className="link" onClick={() => setSelected(index)}>
               <span className={`badge ${rule.severity}`}>{SEVERITY_LABEL[rule.severity]}</span> <code>{rule.id}</code> {rule.title}
             </button>
+            {rule.description && <InfoTip>{rule.description}</InfoTip>}
           </li>
         ))}
       </ul>

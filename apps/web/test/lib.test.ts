@@ -67,3 +67,23 @@ describe('coreBoxIndices', () => {
     assert.ok(core.length >= 16);
   });
 });
+
+describe('Turkish IFC class names', () => {
+  it('names common classes and falls back to the IFC name', async () => {
+    const { turkishClassName, classHint } = await import('../src/lib/ifc-names.ts');
+    assert.equal(turkishClassName('IfcWallStandardCase'), 'Duvar');
+    assert.equal(turkishClassName('IfcFlowSegment'), 'Tesisat hattı');
+    assert.equal(turkishClassName('IfcSomethingNew'), 'IfcSomethingNew');
+    assert.match(classHint('IfcDamper'), /yangında kapanır/);
+  });
+});
+
+describe('groupByRule', () => {
+  it('groups findings per rule, most severe rule first, keeping counts', async () => {
+    const { groupByRule } = await import('../src/lib/group-violations.ts');
+    const mk = (id: string, ruleId: string, severity: Violation['severity']): Violation =>
+      ({ id, ruleId, severity, subject: { globalId: id, ifcClass: 'IfcWall', name: null }, object: null, evidence: { kind: 'property', failures: [] } });
+    const groups = groupByRule([mk('a', 'INFO', 'minor'), mk('b', 'FS', 'critical'), mk('c', 'INFO', 'minor')]);
+    assert.deepEqual(groups.map((g) => [g.ruleId, g.violations.length]), [['FS', 1], ['INFO', 2]]);
+  });
+});

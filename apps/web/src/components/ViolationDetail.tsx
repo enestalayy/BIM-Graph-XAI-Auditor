@@ -5,6 +5,8 @@ import { SEVERITY_LABEL } from '../lib/severity.ts';
 import { ErrorMessage } from './ErrorMessage.tsx';
 import { EvidenceSummary } from './EvidenceSummary.tsx';
 import { ExplanationCard } from './ExplanationCard.tsx';
+import { InfoTip } from './InfoTip.tsx';
+import { classHint, turkishClassName } from '../lib/ifc-names.ts';
 
 interface ViolationDetailProps {
   detail: Detail;
@@ -32,7 +34,8 @@ export function ViolationDetail({ detail, onExplained }: ViolationDetailProps) {
   return (
     <section className="detail">
       <h3>
-        <span className={`badge ${violation.severity}`}>{SEVERITY_LABEL[violation.severity]}</span> {rule.title}
+        <span className={`badge ${violation.severity}`}>{SEVERITY_LABEL[violation.severity]}</span> {rule.title}{' '}
+        {rule.description && <InfoTip>{rule.description}</InfoTip>}
       </h3>
       <p className="muted">
         <code>{rule.id}</code> · {rule.regulation.source}
@@ -40,8 +43,14 @@ export function ViolationDetail({ detail, onExplained }: ViolationDetailProps) {
         {!rule.regulation.verified && ' (doğrulanmadı)'}
       </p>
       <dl>
-        <dt>Konu</dt><dd>{violation.subject.ifcClass} {violation.subject.name} <code>{violation.subject.globalId}</code></dd>
-        {violation.object && (<><dt>Nesne</dt><dd>{violation.object.ifcClass} {violation.object.name} <code>{violation.object.globalId}</code></dd></>)}
+        <dt>Konu <InfoTip>Kuralı ihlal eden eleman (kesişim kurallarında kesen eleman, örn. boru).</InfoTip></dt>
+        <dd>{turkishClassName(violation.subject.ifcClass)} <InfoTip>{classHint(violation.subject.ifcClass)}</InfoTip> {violation.subject.name} <code>{violation.subject.globalId}</code></dd>
+        {violation.object && (
+          <>
+            <dt>Nesne <InfoTip>Konu elemanın kestiği eleman (örn. duvar veya döşeme).</InfoTip></dt>
+            <dd>{turkishClassName(violation.object.ifcClass)} <InfoTip>{classHint(violation.object.ifcClass)}</InfoTip> {violation.object.name} <code>{violation.object.globalId}</code></dd>
+          </>
+        )}
       </dl>
       <h4>Kanıt</h4>
       <EvidenceSummary violation={violation} />

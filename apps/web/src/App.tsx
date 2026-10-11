@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from './api/client.ts';
-import type { DatasetList, ModelSummary, Violation, ViolationDetail as Detail, Vocabulary } from './api/types.ts';
+import type { DatasetList, ModelSummary, Rule, Violation, ViolationDetail as Detail, Vocabulary } from './api/types.ts';
 import { ErrorMessage } from './components/ErrorMessage.tsx';
 import { ModelsPanel } from './components/ModelsPanel.tsx';
 import { ReviewPanel } from './components/ReviewPanel.tsx';
@@ -29,6 +29,15 @@ export function App() {
   const [detail, setDetail] = useState<Detail | null>(null);
   const [error, setError] = useState<unknown>(null);
   const [datasets, setDatasets] = useState<DatasetList | null>(null);
+  const [rules, setRules] = useState<ReadonlyMap<string, Rule>>(new Map());
+
+  const refreshRules = useCallback(async () => {
+    try {
+      setRules(new Map((await api.getRules()).rules.map((r) => [r.id, r])));
+    } catch (e) {
+      setError(e);
+    }
+  }, []);
 
   const refreshDatasets = useCallback(async () => {
     try {
@@ -72,7 +81,8 @@ export function App() {
     void refreshModels();
     void refreshViolations();
     void refreshDatasets();
-  }, [refreshModels, refreshViolations, refreshDatasets]);
+    void refreshRules();
+  }, [refreshModels, refreshViolations, refreshDatasets, refreshRules]);
 
   const onDatasetLoaded = useCallback((nextTab: Tab = 'violations') => {
     setSelectedId(null);
@@ -111,12 +121,12 @@ export function App() {
         {tab === 'models' && (
           <ModelsPanel models={models} datasets={datasets} onChanged={() => void refreshModels()} onDatasetLoaded={() => onDatasetLoaded()} />
         )}
-        {tab === 'rules' && <RulesPanel vocabulary={vocabulary} onSaved={() => void refreshViolations()} />}
+        {tab === 'rules' && <RulesPanel vocabulary={vocabulary} onSaved={() => { void refreshRules(); void refreshViolations(); }} />}
         {tab === 'review' && (
           <ReviewPanel activeDataset={datasets?.active ?? null} onDatasetLoaded={() => onDatasetLoaded('review')} onHighlight={setReviewHighlight} />
         )}
         {tab === 'violations' && (
-          <ViolationsPanel violations={violations} selectedId={selectedId} onSelect={setSelectedId} onAudited={() => void refreshViolations()} />
+          <ViolationsPanel violations={violations} rules={rules} selectedId={selectedId} onSelect={setSelectedId} onAudited={() => void refreshViolations()} />
         )}
       </aside>
       <main className="main">

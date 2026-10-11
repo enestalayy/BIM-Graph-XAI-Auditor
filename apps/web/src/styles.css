@@ -96,8 +96,11 @@ th, td { text-align: left; padding: 0.3rem; border-bottom: 1px solid var(--borde
 .rule-list, .violation-list { list-style: none; margin: 0.5rem 0; padding: 0; }
 .rule-list li { display: flex; gap: 0.4rem; align-items: center; padding: 0.25rem; border-radius: 6px; }
 .rule-list li.selected { background: var(--surface); }
-.violation { display: flex; flex-wrap: wrap; gap: 0.4rem; width: 100%; text-align: left; margin-bottom: 0.3rem; }
-.violation.selected { border-color: var(--accent); }
+.violation {
+  display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; width: 100%; text-align: left; margin-bottom: 0.25rem;
+  border: 1px solid var(--border); border-radius: 6px; padding: 0.3rem 0.5rem; cursor: pointer; background: var(--bg);
+}
+.violation.selected { border-color: var(--accent); background: var(--surface); }
 
 .rule-editor { border-top: 1px solid var(--border); margin-top: 0.75rem; padding-top: 0.75rem; }
 .selector { display: flex; flex-direction: column; gap: 0.4rem; }
@@ -153,3 +156,19 @@ th, td { text-align: left; padding: 0.3rem; border-bottom: 1px solid var(--borde
 .element-properties table { margin-top: 0.2rem; font-size: 0.8rem; }
 .element-properties tr.checked td { font-weight: 600; }
 .element-properties td.missing { color: var(--critical); }
+
+.info-tip { position: relative; display: inline-block; color: var(--accent); cursor: help; font-size: 0.85em; outline: none; }
+.info-tip-body {
+  position: fixed; z-index: 50; padding: 0.5rem 0.6rem; border-radius: 6px; font-size: 0.8rem; font-weight: 400;
+  line-height: 1.35; color: var(--text); background: var(--bg); border: 1px solid var(--border); box-shadow: 0 4px 14px rgb(0 0 0 / 0.15);
+  white-space: normal; text-align: left;
+}
+.block { display: block; margin-top: 0.25rem; }
+.group-list { list-style: none; padding: 0; margin: 0.5rem 0; }
+.group { border: 1px solid var(--border); border-radius: 8px; margin-bottom: 0.4rem; }
+.group-header { display: flex; align-items: center; gap: 0.3rem; padding-right: 0.5rem; }
+.group-toggle { flex: 1; display: flex; align-items: center; gap: 0.4rem; border: none; background: transparent; text-align: left; padding: 0.45rem 0.5rem; }
+.group-title { flex: 1; }
+.count { font-weight: 600; font-variant-numeric: tabular-nums; }
+.chevron { color: var(--muted); width: 0.8rem; }
+.group .violation-list { padding: 0 0.5rem 0.4rem; margin: 0; }
