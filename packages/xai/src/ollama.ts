@@ -1,3 +1,4 @@
+import { GeneratorError } from './errors.ts';
 import type { GenerateRequest, TextGenerator } from './generator.ts';
 
 export interface OllamaOptions {
@@ -13,9 +14,16 @@ export interface OllamaOptions {
   readonly backoffMs?: number;
 }
 
-class RetryableError extends Error {}
+class RetryableError extends GeneratorError {}
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/** Reasoning models may prepend a <think>…</think> block; it is not part of the explanation. */
+export function stripReasoning(text: string): string {
+  return text.replace(/<think>[\s\S]*?<\/think>/gi, '').trim();
+}
+
+const isTimeout = (error: unknown) => (error as Error)?.name === 'TimeoutError';
 
 /** Text generator backed by a local Ollama server (POST /api/chat). */
 export function createOllamaGenerator(options: OllamaOptions): TextGenerator {
@@ -24,6 +32,8 @@ export function createOllamaGenerator(options: OllamaOptions): TextGenerator {
 
   async function attempt(request: GenerateRequest): Promise<string> {
     let response: Response;
+    let body: string;
+    const signal = AbortSignal.timeout(timeoutMs);
     try {
       response = await fetchImpl(url, {
         method: 'POST',
@@ -37,19 +47,25 @@ export function createOllamaGenerator(options: OllamaOptions): TextGenerator {
           ],
           options: { temperature: 0, seed },
         }),
-        signal: AbortSignal.timeout(timeoutMs),
+        signal,
       });
+      body = await response.text(); // the timeout also covers reading the body
     } catch (error) {
-      if ((error as Error).name === 'TimeoutError') throw new Error(`Ollama did not answer within ${timeoutMs} ms`, { cause: error });
-      throw new RetryableError(`Cannot reach Ollama at ${host}; is "ollama serve" running?`, { cause: error });
+      if (isTimeout(error)) throw new GeneratorError('timeout', `Ollama did not answer within ${timeoutMs} ms`, { cause: error });
+      throw new RetryableError('unreachable', `Cannot reach Ollama at ${host}; is "ollama serve" running?`, { cause: error });
     }
-    const body = await response.text();
-    if (response.status === 404) throw new Error(`Ollama model "${model}" not found; run "ollama pull ${model}"`);
-    if (response.status === 429 || response.status >= 500) throw new RetryableError(`Ollama returned HTTP ${response.status}: ${body}`);
-    if (!response.ok) throw new Error(`Ollama returned HTTP ${response.status}: ${body}`);
-    const content = (JSON.parse(body) as { message?: { content?: unknown } }).message?.content;
-    if (typeof content !== 'string' || content.trim() === '') throw new Error('Ollama returned an empty answer');
-    return content;
+    if (response.status === 404) throw new GeneratorError('bad-response', `Ollama model "${model}" not found; run "ollama pull ${model}"`);
+    if (response.status === 429 || response.status >= 500) throw new RetryableError('bad-response', `Ollama returned HTTP ${response.status}: ${body}`);
+    if (!response.ok) throw new GeneratorError('bad-response', `Ollama returned HTTP ${response.status}: ${body}`);
+    let content: unknown;
+    try {
+      content = (JSON.parse(body) as { message?: { content?: unknown } }).message?.content;
+    } catch (error) {
+      throw new GeneratorError('bad-response', 'Ollama returned a response that is not JSON', { cause: error });
+    }
+    const text = typeof content === 'string' ? stripReasoning(content) : '';
+    if (text === '') throw new GeneratorError('bad-response', 'Ollama returned an empty answer');
+    return text;
   }
 
   return {

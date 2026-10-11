@@ -2,6 +2,7 @@ import multipart from '@fastify/multipart';
 import Fastify, { type FastifyInstance } from 'fastify';
 import { RuleValidationError } from '@bim/core';
 import { InvalidIfcError } from '@bim/ifc';
+import { GeneratorError } from '@bim/xai';
 import { BadRequestError, NotFoundError } from '../errors.ts';
 import type { AppDependencies } from './dependencies.ts';
 import { registerAuditRoutes } from './routes/audits.ts';
@@ -17,6 +18,9 @@ export async function buildApp(deps: AppDependencies, options: { logger?: boolea
     if (error instanceof RuleValidationError) return reply.code(400).send({ error: 'invalid_rule', message: error.message, issues: error.issues });
     if (error instanceof BadRequestError || error instanceof InvalidIfcError) return reply.code(400).send({ error: 'bad_request', message: error.message });
     if (error instanceof NotFoundError) return reply.code(404).send({ error: 'not_found', message: error.message });
+    if (error instanceof GeneratorError) {
+      return reply.code(error.kind === 'timeout' ? 504 : 502).send({ error: 'explainer_unavailable', message: error.message });
+    }
     const status = (error as { statusCode?: number }).statusCode;
     if (status && status >= 400 && status < 500) return reply.code(status).send({ error: 'bad_request', message: (error as Error).message });
     request.log.error(error);

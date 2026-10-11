@@ -124,12 +124,12 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
     assert.equal((await app.inject({ method: 'POST', url, payload: { method: 'gpt' } })).statusCode, 400);
   });
 
-  it('surfaces an unreachable LLM as a server error with a clear message', async () => {
+  it('reports an unreachable LLM as a bad gateway with a clear message', async () => {
     const [violation] = (await app.inject({ method: 'GET', url: '/api/violations' })).json();
     const response = await app.inject({
       method: 'POST', url: `/api/violations/${encodeURIComponent(violation.id)}/explanations`, payload: { method: 'ollama' },
     });
-    assert.equal(response.statusCode, 500);
+    assert.equal(response.statusCode, 502);
     assert.match(response.json().message, /Cannot reach Ollama/);
   });
 });

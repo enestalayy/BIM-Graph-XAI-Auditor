@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import type { AddressInfo } from 'node:net';
 import { after, before, describe, it } from 'node:test';
-import { createOllamaGenerator } from '../src/index.ts';
+import { createOllamaGenerator, GeneratorError, stripReasoning } from '../src/index.ts';
 
 type Handler = (req: IncomingMessage, body: string, res: ServerResponse) => void;
 
@@ -58,6 +58,25 @@ describe('Ollama generator', () => {
   it('explains how to fix a missing model', async () => {
     handler = (_req, _body, res) => reply(res, 404, { error: "model 'm' not found" });
     await assert.rejects(createOllamaGenerator({ host, model: 'm' }).generate({ system: '', prompt: '' }), /ollama pull m/);
+  });
+
+  it('removes reasoning blocks of thinking models from the answer', async () => {
+    handler = (_req, _body, res) => reply(res, 200, { message: { content: '<think>plan F9 3,7 m³</think>\nBu bir hatadır çünkü …' } });
+    assert.equal(await createOllamaGenerator({ host, model: 'm' }).generate({ system: '', prompt: '' }), 'Bu bir hatadır çünkü …');
+    assert.equal(stripReasoning('<THINK>x</THINK> y'), 'y');
+  });
+
+  it('rejects a response that is not JSON', async () => {
+    handler = (_req, _body, res) => { res.writeHead(200); res.end('<html>'); };
+    await assert.rejects(createOllamaGenerator({ host, model: 'm' }).generate({ system: '', prompt: '' }), /not JSON/);
+  });
+
+  it('classifies failures so the API can answer 502 or 504', async () => {
+    handler = (_req, _body, res) => setTimeout(() => reply(res, 200, { message: { content: 'late' } }), 300);
+    await assert.rejects(createOllamaGenerator({ host, model: 'm', timeoutMs: 50 }).generate({ system: '', prompt: '' }),
+      (error: unknown) => error instanceof GeneratorError && error.kind === 'timeout');
+    await assert.rejects(createOllamaGenerator({ host: 'http://127.0.0.1:1', model: 'm', retries: 0 }).generate({ system: '', prompt: '' }),
+      (error: unknown) => error instanceof GeneratorError && error.kind === 'unreachable');
   });
 
   it('times out instead of hanging', async () => {
