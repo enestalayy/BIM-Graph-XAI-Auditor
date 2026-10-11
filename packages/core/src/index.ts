@@ -25,3 +25,6 @@ export {
   REQUIRED_OPENING, validateGrounding, type EntityCheck, type EvidenceFact, type GroundingReport, type SentenceCheck,
 } from './grounding/validate.ts';
 export type { ElementContext, Explanation, ViolationContext } from './explanation.ts';
+export { classificationMetrics, metricsByRule, ruleOf, type ClassificationMetrics } from './evaluation/classification.ts';
+export { summarizeExplanations, type ExplanationSummary } from './evaluation/explanations.ts';
+export { expectedViolationIds, goldStandardSchema, type GoldStandard } from './evaluation/gold-standard.ts';
