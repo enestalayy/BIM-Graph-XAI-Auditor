@@ -1,88 +1,25 @@
-# =============================================================================
-# BIM-Graph-XAI-Auditor — .gitignore
-# =============================================================================
-
-# -----------------------------------------------------------------------------
-# Secrets & Environment
-# -----------------------------------------------------------------------------
+# Secrets
 .env
-*.env.local
-*.env.production
+.env.local
+.env.*.local
 
-# -----------------------------------------------------------------------------
-# Python
-# -----------------------------------------------------------------------------
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-*.egg
-*.egg-info/
+# Node
+node_modules/
 dist/
-build/
-.eggs/
-.Python
-pip-log.txt
-pip-delete-this-directory.txt
-.installed.cfg
+coverage/
+*.tsbuildinfo
 
-# Virtual Environments
+# Python (only tools/parity uses it)
 .venv/
-venv/
-env/
-ENV/
+__pycache__/
 
-# Pytest & Coverage
-.pytest_cache/
-.coverage
-.coverage.*
-htmlcov/
-coverage.xml
-
-# Mypy
-.mypy_cache/
-.dmypy.json
-
-# Ruff
-.ruff_cache/
-
-# -----------------------------------------------------------------------------
-# Jupyter Notebooks
-# -----------------------------------------------------------------------------
-.ipynb_checkpoints/
-*.ipynb_checkpoints
-
-# -----------------------------------------------------------------------------
-# Neo4j Data (large binary files — not tracked)
-# -----------------------------------------------------------------------------
-data/neo4j/data/
-data/neo4j/logs/
-data/neo4j/plugins/
-
-# -----------------------------------------------------------------------------
-# Generated Reports & Processed Data (too large for git)
-# -----------------------------------------------------------------------------
+# Data: generated artefacts are not tracked
+data/neo4j/
 data/processed/
 data/reports/
-data/sample/*.ifc
+data/uploads/
 
-# Keep directory markers
-!data/processed/.gitkeep
-!data/reports/.gitkeep
-!data/sample/.gitkeep
-
-# -----------------------------------------------------------------------------
 # IDE & OS
-# -----------------------------------------------------------------------------
 .idea/
 .vscode/
-*.swp
-*.swo
 .DS_Store
-Thumbs.db
-desktop.ini
-
-# -----------------------------------------------------------------------------
-# Pre-commit
-# -----------------------------------------------------------------------------
-.pre-commit-config.yaml.bak
