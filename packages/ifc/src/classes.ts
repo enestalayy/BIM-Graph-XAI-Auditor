@@ -1,4 +1,5 @@
 import { InheritanceDef, SchemaNames, IFCPRODUCT, type IfcAPI } from 'web-ifc';
+import { InvalidIfcError } from './errors.ts';
 
 export interface ClassResolver {
   nameOf(typeCode: number): string;
@@ -11,7 +12,7 @@ export interface ClassResolver {
 export function createClassResolver(api: IfcAPI, schemaName: string): ClassResolver {
   const schemaIndex = SchemaNames.findIndex((names) => names?.includes(schemaName));
   const inheritance: Record<number, number[]> | undefined = InheritanceDef[schemaIndex];
-  if (!inheritance) throw new Error(`Unsupported IFC schema: ${schemaName}`);
+  if (!inheritance) throw new InvalidIfcError(`Unsupported IFC schema: ${schemaName}`);
 
   const descendants = (code: number): number[] => inheritance[code] ?? [];
   const products = new Set(descendants(IFCPRODUCT));

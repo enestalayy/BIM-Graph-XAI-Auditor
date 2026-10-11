@@ -34,7 +34,7 @@ export function readServerConfig(env: NodeJS.ProcessEnv = process.env, cwd = pro
     rulesFile: resolve(cwd, env.RULES_FILE || 'rules/default.json'),
     uploadsDir: resolve(cwd, env.UPLOADS_DIR || 'data/uploads'),
     clashTolerance: positiveNumber(env, 'CLASH_TOLERANCE_M', 0.001),
-    maxUploadBytes: positiveNumber(env, 'MAX_UPLOAD_MB', 500) * 1024 * 1024,
+    maxUploadBytes: positiveNumber(env, 'MAX_UPLOAD_MB', 200) * 1024 * 1024,
     defaultExplainer: explainer,
     ollama: {
       host: env.OLLAMA_HOST || 'http://localhost:11434',

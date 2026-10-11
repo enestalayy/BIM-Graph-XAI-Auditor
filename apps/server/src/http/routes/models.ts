@@ -25,7 +25,8 @@ export function registerModelRoutes(app: FastifyInstance, deps: AppDependencies)
     } catch (error) {
       throw new BadRequestError((error as Error).message);
     }
-    const data = new Uint8Array(await file.toBuffer());
+    const buffer = await file.toBuffer();
+    const data = new Uint8Array(buffer.buffer, buffer.byteOffset, buffer.byteLength); // a view, not a copy
     const outcome = await ingestIfc(deps.graph, data, { fileName, discipline }, deps.settings.clashTolerance);
     await deps.uploads.save(fileName, data);
     return reply.code(201).send(outcome);
