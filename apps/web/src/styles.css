@@ -118,7 +118,7 @@ th, td { text-align: left; padding: 0.3rem; border-bottom: 1px solid var(--borde
 .viewer-pick { top: 0.6rem; right: 0.6rem; display: flex; flex-direction: column; max-width: 22rem; }
 .swatch { display: inline-block; width: 0.8rem; height: 0.8rem; border-radius: 2px; }
 .swatch.subject { background: #d93025; }
-.swatch.object { background: #f29900; }
+.swatch.object { background: #1a56db; }
 .swatch.mitigation { background: #188038; }
 
 .detail { max-height: 45vh; overflow-y: auto; border-top: 1px solid var(--border); padding: 0.75rem 1rem; }

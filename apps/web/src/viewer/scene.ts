@@ -20,10 +20,14 @@ export interface ModelInput {
   readonly bytes: Uint8Array;
 }
 
-const ROLE_COLOURS = { subject: 0xd93025, object: 0xf29900, mitigation: 0x188038 } as const;
-const DIMMED_OPACITY = 0.12;
+const ROLE_COLOURS = { subject: 0xd93025, object: 0x1a56db, mitigation: 0x188038 } as const;
+const DIMMED_OPACITY = 0.07;
 /** The crossed element is drawn see-through so that a subject running inside it stays visible. */
-const OBJECT_OPACITY = 0.4;
+const OBJECT_OPACITY = 0.35;
+/** Smallest framing radius (m) around a focused element, so its surroundings stay in view. */
+const FOCUS_MIN_RADIUS = 1.2;
+/** Edge outlines of highlighted elements are drawn on top of everything so their shape stays readable. */
+const OUTLINE_RENDER_ORDER = 999;
 
 interface MaterialState {
   readonly color: THREE.Color;
@@ -47,6 +51,7 @@ export class IfcScene {
   private readonly camera = new THREE.PerspectiveCamera(50, 1, 0.05, 5000);
   private readonly controls: OrbitControls;
   private readonly root = new THREE.Group();
+  private readonly outlines = new THREE.Group();
   private readonly elements = new Map<string, ElementObject>();
   private readonly original = new Map<THREE.MeshLambertMaterial, MaterialState>();
   private readonly resizeObserver: ResizeObserver;
@@ -64,7 +69,7 @@ export class IfcScene {
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0x8a8f99, 2.2));
     const sun = new THREE.DirectionalLight(0xffffff, 1.4);
     sun.position.set(30, 50, 20);
-    this.scene.add(sun, this.root);
+    this.scene.add(sun, this.root, this.outlines);
     this.camera.position.set(20, 15, 20);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
     this.controls.addEventListener('change', () => this.render());
@@ -121,6 +126,7 @@ export class IfcScene {
     const highlighted = new Map(roles.map(([role, id]) => [id, role]));
     for (const [globalId, element] of this.elements) {
       const role = highlighted.get(globalId);
+      if (role !== undefined) this.addOutline(element, ROLE_COLOURS[role]);
       this.forEachMaterial(element, (m) => {
         if (role !== undefined) {
           m.color.setHex(ROLE_COLOURS[role]);
@@ -134,7 +140,8 @@ export class IfcScene {
         m.needsUpdate = true;
       });
     }
-    this.fit([...highlighted.keys()]);
+    // Frame the subject (usually the small pipe or duct) with some context; the user can zoom out.
+    this.fit(highlight.subject ? [highlight.subject] : [...highlighted.keys()], FOCUS_MIN_RADIUS);
   }
 
   dispose(): void {
@@ -152,7 +159,28 @@ export class IfcScene {
     });
   }
 
+  private addOutline(element: ElementObject, colour: number): void {
+    const material = new THREE.LineBasicMaterial({ color: colour, depthTest: false, transparent: true, opacity: 0.95 });
+    element.group.traverse((node) => {
+      if (!(node instanceof THREE.Mesh)) return;
+      const edges = new THREE.LineSegments(new THREE.EdgesGeometry(node.geometry, 25), material);
+      edges.renderOrder = OUTLINE_RENDER_ORDER;
+      this.outlines.add(edges);
+    });
+  }
+
+  private clearOutlines(): void {
+    for (const child of [...this.outlines.children]) {
+      if (child instanceof THREE.LineSegments) {
+        child.geometry.dispose();
+        (child.material as THREE.Material).dispose();
+      }
+      this.outlines.remove(child);
+    }
+  }
+
   private restoreMaterials(): void {
+    this.clearOutlines();
     for (const [material, state] of this.original) {
       material.color.copy(state.color);
       material.opacity = state.opacity;
@@ -178,7 +206,7 @@ export class IfcScene {
     return coreBoxIndices(boxes).map((i) => entries[i]!.id);
   }
 
-  private fit(globalIds: readonly string[]): void {
+  private fit(globalIds: readonly string[], minRadius = 1): void {
     const box = new THREE.Box3();
     for (const id of globalIds) {
       const element = this.elements.get(id);
@@ -189,7 +217,7 @@ export class IfcScene {
       return;
     }
     const centre = box.getCenter(new THREE.Vector3());
-    const radius = Math.max(box.getSize(new THREE.Vector3()).length() / 2, 1);
+    const radius = Math.max(box.getSize(new THREE.Vector3()).length() / 2, minRadius);
     const distance = radius / Math.sin(THREE.MathUtils.degToRad(this.camera.fov / 2));
     const direction = new THREE.Vector3(1, 0.8, 1).normalize();
     this.camera.position.copy(centre).addScaledVector(direction, distance);
