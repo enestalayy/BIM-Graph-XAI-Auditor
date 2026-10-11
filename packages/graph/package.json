@@ -1,0 +1,16 @@
+{
+  "name": "@bim/graph",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "dependencies": {
+    "@bim/core": "^0.1.0",
+    "neo4j-driver": "^6.2.0"
+  },
+  "devDependencies": {
+    "@bim/ifc": "^0.1.0"
+  }
+}
