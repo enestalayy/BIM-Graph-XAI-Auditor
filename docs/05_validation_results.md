@@ -22,7 +22,7 @@ Tüm deneyler `npm run cli -- evaluate …` komutlarıyla yeniden üretilebilmek
 
 Sistem dört açık veri seti üzerinde çalıştırılmıştır. Kaynak, lisans ve SHA-256 değerleri `data/catalog.json` dosyasında, atıflar `tools/datasets/README.md` dosyasında yer almaktadır.
 
-| Veri seti | Bina | Disiplinler | Şema | Fiziksel/toplam eleman | Kesişim* |
+| Veri seti | Bina | Disiplinler | Şema | Eleman (toplam) | Kesişim* |
 |---|---|---|---|---|---|
 | buildingSMART örnek sahne | Küçük tek katlı ev | ARCH, MEP | IFC4X3 | 32 | 7 |
 | Duplex Apartment | İki katlı ikiz konut | ARCH, MEP | IFC2X3 | 1 218 | 1 324 |
