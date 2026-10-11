@@ -1,0 +1,94 @@
+{
+  "version": 1,
+  "rules": [
+    {
+      "id": "INFO-WALL-01",
+      "kind": "property",
+      "title": "Duvarların yangın dayanım sınıfı tanımlı olmalı",
+      "description": "Yangın kompartımanı denetimi için her duvarda Pset_WallCommon.FireRating bilgisinin bulunması gerekir. Bilgi eksikse kompartıman sınırları otomatik olarak belirlenemez.",
+      "severity": "minor",
+      "regulation": {
+        "source": "Bilgi gereksinimi (yönetmelik denetiminin ön koşulu)",
+        "article": null,
+        "verified": false,
+        "note": "Doğrudan bir yönetmelik maddesi değil; veri bütünlüğü kuralıdır."
+      },
+      "target": { "classes": ["IfcWall"], "where": [] },
+      "require": [{ "property": "Pset_WallCommon.FireRating", "op": "exists" }]
+    },
+    {
+      "id": "FS-DUCT-WALL-01",
+      "kind": "intersection",
+      "title": "Yangın dayanımlı duvarı geçen hava kanalında yangın damperi bulunmalı",
+      "description": "Yangın dayanımlı bir duvarı kesen hava kanalının geçiş noktasında (kesişim merkezine en fazla 0,5 m) yangın damperi aranır.",
+      "severity": "critical",
+      "regulation": {
+        "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)",
+        "article": null,
+        "verified": false,
+        "note": "İlgili madde mevzuat metninden doğrulanıp article alanına yazılmalıdır."
+      },
+      "subject": { "classes": ["IfcDuctSegment"], "where": [] },
+      "object": { "classes": ["IfcWall"], "where": [{ "property": "Pset_WallCommon.FireRating", "op": "exists" }] },
+      "minVolume": 0,
+      "mitigation": {
+        "classes": ["IfcDamper"],
+        "where": [{ "property": "predefinedType", "op": "eq", "value": "FIREDAMPER" }],
+        "maxDistance": 0.5
+      }
+    },
+    {
+      "id": "FS-DUCT-SLAB-01",
+      "kind": "intersection",
+      "title": "Yangın dayanımlı döşemeyi geçen hava kanalında yangın damperi bulunmalı",
+      "description": "Yangın dayanımlı bir döşemeyi kesen hava kanalının geçiş noktasında (kesişim merkezine en fazla 0,5 m) yangın damperi aranır.",
+      "severity": "critical",
+      "regulation": {
+        "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)",
+        "article": null,
+        "verified": false,
+        "note": "İlgili madde mevzuat metninden doğrulanıp article alanına yazılmalıdır."
+      },
+      "subject": { "classes": ["IfcDuctSegment"], "where": [] },
+      "object": { "classes": ["IfcSlab"], "where": [{ "property": "Pset_SlabCommon.FireRating", "op": "exists" }] },
+      "minVolume": 0,
+      "mitigation": {
+        "classes": ["IfcDamper"],
+        "where": [{ "property": "predefinedType", "op": "eq", "value": "FIREDAMPER" }],
+        "maxDistance": 0.5
+      }
+    },
+    {
+      "id": "FS-PIPE-WALL-01",
+      "kind": "intersection",
+      "title": "Yangın dayanımlı duvarı geçen boru geçişi yangın durdurucu açısından incelenmeli",
+      "description": "Boru geçişlerinde yangın durdurucu (sızdırmazlık) uygulamaları IFC modellerinde nadiren modellendiğinden her geçiş inceleme gerektiren bulgu olarak raporlanır.",
+      "severity": "major",
+      "regulation": {
+        "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)",
+        "article": null,
+        "verified": false,
+        "note": "İlgili madde mevzuat metninden doğrulanıp article alanına yazılmalıdır."
+      },
+      "subject": { "classes": ["IfcPipeSegment"], "where": [] },
+      "object": { "classes": ["IfcWall"], "where": [{ "property": "Pset_WallCommon.FireRating", "op": "exists" }] },
+      "minVolume": 0
+    },
+    {
+      "id": "CLASH-MEP-STR-01",
+      "kind": "intersection",
+      "title": "Tesisat hattı yapı elemanıyla çakışıyor",
+      "description": "Disiplinler arası genel çakışma kuralı: bir tesisat hattı segmentinin (kanal, boru, kablo taşıyıcı) yapı elemanının içinden geçmesi koordinasyon gerektirir. Damper ve vana gibi armatürler yapı elemanına bilinçli olarak yerleştirildiğinden kapsam dışıdır. 1 litreden küçük kesişimler yok sayılır.",
+      "severity": "major",
+      "regulation": {
+        "source": "Disiplinler arası koordinasyon (genel çakışma denetimi)",
+        "article": null,
+        "verified": false,
+        "note": "Yönetmelik maddesi değil; genel koordinasyon kuralıdır."
+      },
+      "subject": { "classes": ["IfcFlowSegment"], "where": [] },
+      "object": { "classes": ["IfcBuiltElement", "IfcBuildingElement"], "where": [] },
+      "minVolume": 0.001
+    }
+  ]
+}
