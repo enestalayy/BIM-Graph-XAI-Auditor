@@ -80,15 +80,16 @@ tools/parity     IfcOpenShell karşılaştırma aracı
   "kind": "intersection",
   "title": "Yangın dayanımlı duvarı geçen hava kanalında yangın damperi bulunmalı",
   "severity": "critical",
-  "regulation": { "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)", "article": null, "verified": false },
+  "regulation": { "source": "Binaların Yangından Korunması Hakkında Yönetmelik (RG 19.12.2007/26735)", "article": "87/8", "verified": true },
   "subject": { "classes": ["IfcDuctSegment"] },
   "object": { "classes": ["IfcWall"], "where": [{ "property": "Pset_WallCommon.FireRating", "op": "exists" }] },
   "mitigation": { "classes": ["IfcDamper"], "where": [{ "property": "predefinedType", "op": "eq", "value": "FIREDAMPER" }], "maxDistance": 0.5 }
 }
 ```
 
-Yönetmelik madde numaraları mevzuat metninden doğrulanana kadar `article: null`,
-`verified: false` olarak tutulur.
+Madde numaraları resmî konsolide metinden (mevzuat.gov.tr) kontrol edilir; kaynak,
+tarih ve fıkra alıntısı `regulation.note` alanında tutulur. Kontrol edilmemiş atıflar
+`verified: false` kalır.
 
 ## Lisans
 

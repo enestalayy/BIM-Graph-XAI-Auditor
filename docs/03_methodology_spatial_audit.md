@@ -165,8 +165,17 @@ Böylece her bulgu için şu zincir graf üzerinde izlenebilmektedir: hangi kura
 
 **Yönetmelik atıfları:**
 - Her kural bir `regulation` alanı taşır.
-- Madde numarası (`article`), mevzuat metninden doğrulanana kadar boş bırakılmış ve `verified = false` olarak işaretlenmiştir.
-- Önceki prototipte yer alan "BYKHY 2015, Madde 51–53" atıfları doğrulanamadığından kullanılmamıştır. Yönetmeliğin resmî künyesi: Binaların Yangından Korunması Hakkında Yönetmelik, RG 19.12.2007/26735.
+- Madde numaraları (`article`) yönetmeliğin resmî konsolide metninden kontrol edilmiştir. Kaynak: mevzuat.gov.tr, MevzuatNo 200712937; son değişiklik RG 01.07.2025/32943; kontrol tarihi 2026-10-11.
+- Kontrol edilen kurallarda `verified = true` değeri verilmiş ve ilgili fıkra `note` alanına alıntılanmıştır. Bir yönetmelik maddesine dayanmayan kurallarda (bilgi gereksinimi, genel koordinasyon) `article` boş bırakılmıştır.
+- Önceki prototipte yer alan "BYKHY 2015, Madde 51–53" atıfları resmî metinle karşılaştırılmıştır. Bu maddeler sırasıyla toplantı salonlarında koltuk aralıkları (Madde 51), bir değiştirilmiş madde (Madde 52) ve binaların kritik kısımlarına ilişkin genel hüküm (Madde 53) ile ilgilidir. Hiçbiri tesisat geçişlerini düzenlemediğinden kullanılmamıştır.
+
+| Kural | Madde | İlgili hüküm (özet) |
+|---|---|---|
+| FS-DUCT-WALL-01, FS-DUCT-SLAB-01 | 87/8 | Kanalın 120 dakika dayanımlı kompartıman duvarını veya katını geçtiği yerde yangın damperi ya da şönt baca, özel kelepçe gibi önlemler alınır. |
+| FS-PIPE-WALL-01 | 24/7, 25/2 | Kompartımanlar arasında yangına dayanıksız açıklık bulunamaz. Yangın duvarından geçen tesisatın çevresi, en az duvarın dayanım süresi kadar yalıtılır. |
+| INFO-WALL-01 | (24/1 ile ilişkili) | Kompartıman duvarlarının en az dayanım süreleri Ek-3/B'dedir. FireRating bilgisi bu değerlendirmenin ön koşuludur. |
+
+**Kuralların yönetmelik hükmüyle farkı.** Madde 87/8, 120 dakika ve üzeri dayanımlı kompartıman elemanlarını konu alır. Kural ise FireRating tanımlı her elemanı kapsar, dolayısıyla hükümden daha geniştir ve ihtiyatlıdır. Bunun nedeni, `FireRating` değerlerinin IFC'de serbest metin olmasıdır (örn. "EI60", "REI 120", "2 HR"); bu metinlerden süreye güvenilir biçimde ulaşılamamaktadır. Hükümdeki alternatif önlemler (şönt baca, özel kelepçe) de modellenmemiştir. Her iki fark da yanlış pozitif kaynağıdır ve Bölüm 5'te dikkate alınmalıdır.
 
 ### 3.2.4. Varsayılan Kural Seti ve Örnek Modeldeki Sonuçlar
 

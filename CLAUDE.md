@@ -68,8 +68,9 @@ Bağımlılık yönü tek yönlüdür: `core` ← `ifc`, `graph`, `xai` ← `app
     olarak işaretlenir.
 - **Uydurma yasak:**
   - Yönetmelik madde numarası, kaynakça girdisi ya da GUID uydurulmaz.
-  - Kural dosyalarında `regulation.verified` alanı, kullanıcı maddeyi mevzuat
-    metninden doğrulayana kadar `false` kalır.
+  - Kural dosyalarında `regulation.verified` yalnızca madde resmî konsolide
+    metinden (mevzuat.gov.tr) okunarak kontrol edildiğinde `true` olur. Kaynak,
+    tarih ve ilgili fıkranın alıntısı `regulation.note` alanına yazılır.
   - Yönetmelik: Binaların Yangından Korunması Hakkında Yönetmelik, RG
     19.12.2007/26735 (güncel konsolide hali). "BYKHY 2015" adı kullanılmaz.
 - **Abartılı terim yok:** yapılan şey AABB aralık örtüşmesiyse ona "SAT" denmez.
