@@ -10,3 +10,4 @@ export { listModels, type ModelSummary } from './models.ts';
 export { loadVocabulary, type PropertyType, type Vocabulary } from './vocabulary.ts';
 export { readDisposableGraphConfig } from './disposable.ts';
 export { clearProjectData, getActiveDataset, setActiveDataset } from './workspace.ts';
+export { loadElement } from './elements.ts';

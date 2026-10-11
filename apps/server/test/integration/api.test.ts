@@ -75,6 +75,13 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
     assert.ok(vocabulary.propertyKeys.includes('Pset_SlabCommon.FireRating'));
   });
 
+  it('serves one element with its properties', async () => {
+    const response = await app.inject({ method: 'GET', url: `/api/elements/${encodeURIComponent('3zR0BOEcLADRKln4HYporH')}` });
+    assert.equal(response.statusCode, 200);
+    assert.equal(response.json().properties['Pset_SlabCommon.FireRating'], 'REI30');
+    assert.equal((await app.inject({ method: 'GET', url: '/api/elements/nope' })).statusCode, 404);
+  });
+
   it('rejects an upload without a discipline', async () => {
     const response = await app.inject({ method: 'POST', url: '/api/models', ...multipart('a.ifc', Buffer.from('ISO-10303-21;')) });
     assert.equal(response.statusCode, 400);

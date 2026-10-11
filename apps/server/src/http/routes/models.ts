@@ -1,6 +1,6 @@
 import type { FastifyInstance } from 'fastify';
-import { listModels, loadVocabulary } from '@bim/graph';
-import { BadRequestError } from '../../errors.ts';
+import { listModels, loadElement, loadVocabulary } from '@bim/graph';
+import { BadRequestError, NotFoundError } from '../../errors.ts';
 import { ingestIfc } from '../../services/ingest.ts';
 import { assertSafeIfcFileName } from '../../services/upload-store.ts';
 import type { AppDependencies } from '../dependencies.ts';
@@ -9,6 +9,12 @@ const DISCIPLINE = /^[A-Z][A-Z0-9_-]{0,15}$/;
 
 export function registerModelRoutes(app: FastifyInstance, deps: AppDependencies): void {
   app.get('/api/models', async () => listModels(deps.graph));
+
+  app.get<{ Params: { globalId: string } }>('/api/elements/:globalId', async (request) => {
+    const element = await loadElement(deps.graph, request.params.globalId);
+    if (!element) throw new NotFoundError(`Element ${request.params.globalId} not found`);
+    return element;
+  });
 
   /** Classes and property keys present in the federated model, for the rule editor. */
   app.get('/api/vocabulary', async () => loadVocabulary(deps.graph));
