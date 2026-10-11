@@ -1,3 +1,4 @@
+import type { DatasetCatalog } from '@bim/core';
 import type { GraphWriter } from '@bim/graph';
 import type { ExplainerKind } from '../config.ts';
 import type { ExplainerFactory } from '../services/explainers.ts';
@@ -9,9 +10,12 @@ export interface AppDependencies {
   readonly rules: RuleRepository;
   readonly uploads: UploadStore;
   readonly explainerFor: ExplainerFactory;
+  readonly catalog: DatasetCatalog;
   readonly settings: {
     readonly clashTolerance: number;
     readonly maxUploadBytes: number;
     readonly defaultExplainer: ExplainerKind;
+    /** Directory that catalog file paths are relative to (the repository root). */
+    readonly dataRoot: string;
   };
 }

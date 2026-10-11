@@ -6,7 +6,9 @@ import { after, before, describe, it } from 'node:test';
 import type { FastifyInstance } from 'fastify';
 import { connectGraph, ensureSchema, readDisposableGraphConfig, type GraphClient } from '@bim/graph';
 import { buildApp } from '../../src/http/app.ts';
+import { loadCatalog } from '../../src/services/datasets.ts';
 import { createExplainerFactory } from '../../src/services/explainers.ts';
+import { fileURLToPath } from 'node:url';
 import { createFileRuleRepository } from '../../src/services/rule-repository.ts';
 import { createUploadStore } from '../../src/services/upload-store.ts';
 
@@ -38,7 +40,8 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
       rules: createFileRuleRepository(rulesFile),
       uploads: createUploadStore(join(work, 'uploads')),
       explainerFor: createExplainerFactory({ ollama: { host: 'http://127.0.0.1:1', model: 'none', timeoutMs: 1000 } }),
-      settings: { clashTolerance: 0.001, maxUploadBytes: 50 * 1024 * 1024, defaultExplainer: 'template' },
+      catalog: await loadCatalog(fileURLToPath(new URL('data/catalog.json', ROOT))),
+      settings: { clashTolerance: 0.001, maxUploadBytes: 50 * 1024 * 1024, defaultExplainer: 'template', dataRoot: fileURLToPath(ROOT) },
     });
   });
   after(async () => {
@@ -132,5 +135,26 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
     });
     assert.equal(response.statusCode, 502);
     assert.match(response.json().message, /Cannot reach Ollama/);
+  });
+
+  it('lists the catalog datasets with their local availability', async () => {
+    const body = (await app.inject({ method: 'GET', url: '/api/datasets' })).json();
+    const scene = body.datasets.find((d: { id: string }) => d.id === 'buildingsmart-scene');
+    assert.equal(scene.available, true);
+    assert.ok(body.datasets.length >= 2);
+  });
+
+  it('loads a dataset into the working graph, audits it and marks it active', async () => {
+    const response = await app.inject({ method: 'POST', url: '/api/datasets/buildingsmart-scene/activate' });
+    assert.equal(response.statusCode, 201, response.body);
+    const result = response.json();
+    assert.deepEqual(result.models.map((m: { fileName: string }) => m.fileName), ['Building-Architecture.ifc', 'Building-Hvac.ifc']);
+    assert.equal(result.audit.violations.length, 5);
+    assert.equal((await app.inject({ method: 'GET', url: '/api/datasets' })).json().active, 'buildingsmart-scene');
+    assert.equal((await app.inject({ method: 'GET', url: '/api/models' })).json().length, 2);
+  });
+
+  it('rejects an unknown dataset', async () => {
+    assert.equal((await app.inject({ method: 'POST', url: '/api/datasets/nope/activate' })).statusCode, 404);
   });
 });

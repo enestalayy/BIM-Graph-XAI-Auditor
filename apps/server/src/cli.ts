@@ -8,6 +8,7 @@
  */
 import { connectGraph, ensureSchema, readGraphConfig } from '@bim/graph';
 import { audit } from './commands/audit.ts';
+import { dataset } from './commands/dataset.ts';
 import { evaluate } from './commands/evaluate.ts';
 import { UsageError, type Command } from './commands/command.ts';
 import { explain } from './commands/explain.ts';
@@ -15,6 +16,7 @@ import { ingest } from './commands/ingest.ts';
 import { readServerConfig } from './config.ts';
 
 const USAGE = `Usage:
+  cli dataset list | dataset load <id>
   cli ingest --discipline <ARCH|MEP|...> <file.ifc> [...more.ifc]
   cli audit
   cli explain [--method template|ollama] [--id <violationId>]
@@ -22,7 +24,7 @@ const USAGE = `Usage:
   cli evaluate gold --file <gold-standard.json>
   cli evaluate explanations [--method template|ollama] [--limit N]`;
 
-const COMMANDS: Readonly<Record<string, Command>> = { ingest, audit, explain, evaluate };
+const COMMANDS: Readonly<Record<string, Command>> = { dataset, ingest, audit, explain, evaluate };
 
 const [name, ...args] = process.argv.slice(2);
 const command = name ? COMMANDS[name] : undefined;

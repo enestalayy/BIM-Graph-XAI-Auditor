@@ -1,6 +1,7 @@
 import { connectGraph, ensureSchema, readGraphConfig } from '@bim/graph';
 import { readServerConfig } from './config.ts';
 import { buildApp } from './http/app.ts';
+import { loadCatalog } from './services/datasets.ts';
 import { createExplainerFactory } from './services/explainers.ts';
 import { createFileRuleRepository } from './services/rule-repository.ts';
 import { createUploadStore } from './services/upload-store.ts';
@@ -15,7 +16,13 @@ const app = await buildApp(
     rules: createFileRuleRepository(config.rulesFile),
     uploads: createUploadStore(config.uploadsDir),
     explainerFor: createExplainerFactory(config),
-    settings: { clashTolerance: config.clashTolerance, maxUploadBytes: config.maxUploadBytes, defaultExplainer: config.defaultExplainer },
+    catalog: await loadCatalog(config.catalogFile),
+    settings: {
+      clashTolerance: config.clashTolerance,
+      maxUploadBytes: config.maxUploadBytes,
+      defaultExplainer: config.defaultExplainer,
+      dataRoot: config.dataRoot,
+    },
   },
   { logger: true },
 );
