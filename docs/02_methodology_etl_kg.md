@@ -55,7 +55,7 @@ Miktar kümeleri (`IfcElementQuantity`) bilinçli olarak aktarılmamıştır. De
 
 **Birim ölçekleme:**
 - SI önekleri boyut sayısı kadar üslü uygulanmıştır. Bir $d$ boyutlu birim ve $p$ öneki için ölçek $s = p^{d}$ olarak alınmıştır (örn. mm² için $10^{-6}$).
-- Dönüşüme dayalı birimler (`IfcConversionBasedUnit`, örn. foot) dönüşüm katsayısı ile temel SI birimi çarpılarak çözümlenmiştir.
+- Dönüşüme dayalı birimler (`IfcConversionBasedUnit`, örn. foot) dönüşüm katsayısı ile temel SI birimi çarpılarak çözümlenmiştir. Bu yol uygulanmış, ancak henüz yalnızca milimetre birimli modellerle sınanmıştır; imparatorluk birimli bir modelle doğrulanması açık bir iştir.
 - Geometri web-ifc tarafından metreye ölçeklenmektedir.
 
 **Eksen dönüşümü:** web-ifc geometriyi three.js geleneğine uygun olarak Y-yukarı bir çerçevede üretmektedir. Bu davranış deneysel olarak doğrulanmıştır: kanalın IFC'deki düşey aralığı (0,9–4,7 m) web-ifc çıktısında Y ekseninde görülmüştür. Bu nedenle tüm noktalar IFC'nin Z-yukarı dünya çerçevesine şu dönüşümle geri çevrilmiştir:

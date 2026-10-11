@@ -6,7 +6,7 @@
 
 | Düzey | Soru | Yöntem | Durum |
 |---|---|---|---|
-| D1 Uygulama doğruluğu | Bileşenler tanımlandıkları gibi mi çalışıyor? | Birim ve entegrasyon testleri (98 + 31) | Tamamlandı |
+| D1 Uygulama doğruluğu | Bileşenler tanımlandıkları gibi mi çalışıyor? | Birim ve entegrasyon testleri (113 + 33, `npm test`, `npm run test:integration`) | Tamamlandı |
 | D2 Araç eşdeğerliği | web-ifc, IfcOpenShell ile aynı girdiyi üretiyor mu? | Parity karşılaştırması (Bölüm 2.1.6) | Tamamlandı |
 | D3 Kural motoru doğruluğu | Doğru cevabı bilinen senaryolarda ihlaller eksiksiz ve fazlasız bulunuyor mu? | Tohumlu hata enjeksiyonu (Bölüm 5.2) | Tamamlandı |
 | D4 Gerçek model başarımı | Gerçek modellerde uzman değerlendirmesine göre P/R/F1 nedir? | Altın standart karşılaştırması (Bölüm 5.4) | Uzman etiketi bekleniyor |
