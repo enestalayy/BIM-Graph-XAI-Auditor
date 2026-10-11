@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from './api/client.ts';
-import type { ModelSummary, Violation, ViolationDetail as Detail, Vocabulary } from './api/types.ts';
+import type { DatasetList, ModelSummary, Violation, ViolationDetail as Detail, Vocabulary } from './api/types.ts';
 import { ErrorMessage } from './components/ErrorMessage.tsx';
 import { ModelsPanel } from './components/ModelsPanel.tsx';
 import { RulesPanel } from './components/RulesPanel.tsx';
@@ -27,6 +27,15 @@ export function App() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [detail, setDetail] = useState<Detail | null>(null);
   const [error, setError] = useState<unknown>(null);
+  const [datasets, setDatasets] = useState<DatasetList | null>(null);
+
+  const refreshDatasets = useCallback(async () => {
+    try {
+      setDatasets(await api.listDatasets());
+    } catch (e) {
+      setError(e);
+    }
+  }, []);
 
   const refreshModels = useCallback(async () => {
     try {
@@ -61,7 +70,18 @@ export function App() {
   useEffect(() => {
     void refreshModels();
     void refreshViolations();
-  }, [refreshModels, refreshViolations]);
+    void refreshDatasets();
+  }, [refreshModels, refreshViolations, refreshDatasets]);
+
+  const onDatasetLoaded = useCallback(() => {
+    setSelectedId(null);
+    void refreshDatasets();
+    void refreshModels();
+    void refreshViolations();
+    setTab('violations');
+  }, [refreshDatasets, refreshModels, refreshViolations]);
+
+  const activeTitle = datasets?.datasets.find((d) => d.id === datasets.active)?.title;
 
   useEffect(() => {
     void refreshDetail(selectedId);
@@ -74,6 +94,7 @@ export function App() {
       <header className="topbar">
         <h1>Dijital Denetçi</h1>
         <span className="muted">Grafik tabanlı ve açıklanabilir BIM çakışma denetimi</span>
+        {activeTitle && <span className="badge active-dataset">Veri seti: {activeTitle}</span>}
       </header>
       <aside className="sidebar">
         <nav className="tabs">
@@ -82,7 +103,9 @@ export function App() {
           <button type="button" className={tab === 'violations' ? 'active' : ''} onClick={() => setTab('violations')}>Bulgular ({violations.length})</button>
         </nav>
         <ErrorMessage error={error} />
-        {tab === 'models' && <ModelsPanel models={models} onChanged={() => void refreshModels()} />}
+        {tab === 'models' && (
+          <ModelsPanel models={models} datasets={datasets} onChanged={() => void refreshModels()} onDatasetLoaded={onDatasetLoaded} />
+        )}
         {tab === 'rules' && <RulesPanel vocabulary={vocabulary} onSaved={() => void refreshViolations()} />}
         {tab === 'violations' && (
           <ViolationsPanel violations={violations} selectedId={selectedId} onSelect={setSelectedId} onAudited={() => void refreshViolations()} />

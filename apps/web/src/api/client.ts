@@ -1,5 +1,5 @@
 import type {
-  AuditSummary, ExplainerKind, Explanation, IngestOutcome, ModelSummary, Rule, RuleInput, RuleSetInput, Violation, ViolationDetail, Vocabulary,
+  ActivationResult, AuditSummary, DatasetList, ExplainerKind, Explanation, IngestOutcome, ModelSummary, Rule, RuleInput, RuleSetInput, Violation, ViolationDetail, Vocabulary,
 } from './types.ts';
 
 export class ApiError extends Error {
@@ -41,6 +41,8 @@ const json = (method: string, payload: unknown): RequestInit => ({
 });
 
 export const api = {
+  listDatasets: () => request<DatasetList>('/api/datasets'),
+  activateDataset: (id: string) => request<ActivationResult>(`/api/datasets/${encodeURIComponent(id)}/activate`, { method: 'POST' }),
   listModels: () => request<ModelSummary[]>('/api/models'),
   uploadModel(file: File, discipline: string) {
     const form = new FormData();

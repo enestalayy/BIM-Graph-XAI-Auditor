@@ -136,3 +136,9 @@ th, td { text-align: left; padding: 0.3rem; border-bottom: 1px solid var(--borde
   .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
   .main { min-height: 70vh; }
 }
+
+.spaced { margin-top: 1.25rem; }
+.small { font-size: 0.8rem; }
+.dataset-card { border: 1px solid var(--border); border-radius: 8px; padding: 0.5rem 0.7rem; background: var(--surface); }
+.dataset-card p { margin: 0.25rem 0; }
+.active-dataset { margin-left: auto; border-color: var(--accent); color: var(--accent); }

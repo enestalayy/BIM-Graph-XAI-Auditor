@@ -47,3 +47,34 @@ export interface ViolationDetail extends ViolationContext {
 }
 
 export type ExplainerKind = 'template' | 'ollama';
+
+export interface DatasetFile {
+  name: string;
+  discipline: string;
+}
+
+export interface DatasetStatus {
+  id: string;
+  title: string;
+  description: string;
+  schema: string;
+  license: string;
+  attribution: string;
+  sourceUrl: string;
+  files: DatasetFile[];
+  available: boolean;
+  missingFiles: string[];
+}
+
+export interface DatasetList {
+  active: string | null;
+  datasets: DatasetStatus[];
+}
+
+export interface ActivationResult {
+  datasetId: string;
+  models: { fileName: string; discipline: string; elements: number; warnings: string[] }[];
+  intersections: number;
+  audit: AuditSummary;
+  durationMs: number;
+}

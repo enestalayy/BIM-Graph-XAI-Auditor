@@ -1,14 +1,17 @@
 import { useState, type FormEvent } from 'react';
 import { api } from '../api/client.ts';
-import type { IngestOutcome, ModelSummary } from '../api/types.ts';
+import type { DatasetList, IngestOutcome, ModelSummary } from '../api/types.ts';
+import { DatasetPicker } from './DatasetPicker.tsx';
 import { ErrorMessage } from './ErrorMessage.tsx';
 
 interface ModelsPanelProps {
   models: readonly ModelSummary[];
+  datasets: DatasetList | null;
   onChanged: () => void;
+  onDatasetLoaded: () => void;
 }
 
-export function ModelsPanel({ models, onChanged }: ModelsPanelProps) {
+export function ModelsPanel({ models, datasets, onChanged, onDatasetLoaded }: ModelsPanelProps) {
   const [file, setFile] = useState<File | null>(null);
   const [discipline, setDiscipline] = useState('ARCH');
   const [busy, setBusy] = useState(false);
@@ -32,7 +35,9 @@ export function ModelsPanel({ models, onChanged }: ModelsPanelProps) {
 
   return (
     <section className="panel">
-      <h2>Modeller</h2>
+      <h2>Veri seti</h2>
+      <DatasetPicker datasets={datasets} onLoaded={onDatasetLoaded} />
+      <h2 className="spaced">Model ekle</h2>
       <form className="stack" onSubmit={upload}>
         <input type="file" accept=".ifc" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
         <label>
