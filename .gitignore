@@ -28,3 +28,7 @@ data/duplex/
 data/clinic/
 data/schependomlaan/
 __pycache__/
+
+# Local AI assistant configuration (not part of the project)
+CLAUDE.md
+.claude/
