@@ -101,3 +101,20 @@ export async function loadViolations(runner: CypherRunner, ids?: readonly string
     evidence: JSON.parse(String(row.evidence)) as Violation['evidence'],
   }));
 }
+
+export interface StoredAudit {
+  readonly id: string;
+  readonly startedAt: string;
+  readonly durationMs: number;
+  readonly outcomes: AuditResult['outcomes'];
+}
+
+/** The most recent audit summary (per-rule counts and coverage), or null if none ran yet. */
+export async function loadLatestAudit(runner: CypherRunner): Promise<StoredAudit | null> {
+  const [row] = await runner.run(
+    `MATCH (a:Audit) RETURN a.id AS id, toString(a.startedAt) AS startedAt, a.durationMs AS durationMs, a.outcomes AS outcomes
+     ORDER BY a.startedAt DESC LIMIT 1`,
+  );
+  if (!row) return null;
+  return { id: String(row.id), startedAt: String(row.startedAt), durationMs: Number(row.durationMs), outcomes: JSON.parse(String(row.outcomes)) };
+}

@@ -121,6 +121,8 @@ describe('HTTP API end to end', { skip: SKIP }, () => {
     assert.equal(audit.json().violations.length, 5); // 4 walls without FireRating + duct x roof slab
     const violations = (await app.inject({ method: 'GET', url: '/api/violations' })).json();
     assert.equal(violations.length, 5);
+    const latest = (await app.inject({ method: 'GET', url: '/api/audits/latest' })).json();
+    assert.equal(latest.outcomes.find((o: { ruleId: string }) => o.ruleId === 'FS-DUCT-WALL-01').coverage.status, 'insufficient-data');
     const detail = await app.inject({ method: 'GET', url: `/api/violations/${encodeURIComponent(violations[0].id)}` });
     assert.equal(detail.statusCode, 200);
     assert.ok(detail.json().rule.id);

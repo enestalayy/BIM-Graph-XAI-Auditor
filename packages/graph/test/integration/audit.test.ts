@@ -4,7 +4,7 @@ import { after, before, describe, it } from 'node:test';
 import { findIntersections, parseRuleSet, validateGrounding, type Aabb, type Element, type IfcModel, type RuleSet, type Violation } from '@bim/core';
 import {
   ensureSchema, ingestModel, loadBoxedElements, loadExplanations, loadViolationContext, loadViolations, replaceIntersections,
-  runAudit, saveAudit, saveExplanation, type GraphClient,
+  loadLatestAudit, runAudit, saveAudit, saveExplanation, type GraphClient,
 } from '../../src/index.ts';
 import { connectTestGraph, SKIP_REASON } from './graph-client.ts';
 
@@ -64,6 +64,17 @@ describe('rule audit on a synthetic federated graph', { skip: SKIP_REASON }, () 
     violations = await loadViolations(graph);
   });
   after(() => graph?.close());
+
+  it('reports what each rule examined', async () => {
+    const audit = await loadLatestAudit(graph);
+    const duct = audit!.outcomes.find((o) => o.ruleId === 'FS-DUCT-WALL-01')!;
+    assert.equal(duct.coverage.status, 'violations');
+    assert.deepEqual(duct.coverage.counts, { subjects: 3, objects: 1, objectClassMembers: 2, pairs: 2, mitigations: 1 });
+    const wall = audit!.outcomes.find((o) => o.ruleId === 'INFO-WALL-01')!;
+    assert.deepEqual(wall.coverage.counts, { targets: 2, targetClassMembers: 2 });
+    const pipe = audit!.outcomes.find((o) => o.ruleId === 'FS-PIPE-WALL-01')!;
+    assert.equal(pipe.coverage.status, 'not-applicable'); // no pipes in the model
+  });
 
   it('property rule: flags only the wall without FireRating', () => {
     assert.deepEqual(ofRule('INFO-WALL-01').map((v) => v.subject.globalId), ['plain-wall']);

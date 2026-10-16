@@ -1,11 +1,16 @@
 import { randomUUID } from 'node:crypto';
-import { compileRule, toViolations, type Rule, type Violation } from '@bim/core';
+import {
+  compileCoverage, compileRule, coverageStatus, toViolations,
+  type CoverageCounts, type CoverageStatus, type Rule, type Violation,
+} from '@bim/core';
 import type { CypherRunner } from './client.ts';
 
 export interface RuleOutcome {
   readonly ruleId: string;
   readonly violations: number;
   readonly durationMs: number;
+  /** What the rule examined, and whether "no violation" means compliant or not checkable. */
+  readonly coverage: { readonly status: CoverageStatus; readonly counts: CoverageCounts };
 }
 
 export interface AuditResult {
@@ -26,7 +31,16 @@ export async function runAudit(runner: CypherRunner, rules: readonly Rule[]): Pr
     const ruleStart = performance.now();
     const { cypher, params } = compileRule(rule);
     const found = toViolations(rule, await runner.run(cypher, params));
-    outcomes.push({ ruleId: rule.id, violations: found.length, durationMs: performance.now() - ruleStart });
+    const durationMs = performance.now() - ruleStart;
+    const coverageQuery = compileCoverage(rule);
+    const [row] = await runner.run(coverageQuery.cypher, coverageQuery.params);
+    const counts = Object.fromEntries(Object.entries(row ?? {}).map(([k, v]) => [k, Number(v)])) as unknown as CoverageCounts;
+    outcomes.push({
+      ruleId: rule.id,
+      violations: found.length,
+      durationMs,
+      coverage: { status: coverageStatus(rule, counts, found.length), counts },
+    });
     violations.push(...found);
   }
   return { id: randomUUID(), startedAt, durationMs: performance.now() - auditStart, outcomes, violations };
