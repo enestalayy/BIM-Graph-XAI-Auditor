@@ -1,38 +1,10 @@
-import { assertIfcClassName, quoteIdentifier } from '../cypher/identifiers.ts';
-import type { Condition, IntersectionRule, PropertyRule, Rule, Selector } from './schema.ts';
+import { quoteIdentifier } from '../cypher/identifiers.ts';
+import { conditionExpression, createParams, selectorExpression } from './cypher-fragments.ts';
+import type { Condition, IntersectionRule, PropertyRule, Rule } from './schema.ts';
 
 export interface CompiledQuery {
   readonly cypher: string;
   readonly params: Readonly<Record<string, unknown>>;
-}
-
-/** Collects query parameters; values never enter the query text. */
-function createParams() {
-  const params: Record<string, unknown> = {};
-  let next = 0;
-  return {
-    params,
-    add(value: unknown): string {
-      const name = `p${next++}`;
-      params[name] = value;
-      return `$${name}`;
-    },
-  };
-}
-type ParamSink = ReturnType<typeof createParams>;
-
-const COMPARISON = { eq: '=', neq: '<>', gt: '>', gte: '>=', lt: '<', lte: '<=', in: 'IN', contains: 'CONTAINS' } as const;
-
-/** A boolean Cypher expression; a missing property never satisfies a comparison. */
-function conditionExpression(variable: string, condition: Condition, sink: ParamSink): string {
-  const ref = `${variable}.${quoteIdentifier(condition.property)}`;
-  if (!('value' in condition)) return condition.op === 'exists' ? `${ref} IS NOT NULL` : `${ref} IS NULL`;
-  return `coalesce(${ref} ${COMPARISON[condition.op]} ${sink.add(condition.value)}, false)`;
-}
-
-function selectorExpression(variable: string, selector: Selector, sink: ParamSink): string {
-  const labels = selector.classes.map((c) => `${variable}:${quoteIdentifier(assertIfcClassName(c))}`).join(' OR ');
-  return [`(${labels})`, ...selector.where.map((c) => conditionExpression(variable, c, sink))].join(' AND ');
 }
 
 const REF = (v: string) => `${v} {.globalId, .ifcClass, .name}`;
