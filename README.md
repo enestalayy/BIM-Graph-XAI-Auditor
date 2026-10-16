@@ -25,25 +25,64 @@ IFC (ARCH, MEP) ──web-ifc──▶ alan modeli ──▶ Neo4j bilgi grafı
 
 ## Hızlı başlangıç
 
-Gereksinimler: Node.js ≥ 24, Docker. LLM açıklamaları isteğe bağlıdır ve Ollama gerektirir.
+**Gereksinimler**
+- [Node.js 24 veya üstü](https://nodejs.org/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/) (çalışır durumda olmalı)
+- İsteğe bağlı: [Ollama](https://ollama.com/download), yapay zekâ açıklamaları için
+
+**1. Kurulum**
 
 ```bash
+git clone https://github.com/enestalayy/BIM-Graph-XAI-Auditor.git
+cd BIM-Graph-XAI-Auditor
 npm install
-cp .env.example .env              # NEO4J_PASSWORD değerini doldurun
-docker compose up -d              # Neo4j 5.26
-npm run cli -- ingest --discipline ARCH data/sample/Building-Architecture.ifc
-npm run cli -- ingest --discipline MEP  data/sample/Building-Hvac.ifc
-npm run cli -- audit
-npm run cli -- explain --method template
+cp .env.example .env              # Windows: copy .env.example .env
+```
+
+`.env` dosyasını açıp `NEO4J_PASSWORD=` satırına bir parola yazın (en az 8 karakter, örn. `NEO4J_PASSWORD=denetci2026`). Veritabanı bu parolayla ilk açılışta kurulur.
+
+**2. Veritabanı ve veri setleri**
+
+```bash
+docker compose up -d --wait       # Neo4j 5.26; ilk açılış ~30 sn
+npm run datasets:fetch            # Duplex, Clinic, Schependomlaan (~185 MB, SHA-256 doğrulamalı)
+```
+
+Küçük buildingSMART örnek sahnesi repoda zaten bulunur; indirme gerektirmez.
+
+**3. Uygulamayı başlatın**
+
+```bash
 npm run dev                       # API :3000 + arayüz http://localhost:5173
 ```
 
-İsteğe bağlı yerel LLM (ücretsiz):
+Tarayıcıda http://localhost:5173 adresini açın:
+1. **Modeller** sekmesinde bir veri seti seçip **"Bu veri setini yükle ve denetle"** düğmesine basın. Clinic gibi büyük setler 10–40 sn sürer.
+2. **Bulgular** sekmesinde her kuralın durumu (ihlal / uygun / veri yetersiz / uygulanamaz) ve neyi kontrol ettiği görünür. Bir ihlale tıklayınca 3B görünümde vurgulanır.
+3. Bulgu detayında **"Şablonla açıkla"** her zaman çalışır. **"LLM ile açıkla"** için Ollama gerekir (aşağıya bakın).
+4. **Kurallar** sekmesinde kurallar düzenlenebilir; kaydedip denetimi yeniden çalıştırın.
+
+**İsteğe bağlı: yerel yapay zekâ (ücretsiz)**
+
+[ollama.com/download](https://ollama.com/download) adresinden Ollama'yı kurun (macOS: `brew install ollama`), sonra:
 
 ```bash
-brew install ollama && ollama serve &
-ollama pull llama3.1:8b
-npm run cli -- explain --method ollama
+ollama pull llama3.1:8b           # ~4,9 GB, bir kez
+```
+
+Ollama arka planda çalışırken arayüzdeki "LLM ile açıkla" düğmesi kullanılabilir.
+
+**Sorun giderme**
+- `NEO4J_PASSWORD must be set`: `.env` dosyasında parola boş.
+- Portlar: 3000 (API), 5173 (arayüz), 7474/7687 (Neo4j) boş olmalı. API portu `.env` içindeki `PORT` ile değiştirilebilir.
+- Veri seti listede "indirilmemiş" görünüyorsa `npm run datasets:fetch` çalıştırılmamıştır.
+
+**Komut satırından (isteğe bağlı)**
+
+```bash
+npm run cli -- dataset list
+npm run cli -- dataset load clinic
+npm run cli -- explain --method template
 ```
 
 ## Komutlar
@@ -54,7 +93,8 @@ npm run cli -- explain --method ollama
 | `npm run test:integration` | Neo4j testleri: `docker compose --profile test up -d neo4j-test` ve `NEO4J_TEST_URI` |
 | `npm run typecheck` | Tüm paketlerde tip kontrolü |
 | `npm run parity` | web-ifc ↔ IfcOpenShell karşılaştırması (`.venv` içinde ifcopenshell gerekir) |
-| `npm run cli -- ingest\|audit\|explain\|evaluate …` | Komut satırı (bkz. `npm run cli`) |
+| `npm run cli -- dataset\|ingest\|audit\|explain\|evaluate …` | Komut satırı (bkz. `npm run cli`) |
+| `npm run datasets:fetch` | Katalogdaki veri setlerini indirir ve doğrular |
 | `npm run dev` / `npm start` / `npm run build` | Geliştirme, yalnızca API, arayüz derlemesi |
 
 ## Proje yapısı
