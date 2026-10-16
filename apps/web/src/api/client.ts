@@ -1,5 +1,5 @@
 import type {
-  ActivationResult, AuditSummary, DatasetList, ElementDetail, Review, Verdict, ExplainerKind, Explanation, IngestOutcome, ModelSummary, Rule, RuleInput, RuleSetInput, Violation, ViolationDetail, Vocabulary,
+  ActivationResult, AuditSummary, DatasetList, ElementDetail, LatestAudit, Review, Verdict, ExplainerKind, Explanation, IngestOutcome, ModelSummary, Rule, RuleInput, RuleSetInput, Violation, ViolationDetail, Vocabulary,
 } from './types.ts';
 
 export class ApiError extends Error {
@@ -63,6 +63,7 @@ export const api = {
   saveRules: (ruleSet: RuleSetInput) => request<{ version: 1; rules: Rule[] }>('/api/rules', json('PUT', ruleSet)),
   compileRule: (rule: RuleInput) => request<{ cypher: string; params: Record<string, unknown> }>('/api/rules/compile', json('POST', rule)),
   runAudit: () => request<AuditSummary>('/api/audits', { method: 'POST' }),
+  latestAudit: () => request<LatestAudit | null>('/api/audits/latest'),
   listViolations: () => request<Violation[]>('/api/violations'),
   getViolation: (id: string) => request<ViolationDetail>(`/api/violations/${encodeURIComponent(id)}`),
   explain: (id: string, method: ExplainerKind) =>

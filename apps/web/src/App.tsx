@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from './api/client.ts';
-import type { DatasetList, ModelSummary, Rule, Violation, ViolationDetail as Detail, Vocabulary } from './api/types.ts';
+import type { DatasetList, LatestAudit, ModelSummary, Rule, Violation, ViolationDetail as Detail, Vocabulary } from './api/types.ts';
 import { ErrorMessage } from './components/ErrorMessage.tsx';
 import { ModelsPanel } from './components/ModelsPanel.tsx';
 import { ReviewPanel } from './components/ReviewPanel.tsx';
@@ -30,6 +30,7 @@ export function App() {
   const [error, setError] = useState<unknown>(null);
   const [datasets, setDatasets] = useState<DatasetList | null>(null);
   const [rules, setRules] = useState<ReadonlyMap<string, Rule>>(new Map());
+  const [latestAudit, setLatestAudit] = useState<LatestAudit | null>(null);
 
   const refreshRules = useCallback(async () => {
     try {
@@ -60,8 +61,9 @@ export function App() {
 
   const refreshViolations = useCallback(async () => {
     try {
-      const list = await api.listViolations();
+      const [list, latest] = await Promise.all([api.listViolations(), api.latestAudit()]);
       setViolations(list);
+      setLatestAudit(latest);
       setSelectedId((id) => (id && list.some((v) => v.id === id) ? id : null));
     } catch (e) {
       setError(e);
@@ -126,7 +128,7 @@ export function App() {
           <ReviewPanel activeDataset={datasets?.active ?? null} onDatasetLoaded={() => onDatasetLoaded('review')} onHighlight={setReviewHighlight} />
         )}
         {tab === 'violations' && (
-          <ViolationsPanel violations={violations} rules={rules} selectedId={selectedId} onSelect={setSelectedId} onAudited={() => void refreshViolations()} />
+          <ViolationsPanel violations={violations} latest={latestAudit} rules={rules} selectedId={selectedId} onSelect={setSelectedId} onAudited={() => void refreshViolations()} />
         )}
       </aside>
       <main className="main">

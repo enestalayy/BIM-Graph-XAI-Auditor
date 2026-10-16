@@ -87,3 +87,34 @@ describe('groupByRule', () => {
     assert.deepEqual(groups.map((g) => [g.ruleId, g.violations.length]), [['FS', 1], ['INFO', 2]]);
   });
 });
+
+describe('coverage sentences', () => {
+  const regulation = { source: 'x', article: null, verified: false };
+  const duct = {
+    id: 'D', kind: 'intersection', title: 't', severity: 'critical', enabled: true, regulation, minVolume: 0,
+    subject: { classes: ['IfcDuctSegment'], where: [] },
+    object: { classes: ['IfcWall'], where: [{ property: 'Pset_WallCommon.FireRating', op: 'exists' }] },
+    mitigation: { classes: ['IfcDamper'], where: [], maxDistance: 0.5 },
+  } as const;
+  const outcome = (status: string, counts: Record<string, number>, violations = 0) =>
+    ({ ruleId: 'D', violations, durationMs: 1, coverage: { status, counts } }) as never;
+
+  it('explains why a rule could not be checked', async () => {
+    const { coverageSentence } = await import('../src/lib/coverage-text.ts');
+    const text = coverageSentence(duct as never, outcome('insufficient-data', { subjects: 2, objects: 0, objectClassMembers: 57, pairs: 0, mitigations: 0 }));
+    assert.equal(text, 'Denetlenemedi: modelde 57 Duvar var ama hiçbirinde gerekli bilgi (FireRating) yok.');
+  });
+
+  it('states the examined counts for findings', async () => {
+    const { coverageSentence } = await import('../src/lib/coverage-text.ts');
+    const text = coverageSentence(duct as never, outcome('violations', { subjects: 3, objects: 1, objectClassMembers: 2, pairs: 2, mitigations: 1 }, 1));
+    assert.match(text, /3 Hava kanalı ile 1 Duvar arasında 2 kesişim incelendi, 1 ihlal bulundu\./);
+  });
+
+  it('orders violations before not-checkable, compliant and not-applicable rules', async () => {
+    const { sortOutcomes } = await import('../src/lib/coverage-text.ts');
+    const o = (ruleId: string, status: string) => ({ ruleId, violations: 0, durationMs: 0, coverage: { status, counts: {} } }) as never;
+    const sorted = sortOutcomes([o('A', 'not-applicable'), o('B', 'compliant'), o('C', 'violations'), o('D', 'insufficient-data')], new Map());
+    assert.deepEqual(sorted.map((x: { ruleId: string }) => x.ruleId), ['C', 'D', 'B', 'A']);
+  });
+});

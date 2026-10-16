@@ -34,11 +34,23 @@ export interface RuleSetInput {
   rules: RuleInput[];
 }
 
-export interface AuditSummary {
+export type CoverageStatus = 'violations' | 'compliant' | 'insufficient-data' | 'not-applicable';
+
+export interface RuleOutcome {
+  ruleId: string;
+  violations: number;
+  durationMs: number;
+  coverage: { status: CoverageStatus; counts: Record<string, number> };
+}
+
+export interface LatestAudit {
   id: string;
   startedAt: string;
   durationMs: number;
-  outcomes: { ruleId: string; violations: number; durationMs: number }[];
+  outcomes: RuleOutcome[];
+}
+
+export interface AuditSummary extends LatestAudit {
   violations: Violation[];
 }
 

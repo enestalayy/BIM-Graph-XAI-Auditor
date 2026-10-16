@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { api } from '../api/client.ts';
-import type { AuditSummary, ElementRef, Rule, Violation } from '../api/types.ts';
+import type { AuditSummary, ElementRef, LatestAudit, Rule, Violation } from '../api/types.ts';
+import { coverageSentence, sortOutcomes, STATUS_LABEL } from '../lib/coverage-text.ts';
 import { groupByRule } from '../lib/group-violations.ts';
 import { classHint, turkishClassName } from '../lib/ifc-names.ts';
 import { countBySeverity, SEVERITY_LABEL } from '../lib/severity.ts';
@@ -9,6 +10,7 @@ import { InfoTip } from './InfoTip.tsx';
 
 interface ViolationsPanelProps {
   violations: readonly Violation[];
+  latest: LatestAudit | null;
   rules: ReadonlyMap<string, Rule>;
   selectedId: string | null;
   onSelect: (id: string) => void;
@@ -41,14 +43,17 @@ function RuleInfo({ rule, ruleId }: { rule: Rule | undefined; ruleId: string }) 
   );
 }
 
-export function ViolationsPanel({ violations, rules, selectedId, onSelect, onAudited }: ViolationsPanelProps) {
+export function ViolationsPanel({ violations, latest, rules, selectedId, onSelect, onAudited }: ViolationsPanelProps) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<unknown>(null);
   const [audit, setAudit] = useState<AuditSummary | null>(null);
   const [open, setOpen] = useState<ReadonlySet<string>>(new Set());
   const [shown, setShown] = useState<Readonly<Record<string, number>>>({});
   const counts = countBySeverity(violations);
-  const groups = groupByRule(violations);
+  const groups = new Map(groupByRule(violations).map((g) => [g.ruleId, g]));
+  // Audits saved before coverage was recorded have no coverage; they are shown after the next audit.
+  const outcomes = latest ? sortOutcomes(latest.outcomes.filter((o) => o.coverage), rules) : [];
+  const statusCount = (status: string) => outcomes.filter((o) => o.coverage.status === status).length;
 
   async function run() {
     setBusy(true);
@@ -85,24 +90,38 @@ export function ViolationsPanel({ violations, rules, selectedId, onSelect, onAud
         ))}
       </div>
 
-      {groups.length === 0 && <p className="muted">İhlal yok ya da denetim henüz çalıştırılmadı.</p>}
+      {outcomes.length === 0 && <p className="muted">Denetim henüz çalıştırılmadı.</p>}
+      {outcomes.length > 0 && (
+        <p className="muted small">
+          {outcomes.length} kural çalıştı: {statusCount('violations')} ihlal var, {statusCount('compliant')} uygun,{' '}
+          {statusCount('insufficient-data')} veri yetersiz, {statusCount('not-applicable')} uygulanamaz.
+        </p>
+      )}
       <ul className="group-list">
-        {groups.map((group) => {
-          const rule = rules.get(group.ruleId);
-          const isOpen = open.has(group.ruleId);
-          const limit = shown[group.ruleId] ?? PAGE;
+        {outcomes.map((outcome) => {
+          const rule = rules.get(outcome.ruleId);
+          const group = groups.get(outcome.ruleId);
+          const status = outcome.coverage.status;
+          const expandable = Boolean(group);
+          const isOpen = expandable && open.has(outcome.ruleId);
+          const limit = shown[outcome.ruleId] ?? PAGE;
           return (
-            <li key={group.ruleId} className="group">
+            <li key={outcome.ruleId} className={`group status-${status}`}>
               <div className="group-header">
-                <button type="button" className="group-toggle" onClick={() => toggle(group.ruleId)} aria-expanded={isOpen}>
-                  <span className="chevron">{isOpen ? '▾' : '▸'}</span>
-                  <span className={`badge ${group.severity}`}>{SEVERITY_LABEL[group.severity]}</span>
-                  <span className="group-title">{rule?.title ?? group.ruleId}</span>
-                  <span className="count">{group.violations.length}</span>
+                <button type="button" className="group-toggle" disabled={!expandable} onClick={() => toggle(outcome.ruleId)} aria-expanded={isOpen}>
+                  <span className="chevron">{expandable ? (isOpen ? '▾' : '▸') : ''}</span>
+                  {status === 'violations' && rule
+                    ? <span className={`badge ${rule.severity}`}>{SEVERITY_LABEL[rule.severity]}</span>
+                    : <span className={`badge status ${status}`}>{STATUS_LABEL[status]}</span>}
+                  <span className="group-title">
+                    {rule?.title ?? outcome.ruleId}
+                    {rule && <span className="coverage">{coverageSentence(rule, outcome)}</span>}
+                  </span>
+                  {status === 'violations' && <span className="count">{outcome.violations}</span>}
                 </button>
-                <RuleInfo rule={rule} ruleId={group.ruleId} />
+                <RuleInfo rule={rule} ruleId={outcome.ruleId} />
               </div>
-              {isOpen && (
+              {isOpen && group && (
                 <ul className="violation-list">
                   {group.violations.slice(0, limit).map((v) => (
                     <li key={v.id}>
@@ -116,7 +135,7 @@ export function ViolationsPanel({ violations, rules, selectedId, onSelect, onAud
                   ))}
                   {group.violations.length > limit && (
                     <li>
-                      <button type="button" className="ghost" onClick={() => setShown({ ...shown, [group.ruleId]: limit + PAGE })}>
+                      <button type="button" className="ghost" onClick={() => setShown({ ...shown, [outcome.ruleId]: limit + PAGE })}>
                         {group.violations.length - limit} bulgu daha göster
                       </button>
                     </li>
