@@ -29,3 +29,7 @@ export { classificationMetrics, metricsByRule, ruleOf, type ClassificationMetric
 export { summarizeExplanations, type ExplanationSummary } from './evaluation/explanations.ts';
 export { expectedViolationIds, goldStandardSchema, type GoldStandard } from './evaluation/gold-standard.ts';
 export { datasetCatalogSchema, datasetSchema, type Dataset, type DatasetCatalog, type DatasetFile } from './datasets/catalog.ts';
+export {
+  compileCoverage, coverageStatus,
+  type CoverageCounts, type CoverageStatus, type IntersectionCoverage, type PropertyCoverage,
+} from './rules/coverage.ts';
