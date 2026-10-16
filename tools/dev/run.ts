@@ -6,7 +6,8 @@ import { spawn, type ChildProcess } from 'node:child_process';
 
 const processes: ChildProcess[] = [
   spawn(process.execPath, ['--env-file-if-exists=.env', '--watch', 'apps/server/src/main.ts'], { stdio: 'inherit' }),
-  spawn('npm', ['run', 'dev', '-w', '@bim/web'], { stdio: 'inherit' }),
+  // On Windows npm is a .cmd script, which can only be started through a shell.
+  spawn('npm', ['run', 'dev', '-w', '@bim/web'], { stdio: 'inherit', shell: process.platform === 'win32' }),
 ];
 
 let stopping = false;
